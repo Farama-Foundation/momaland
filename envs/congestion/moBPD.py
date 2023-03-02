@@ -174,7 +174,7 @@ class parallel_env(ParallelEnv):
             reward_per_section.append(self.resources[i].local_reward())
 
         # Distribute rewards per agent
-        rewards = [reward_per_section[self.state[i]] for i in range(self.num_agents)]
+        rewards = {self.agents[i]: reward_per_section[self.state[i]] for i in range(self.num_agents)}
 
         terminations = {agent: False for agent in self.agents}
 
