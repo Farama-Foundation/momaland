@@ -1,18 +1,18 @@
 import functools
 import random
-import gymnasium
-from gymnasium.spaces import Discrete
+from gymnasium.spaces import Discrete, Box
+from gymnasium.logger import warn
 import numpy as np
 
 from pettingzoo import ParallelEnv
 from pettingzoo.utils import parallel_to_aec, wrappers
-from resources import Resource
+from envs.congestion.resources import Resource
 
 LEFT = -1
 RIGHT = 1
 STAY = 0
 MOVES = ["LEFT", "RIGHT", "STAY"]
-NUM_ITERS = 1000
+NUM_ITERS = 10
 
 
 def env(**kwargs):
@@ -50,28 +50,28 @@ class parallel_env(ParallelEnv):
         self.resources = [Resource(i, capacity) for i in range(sections)]
 
         self.episode_num = 0
-        self.num_agents = num_agents
+        self.mode = mode
+        # self.num_agents = num_agents
 
         self.render_mode = render_mode
-        self.agents = ["agent_" + str(r) for r in range(num_agents)]
-        self.possible_agents = self.agents[:]
+        self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
+        self.agents = self.possible_agents[:]
         self.agent_name_mapping = dict(zip(self.agents, list(range(num_agents))))
-        self.types, self.state = self.init_state(mode)
+        #self.types, self.state = self.init_state(mode)
 
         self.action_spaces = dict(
-            zip(self.agents, [gymnasium.spaces.Discrete(len(MOVES))]*num_agents)
+            zip(self.agents, [Discrete(len(MOVES))]*num_agents)
         )
         self.observation_spaces = dict(
             zip(
                 self.agents,
                 [
-                    gymnasium.spaces.Box(
+                    Box(
                         low=0,
-                        high=num_agents,
+                        high=self.num_agents,
                         # Each section is defined by capacity, consumption, mixture
                         # Agent can also observe its type
-                        shape=(4, 1),
-                        dtype=np.float32,
+                        shape=(1, 4),
                     )
                 ]
                 * num_agents,
@@ -95,7 +95,7 @@ class parallel_env(ParallelEnv):
         up a graphical window, or open up some other display that a human can see and understand.
         """
         if self.render_mode is None:
-            gymnasium.logger.warn(
+            warn(
                 "You are calling render method without specifying any render mode."
             )
             return
@@ -120,7 +120,7 @@ class parallel_env(ParallelEnv):
         Returns the observations for each agent
         """
         self.agents = self.possible_agents[:]
-        self.state = self.init_state()
+        self.types, self.state = self.init_state(self.mode)
         observations = {agent: None for agent in self.agents}
         self.episode_num = 0
 
@@ -132,9 +132,9 @@ class parallel_env(ParallelEnv):
 
     def init_state(self, mode):
         if mode == 'uniform':
-            typeA = self.num_agents/2
+            typeA = int(self.num_agents/2)
             types = np.concatenate((np.zeros(typeA), np.ones(self.num_agents-typeA)))
-            state = [random.randint(0,self.sections-1) for _ in self.agents]
+            state = [random.randint(0, self.sections-1) for _ in self.agents]
         return types, state
 
     def step(self, actions):
@@ -157,13 +157,12 @@ class parallel_env(ParallelEnv):
         reward_per_section = []
         groups = []
 
-        actions = [actions[agent] for agent in self.agents]
+        # actions = [actions[agent] for agent in self.agents]
 
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
-            act = actions[agent]
+            act = actions[i]
             self.state[i] = min(self.sections-1, max(self.state[i] + act, 0))
-
         # Group agents per section, according to their new states
         for s in range(self.sections):
             groups.append([i for i in range(self.num_agents) if self.state[i] == s])
@@ -176,23 +175,27 @@ class parallel_env(ParallelEnv):
         # Distribute rewards per agent
         rewards = {self.agents[i]: reward_per_section[self.state[i]] for i in range(self.num_agents)}
 
-        terminations = {agent: False for agent in self.agents}
-
         self.episode_num += 1
-        env_truncation = self.num_moves >= NUM_ITERS
-        truncations = {agent: env_truncation for agent in self.agents}
+        env_termination = self.episode_num >= NUM_ITERS
+        #terminations = {agent: env_terminations for agent in self.agents}
 
         # current observation is the agent's own type and the occupied resource capacity, consumption, mixture
+        observations = {agent: None for agent in self.agents}
         for i, agent in enumerate(self.agents):
-            observations = {agent: [self.types[i]].append(self.resources[self.state[i]].get_obs(self.types[i]))}
+            obs = self.resources[self.state[i]].get_obs(self.types[i])
+            obs.extend([self.types[i]])
+            observations[agent] = obs
+
+        #for i, agent in enumerate(self.agents):
+        #    observations[agent] =
 
         # typically there won't be any information in the infos, but there must
         # still be an entry for each agent
         infos = {agent: {} for agent in self.agents}
 
-        if env_truncation:
+        if env_termination:
             self.agents = []
 
         if self.render_mode == "human":
             self.render()
-        return observations, rewards, terminations, truncations, infos
+        return observations, rewards, env_termination, infos
