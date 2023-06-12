@@ -1,11 +1,13 @@
-from envs.congestion import moBPD
-import numpy as np
 from random import choices
+
+import numpy as np
+
+from envs.congestion import moBPD
 
 
 def train():
     num_agents = 5
-    mobpd_env = moBPD.parallel_env(sections=3, capacity=2, num_agents=num_agents, mode='uniform')
+    mobpd_env = moBPD.parallel_env(sections=3, capacity=2, num_agents=num_agents, mode="uniform")
     observations = mobpd_env.reset()
     done = False
     while not done:
@@ -18,4 +20,3 @@ def train():
 
 if __name__ == "__main__":
     train()
-

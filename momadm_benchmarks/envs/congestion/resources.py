@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Resource(object):
+class Resource:
     def __init__(self, num, capacity):
         self.id = num
         self.capacity = capacity
@@ -11,7 +11,7 @@ class Resource(object):
     def add_load(self, group, types):
         if len(group) > 0:
             self.consumption = len(group)
-            self.typeA = sum(types)/len(types)
+            self.typeA = sum(types) / len(types)
 
     def get_load(self):
         return self.consumption
@@ -26,7 +26,7 @@ class Resource(object):
     def local_reward(self):
         lr_capacity = self.consumption * np.exp(-self.consumption / self.capacity)
         if self.consumption > 0:
-            lr_mixture = min(self.typeA, self.consumption-self.typeA)/(self.typeA + self.consumption-self.typeA)
+            lr_mixture = min(self.typeA, self.consumption - self.typeA) / (self.typeA + self.consumption - self.typeA)
         else:
             lr_mixture = 0
         return np.array([lr_capacity, lr_mixture])
@@ -39,5 +39,7 @@ class Resource(object):
         return [self.capacity, self.consumption, t]
 
     def print_resource(self):
-        print(f'Resource: {self.id}, - consumption/capacity: {self.consumption}/{self.capacity},'
-              f'local reward: {self.local_reward()}\n')
+        print(
+            f"Resource: {self.id}, - consumption/capacity: {self.consumption}/{self.capacity},"
+            f"local reward: {self.local_reward()}\n"
+        )

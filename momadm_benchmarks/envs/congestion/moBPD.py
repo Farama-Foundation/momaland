@@ -1,12 +1,14 @@
 import functools
 import random
-from gymnasium.spaces import Discrete, Box
-from gymnasium.logger import warn
-import numpy as np
 
+import numpy as np
+from gymnasium.logger import warn
+from gymnasium.spaces import Box, Discrete
 from pettingzoo import ParallelEnv
 from pettingzoo.utils import parallel_to_aec, wrappers
+
 from envs.congestion.resources import Resource
+
 
 LEFT = -1
 RIGHT = 1
@@ -44,7 +46,8 @@ class parallel_env(ParallelEnv):
     - observation_spaces
     These attributes should not be changed after initialization.
     """
-    def __init__(self, sections=6, capacity=10, num_agents=100, mode='uniform', render_mode=None):
+
+    def __init__(self, sections=6, capacity=10, num_agents=100, mode="uniform", render_mode=None):
         self.sections = sections
         # Extend to distinct capacities per section?
         self.resources = [Resource(i, capacity) for i in range(sections)]
@@ -57,11 +60,9 @@ class parallel_env(ParallelEnv):
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
         self.agents = self.possible_agents[:]
         self.agent_name_mapping = dict(zip(self.agents, list(range(num_agents))))
-        #self.types, self.state = self.init_state(mode)
+        # self.types, self.state = self.init_state(mode)
 
-        self.action_spaces = dict(
-            zip(self.agents, [Discrete(len(MOVES))]*num_agents)
-        )
+        self.action_spaces = dict(zip(self.agents, [Discrete(len(MOVES))] * num_agents))
         self.observation_spaces = dict(
             zip(
                 self.agents,
@@ -95,9 +96,7 @@ class parallel_env(ParallelEnv):
         up a graphical window, or open up some other display that a human can see and understand.
         """
         if self.render_mode is None:
-            warn(
-                "You are calling render method without specifying any render mode."
-            )
+            warn("You are calling render method without specifying any render mode.")
             return
 
         for r in self.resources:
@@ -131,10 +130,10 @@ class parallel_env(ParallelEnv):
             return observations, infos
 
     def init_state(self, mode):
-        if mode == 'uniform':
-            typeA = int(self.num_agents/2)
-            types = np.concatenate((np.zeros(typeA), np.ones(self.num_agents-typeA)))
-            state = [random.randint(0, self.sections-1) for _ in self.agents]
+        if mode == "uniform":
+            typeA = int(self.num_agents / 2)
+            types = np.concatenate((np.zeros(typeA), np.ones(self.num_agents - typeA)))
+            state = [random.randint(0, self.sections - 1) for _ in self.agents]
         return types, state
 
     def step(self, actions):
@@ -162,7 +161,7 @@ class parallel_env(ParallelEnv):
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[i]
-            self.state[i] = min(self.sections-1, max(self.state[i] + act, 0))
+            self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
         # Group agents per section, according to their new states
         for s in range(self.sections):
             groups.append([i for i in range(self.num_agents) if self.state[i] == s])
@@ -177,7 +176,7 @@ class parallel_env(ParallelEnv):
 
         self.episode_num += 1
         env_termination = self.episode_num >= NUM_ITERS
-        #terminations = {agent: env_terminations for agent in self.agents}
+        # terminations = {agent: env_terminations for agent in self.agents}
 
         # current observation is the agent's own type and the occupied resource capacity, consumption, mixture
         observations = {agent: None for agent in self.agents}
@@ -186,7 +185,7 @@ class parallel_env(ParallelEnv):
             obs.extend([self.types[i]])
             observations[agent] = obs
 
-        #for i, agent in enumerate(self.agents):
+        # for i, agent in enumerate(self.agents):
         #    observations[agent] =
 
         # typically there won't be any information in the infos, but there must
