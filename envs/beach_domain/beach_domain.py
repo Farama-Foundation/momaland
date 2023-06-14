@@ -6,7 +6,7 @@ import numpy as np
 
 from pettingzoo import ParallelEnv
 from pettingzoo.utils import parallel_to_aec, wrappers
-from envs.congestion.resources import Resource
+from envs.beach_domain.resources import BeachSection
 
 LEFT = -1
 RIGHT = 1
@@ -47,7 +47,7 @@ class parallel_env(ParallelEnv):
     def __init__(self, sections=6, capacity=10, num_agents=100, mode='uniform', render_mode=None):
         self.sections = sections
         # Extend to distinct capacities per section?
-        self.resources = [Resource(i, capacity) for i in range(sections)]
+        self.resources = [BeachSection(i, capacity) for i in range(sections)]
 
         self.episode_num = 0
         self.mode = mode
@@ -56,7 +56,7 @@ class parallel_env(ParallelEnv):
         self.render_mode = render_mode
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
         self.agents = self.possible_agents[:]
-        self.agent_name_mapping = dict(zip(self.agents, list(range(num_agents))))
+        #self.agent_name_mapping = dict(zip(self.agents, list(range(num_agents))))
         #self.types, self.state = self.init_state(mode)
 
         self.action_spaces = dict(
@@ -153,7 +153,7 @@ class parallel_env(ParallelEnv):
             return {}, {}, {}, {}, {}
 
         # rewards for all agents are placed in the rewards dictionary to be returned
-        rewards = {}
+        # rewards = {}
         reward_per_section = []
         groups = []
 
@@ -186,9 +186,6 @@ class parallel_env(ParallelEnv):
             obs.extend([self.types[i]])
             observations[agent] = obs
 
-        #for i, agent in enumerate(self.agents):
-        #    observations[agent] =
-
         # typically there won't be any information in the infos, but there must
         # still be an entry for each agent
         infos = {agent: {} for agent in self.agents}
@@ -198,4 +195,5 @@ class parallel_env(ParallelEnv):
 
         if self.render_mode == "human":
             self.render()
+
         return observations, rewards, env_termination, infos

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Resource(object):
+class BeachSection(object):
     def __init__(self, num, capacity):
         self.id = num
         self.capacity = capacity
@@ -39,5 +39,5 @@ class Resource(object):
         return [self.capacity, self.consumption, t]
 
     def print_resource(self):
-        print(f'Resource: {self.id}, - consumption/capacity: {self.consumption}/{self.capacity},'
+        print(f'Beach section: {self.id}, - consumption/capacity: {self.consumption}/{self.capacity},'
               f'local reward: {self.local_reward()}\n')
