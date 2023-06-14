@@ -155,29 +155,21 @@ class parallel_env(ParallelEnv):
             self.agents = []
             return {}, {}, {}, {}, {}
 
-        # rewards for all agents are placed in the rewards dictionary to be returned
-        # rewards = {}
-        groups = []
-
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[i]
             self.state[i] = min(self.sections-1, max(self.state[i] + act, 0))
 
-        section_consumptions = [0] * self.sections
-        section_agent_types = [[0] * self.num_types for i in range(self.sections)]
+        section_consumptions = np.zeros(self.sections)
+        section_agent_types = np.zeros((self.num_types, self.sections))
 
         for i in range(len(self.agents)):
             section_consumptions[self.state[i]] += 1
             section_agent_types[self.state[i]][self.types[i]] += 1
 
-        # Distribute rewards per agent
-        rewards = {self.agents[i]: [0, 0] for _ in range(self.num_agents)}
-
         self.episode_num += 1
 
         env_termination = self.episode_num >= self. num_timesteps
-        #terminations = {agent: env_termination for agent in self.agents}
         reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES))
 
         #TODO split in separate functions
@@ -193,6 +185,8 @@ class parallel_env(ParallelEnv):
 
         # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
         observations = {agent: None for agent in self.agents}
+        # Note that agents only receive the reward after the last timestep
+        rewards = {self.agents[i]: [0, 0] for _ in range(self.num_agents)}
 
         for i, agent in enumerate(self.agents):
             total_same_type = section_agent_types[self.state[i]][self.types[i]]
