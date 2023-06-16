@@ -1,12 +1,20 @@
+"""Beach problem domain.
+
+From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping for knowledge-based multi-objective multi-agent reinforcement learning.
+"""
+
 import functools
 import random
-from gymnasium.spaces import Discrete, Box
-from gymnasium.logger import warn
-#from gymnasium.utils import EzPickle
-import numpy as np
 
+# from gymnasium.utils import EzPickle
+from typing_extensions import override
+
+import numpy as np
+from gymnasium.logger import warn
+from gymnasium.spaces import Box, Discrete
 from pettingzoo import ParallelEnv
 from pettingzoo.utils import parallel_to_aec, wrappers
+
 
 LEFT = -1
 RIGHT = 1
@@ -16,6 +24,14 @@ NUM_OBJECTIVES = 2
 
 
 def env(**kwargs):
+    """Autowrapper for the beach domain.
+
+    Args:
+        **kwargs: keyword args to forward to the raw_env function
+
+    Returns:
+        A fully wrapped env
+    """
     env = raw_env(**kwargs)
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
@@ -26,34 +42,49 @@ def env(**kwargs):
 
 
 def raw_env(render_mode=None):
-    """
-    To support the AEC API, the raw_env() function just uses the from_parallel
-    function to convert from a ParallelEnv to an AEC env
-    """
+    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
     env = parallel_env(render_mode=render_mode)
     env = parallel_to_aec(env)
     return env
 
 
 class parallel_env(ParallelEnv):
-    metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
-    """
+    """Environment for MO Beach problem domain.
+
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
     - action_spaces
     - observation_spaces
     These attributes should not be changed after initialization.
     """
-    def __init__(self, sections=6,
-                 capacity=10,
-                 num_agents=100,
-                 init_position='random',
-                 init_type='random',
-                 num_types=2,
-                 num_timesteps=10,
-                 render_mode=None):
+
+    metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
+
+    def __init__(
+        self,
+        sections=6,
+        capacity=10,
+        num_agents=100,
+        init_position="random",
+        init_type="random",
+        num_types=2,
+        num_timesteps=10,
+        render_mode=None,
+    ):
+        """Initializes the beach domain.
+
+        Args:
+            sections: TODO
+            capacity: TODO
+            num_agents: number of agents in the domain
+            init_position: TODO
+            init_type: TODO
+            num_types: TODO
+            num_timesteps: TODO
+            render_mode: render mode
+        """
         self.sections = sections
-        #TODO Extend to distinct capacities per section?
+        # TODO Extend to distinct capacities per section?
         self.resource_capacities = [capacity for _ in range(sections)]
         self.num_types = num_types
         self.num_timesteps = num_timesteps
@@ -65,9 +96,7 @@ class parallel_env(ParallelEnv):
         self.agents = self.possible_agents[:]
         self.types, self.state = self.init_state()
 
-        self.action_spaces = dict(
-            zip(self.agents, [Discrete(len(MOVES))]*num_agents)
-        )
+        self.action_spaces = dict(zip(self.agents, [Discrete(len(MOVES))] * num_agents))
         self.observation_spaces = dict(
             zip(
                 self.agents,
@@ -87,39 +116,34 @@ class parallel_env(ParallelEnv):
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
     @functools.lru_cache(maxsize=None)
+    @override
     def observation_space(self, agent):
         # gymnasium spaces are defined and documented here: https://gymnasiuspspom.farama.org/api/spaces/
         return self.observation_spaces[agent]
 
     @functools.lru_cache(maxsize=None)
+    @override
     def action_space(self, agent):
         return self.action_spaces[agent]
 
     def render(self):
-        """
-        Renders the environment. In human mode, it can print to terminal, open
+        """Renders the environment.
+
+        In human mode, it can print to terminal, open
         up a graphical window, or open up some other display that a human can see and understand.
         """
         if self.render_mode is None:
-            warn(
-                "You are calling render method without specifying any render mode."
-            )
+            warn("You are calling render method without specifying any render mode.")
             return
 
     def close(self):
-        """
-        Close should release any graphical displays, subprocesses, network connections
-        or any other environment data which should not be kept around after the
-        user is no longer using the environment.
-        """
+        """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
         pass
 
     def reset(self, seed=None, return_info=False, options=None):
-        """
-        Reset needs to initialize the `agents` attribute and must set up the
-        environment so that render(), and step() can be called without issues.
-        Here it initializes the `num_moves` variable which counts the number of
-        hands that are played.
+        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
+
+        Here it initializes the `num_moves` variable which counts the number of hands that are played.
         Returns the observations for each agent
         """
         self.agents = self.possible_agents[:]
@@ -134,15 +158,20 @@ class parallel_env(ParallelEnv):
             return observations, infos
 
     def init_state(self):
-        if self.init_type == 'random':
-            types = [random.randint(0, self.num_types-1) for _ in self.agents]
-        if self.init_position == 'random':
-            state = [random.randint(0, self.sections-1) for _ in self.agents]
+        """Initializes the state of the environment. This is called by reset()."""
+        if self.init_type == "random":
+            types = [random.randint(0, self.num_types - 1) for _ in self.agents]
+        if self.init_position == "random":
+            state = [random.randint(0, self.sections - 1) for _ in self.agents]
         return types, state
 
     def step(self, actions):
-        """
-        step(action) takes in an action for each agent and should return the
+        """Steps in the environment.
+
+        Args:
+            actions: a dict of actions, keyed by agent names
+
+        Returns: a tuple containing the following items in order:
         - observations
         - rewards
         - terminations
@@ -158,7 +187,7 @@ class parallel_env(ParallelEnv):
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[i]
-            self.state[i] = min(self.sections-1, max(self.state[i] + act, 0))
+            self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
 
         section_consumptions = np.zeros(self.sections)
         section_agent_types = np.zeros((self.num_types, self.sections))
@@ -169,10 +198,10 @@ class parallel_env(ParallelEnv):
 
         self.episode_num += 1
 
-        env_termination = self.episode_num >= self. num_timesteps
+        env_termination = self.episode_num >= self.num_timesteps
         reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES))
 
-        #TODO split in separate functions
+        # TODO split in separate functions
         if env_termination:
             for i in range(self.sections):
                 lr_capacity = section_consumptions[i] * np.exp(-section_consumptions[i] / self.resource_capacities[i])
@@ -190,12 +219,14 @@ class parallel_env(ParallelEnv):
 
         for i, agent in enumerate(self.agents):
             total_same_type = section_agent_types[self.state[i]][self.types[i]]
-            t = total_same_type/section_consumptions[self.state[i]]
-            obs = [self.types[i],
-                   self.state[i],
-                   self.resource_capacities[self.state[i]],
-                   section_consumptions[self.state[i]],
-                   t]
+            t = total_same_type / section_consumptions[self.state[i]]
+            obs = [
+                self.types[i],
+                self.state[i],
+                self.resource_capacities[self.state[i]],
+                section_consumptions[self.state[i]],
+                t,
+            ]
             observations[agent] = obs
             rewards[agent] = reward_per_section[self.state[i]]
 

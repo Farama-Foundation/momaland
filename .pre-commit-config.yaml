@@ -50,9 +50,10 @@ repos:
     rev: 6.3.0
     hooks:
       - id: pydocstyle
-        exclude: ^(mo_gymnasium/envs/)|(tests/)|(docs/)|(setup.py)
+        exclude: ^(tests/)|(docs/)|(setup.py)|(pyproject.toml)
         args:
           - --source
+          - --ignore-decorators=override
           - --explain
           - --convention=google
         additional_dependencies: ["toml"]
