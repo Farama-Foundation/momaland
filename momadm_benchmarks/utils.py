@@ -1,10 +1,13 @@
-import os
+"""Helper functions for the MOMADM benchmarks."""
 import errno
+import os
+
 import numpy as np
 
 
 def u_imbalance(x):
-    """Sum of squares utility function
+    """Sum of squares utility function.
+
     Args:
             x: reward vector
     """
@@ -12,7 +15,8 @@ def u_imbalance(x):
 
 
 def u_balance(x):
-    """Product utility function
+    """Product utility function.
+
     Args:
             x: reward vector
     """
@@ -20,9 +24,10 @@ def u_balance(x):
 
 
 def mkdir_p(path):
-    """Creates a folder at the provided path, used  for logging functionality
+    """Creates a folder at the provided path, used  for logging functionality.
+
     Args:
-            path: string defining the location of the folder
+        path: string defining the location of the folder.
     """
     try:
         os.makedirs(path)
