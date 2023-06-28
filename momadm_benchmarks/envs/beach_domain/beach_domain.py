@@ -15,7 +15,6 @@ from gymnasium.spaces import Box, Discrete
 from pettingzoo import ParallelEnv
 from pettingzoo.utils import parallel_to_aec, wrappers
 
-
 LEFT = -1
 RIGHT = 1
 STAY = 0
@@ -43,12 +42,12 @@ def env(**kwargs):
 
 def raw_env(render_mode=None):
     """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = parallel_env(render_mode=render_mode)
+    env = MOBeachDomain(render_mode=render_mode)
     env = parallel_to_aec(env)
     return env
 
 
-class parallel_env(ParallelEnv):
+class MOBeachDomain(ParallelEnv):
     """Environment for MO Beach problem domain.
 
     The init method takes in environment arguments and should define the following attributes:
@@ -61,15 +60,15 @@ class parallel_env(ParallelEnv):
     metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
 
     def __init__(
-        self,
-        num_timesteps=10,
-        num_agents=100,
-        reward_scheme="local",
-        sections=6,
-        capacity=10,
-        type_distribution=(0.5, 0.5),
-        position_distribution=None,
-        render_mode=None,
+            self,
+            num_timesteps=10,
+            num_agents=100,
+            reward_scheme="local",
+            sections=6,
+            capacity=10,
+            type_distribution=(0.5, 0.5),
+            position_distribution=None,
+            render_mode=None,
     ):
         """Initializes the beach domain.
 
@@ -78,7 +77,7 @@ class parallel_env(ParallelEnv):
             capacity: TODO
             num_agents: number of agents in the domain
             type_distribution: TODO # assume that there is an even mixing between two agent types unless specified
-            position_distribution: TODO # assume that agents ae evenly distributed among sections unless specified
+            position_distribution: TODO # assume that agents are evenly distributed among sections unless specified
             num_timesteps: TODO
             render_mode: render mode
             reward_scheme: TODO # global or local rewards
@@ -90,9 +89,12 @@ class parallel_env(ParallelEnv):
         self.num_timesteps = num_timesteps
         self.episode_num = 0
         self.type_distribution = type_distribution
-        assert len(position_distribution) == self.sections, \
-            "number of sections should be equal to the length of the provided position_distribution:"
-        self.position_distribution = position_distribution
+        if position_distribution is None:
+            self.position_distribution = [1 / sections for _ in range(sections)]
+        else:
+            assert len(position_distribution) == self.sections, \
+                "number of sections should be equal to the length of the provided position_distribution:"
+            self.position_distribution = position_distribution
 
         self.render_mode = render_mode
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
@@ -197,6 +199,7 @@ class parallel_env(ParallelEnv):
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[i]
+
             self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
 
         section_consumptions = np.zeros(self.sections)
