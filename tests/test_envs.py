@@ -1,0 +1,25 @@
+import os
+import pickle
+
+import pytest
+from pettingzoo.test import parallel_api_test, seed_test, max_cycles_test
+
+from momadm_benchmarks.test.api_test import api_test
+from .all_modules import all_environments
+
+
+@pytest.mark.parametrize(("name", "env_module"), list(all_environments.items()))
+def test_module(name, env_module):
+    _env = env_module.env(render_mode=None)
+    assert str(_env) == os.path.basename(name)
+    api_test(_env)
+    parallel_api_test(env_module.parallel_env())
+
+    seed_test(env_module.env, 50)
+
+    # render_test(env_module.env)
+    max_cycles_test(env_module)
+
+    recreated_env = pickle.loads(pickle.dumps(_env))
+    recreated_env.seed(42)
+    api_test(recreated_env)

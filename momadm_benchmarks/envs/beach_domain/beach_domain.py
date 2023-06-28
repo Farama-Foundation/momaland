@@ -15,11 +15,17 @@ from gymnasium.spaces import Box, Discrete
 from pettingzoo import ParallelEnv
 from pettingzoo.utils import parallel_to_aec, wrappers
 
+
 LEFT = -1
 RIGHT = 1
 STAY = 0
 MOVES = ["LEFT", "RIGHT", "STAY"]
 NUM_OBJECTIVES = 2
+
+
+def parallel_env(**kwargs):
+    """Env factory function for the beach domain."""
+    return MOBeachDomain(**kwargs)
 
 
 def env(**kwargs):
@@ -40,9 +46,9 @@ def env(**kwargs):
     return env
 
 
-def raw_env(render_mode=None):
+def raw_env(**kwargs):
     """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = MOBeachDomain(render_mode=render_mode)
+    env = parallel_env(**kwargs)
     env = parallel_to_aec(env)
     return env
 
@@ -60,15 +66,15 @@ class MOBeachDomain(ParallelEnv):
     metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
 
     def __init__(
-            self,
-            num_timesteps=10,
-            num_agents=100,
-            reward_scheme="local",
-            sections=6,
-            capacity=10,
-            type_distribution=(0.5, 0.5),
-            position_distribution=None,
-            render_mode=None,
+        self,
+        num_timesteps=10,
+        num_agents=100,
+        reward_scheme="local",
+        sections=6,
+        capacity=10,
+        type_distribution=(0.5, 0.5),
+        position_distribution=None,
+        render_mode=None,
     ):
         """Initializes the beach domain.
 
@@ -92,14 +98,15 @@ class MOBeachDomain(ParallelEnv):
         if position_distribution is None:
             self.position_distribution = [1 / sections for _ in range(sections)]
         else:
-            assert len(position_distribution) == self.sections, \
-                "number of sections should be equal to the length of the provided position_distribution:"
+            assert (
+                len(position_distribution) == self.sections
+            ), "number of sections should be equal to the length of the provided position_distribution:"
             self.position_distribution = position_distribution
 
         self.render_mode = render_mode
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
         self.agents = self.possible_agents[:]
-        self.types, self.state = self.init_state()
+        self.types, self.state = self._init_state()
 
         self.action_spaces = dict(zip(self.agents, [Discrete(len(MOVES))] * num_agents))
         self.observation_spaces = dict(
@@ -117,6 +124,8 @@ class MOBeachDomain(ParallelEnv):
                 * num_agents,
             )
         )
+        # TODO check reward spaces
+        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=1, shape=(2,))] * num_agents))
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
@@ -130,6 +139,10 @@ class MOBeachDomain(ParallelEnv):
     @override
     def action_space(self, agent):
         return self.action_spaces[agent]
+
+    def reward_space(self, agent):
+        """Returns the reward space for the given agent."""
+        return self.reward_spaces[agent]
 
     def render(self):
         """Renders the environment.
@@ -145,26 +158,24 @@ class MOBeachDomain(ParallelEnv):
         """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
         pass
 
-    def reset(self, seed=None, return_info=False, options=None):
+    def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
 
         Here it initializes the `num_moves` variable which counts the number of hands that are played.
         Returns the observations for each agent
         """
         self.agents = self.possible_agents[:]
-        self.types, self.state = self.init_state()
-        section_consumptions, section_agent_types = self.get_stats()
-        observations = {agent: self.get_obs(i, section_consumptions, section_agent_types)
-                        for i, agent in enumerate(self.agents)}
+        self.types, self.state = self._init_state()
+        section_consumptions, section_agent_types = self._get_stats()
+        observations = {
+            agent: self._get_obs(i, section_consumptions, section_agent_types) for i, agent in enumerate(self.agents)
+        }
         self.episode_num = 0
 
-        if not return_info:
-            return observations
-        else:
-            infos = {agent: {} for agent in self.agents}
-            return observations, infos
+        infos = {agent: {} for agent in self.agents}
+        return observations, infos
 
-    def init_state(self):
+    def _init_state(self):
         """Initializes the state of the environment. This is called by reset()."""
         types = random.choices(
             [i for i in range(len(self.type_distribution))], weights=self.type_distribution, k=self.num_agents
@@ -202,7 +213,7 @@ class MOBeachDomain(ParallelEnv):
             act = actions[i]
             self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
 
-        section_consumptions, section_agent_types = self.get_stats()
+        section_consumptions, section_agent_types = self._get_stats()
 
         self.episode_num += 1
 
@@ -212,13 +223,13 @@ class MOBeachDomain(ParallelEnv):
         if env_termination:
             if self.reward_scheme == "local":
                 for i in range(self.sections):
-                    lr_capacity = local_capacity_reward(self.resource_capacities[i], section_consumptions[i])
-                    lr_mixture = local_mixture_reward(section_agent_types[i])
+                    lr_capacity = _local_capacity_reward(self.resource_capacities[i], section_consumptions[i])
+                    lr_mixture = _local_mixture_reward(section_agent_types[i])
                     reward_per_section[i] = np.array([lr_capacity, lr_mixture])
 
             elif self.reward_scheme == "global":
-                g_capacity = global_capacity_reward(self.resource_capacities, section_consumptions)
-                g_mixture = global_mixture_reward(section_agent_types)
+                g_capacity = _global_capacity_reward(self.resource_capacities, section_consumptions)
+                g_mixture = _global_mixture_reward(section_agent_types)
                 reward_per_section = np.array([[g_capacity, g_mixture]] * self.sections)
 
         # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
@@ -227,7 +238,7 @@ class MOBeachDomain(ParallelEnv):
         rewards = {self.agents[i]: [0, 0] for _ in range(self.num_agents)}
 
         for i, agent in enumerate(self.agents):
-            observations[agent] = self.get_obs(i, section_consumptions, section_agent_types)
+            observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
             rewards[agent] = reward_per_section[self.state[i]]
 
         # typically there won't be any information in the infos, but there must
@@ -242,19 +253,16 @@ class MOBeachDomain(ParallelEnv):
 
         return observations, rewards, env_termination, infos
 
-    def get_obs(self, i, section_consumptions, section_agent_types):
+    def _get_obs(self, i, section_consumptions, section_agent_types):
         total_same_type = section_agent_types[self.state[i]][self.types[i]]
         t = total_same_type / section_consumptions[self.state[i]]
-        obs = [
-            self.types[i],
-            self.state[i],
-            self.resource_capacities[self.state[i]],
-            section_consumptions[self.state[i]],
-            t
-        ]
+        obs = np.array(
+            [self.types[i], self.state[i], self.resource_capacities[self.state[i]], section_consumptions[self.state[i]], t],
+            dtype=np.float32,
+        )
         return obs
 
-    def get_stats(self):
+    def _get_stats(self):
         section_consumptions = np.zeros(self.sections)
         section_agent_types = np.zeros((self.sections, len(self.type_distribution)))
 
@@ -264,26 +272,26 @@ class MOBeachDomain(ParallelEnv):
         return section_consumptions, section_agent_types
 
 
-def global_capacity_reward(capacities, consumptions):
+def _global_capacity_reward(capacities, consumptions):
     global_capacity_r = 0
     for i in range(len(capacities)):
-        global_capacity_r += local_capacity_reward(capacities[i], consumptions[i])
+        global_capacity_r += _local_capacity_reward(capacities[i], consumptions[i])
     return global_capacity_r
 
 
-def local_capacity_reward(capacity, consumption):
+def _local_capacity_reward(capacity, consumption):
     # TODO make capacity lookup table to save CPU!
     return consumption * np.exp(-consumption / capacity)
 
 
-def global_mixture_reward(section_agent_types):
+def _global_mixture_reward(section_agent_types):
     sum_local_mix = 0
     for i in range(len(section_agent_types)):
-        sum_local_mix += local_mixture_reward(section_agent_types[i])
+        sum_local_mix += _local_mixture_reward(section_agent_types[i])
     return sum_local_mix / len(section_agent_types)
 
 
-def local_mixture_reward(types):
+def _local_mixture_reward(types):
     lr_mixture = 0
     if sum(types) > 0:
         lr_mixture = min(types) / sum(types)

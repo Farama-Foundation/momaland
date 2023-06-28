@@ -30,7 +30,7 @@ classifiers = [
 ]
 dependencies = [
     "gymnasium >=0.28",
-    "pettingzoo >=1.23.1",
+    "pettingzoo@git+https://github.com/Farama-Foundation/PettingZoo",
     "numpy >=1.21.0",
 ]
 dynamic = ["version"]

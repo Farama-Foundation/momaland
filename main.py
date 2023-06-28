@@ -1,7 +1,7 @@
 """Main file for showing how to run agents."""
 from random import choices
 
-from envs.beach_domain import beach_domain
+from momadm_benchmarks.envs.beach_domain import beach_domain
 
 
 def train():
@@ -16,8 +16,13 @@ def train():
     # )
 
     mobpd_env = beach_domain.parallel_env(
-        sections=3, capacity=2, num_agents=num_agents, type_distribution=[0.5, 0.5],
-        position_distribution=[0.5, 0.5, 1], num_timesteps=1, reward_scheme="global"
+        sections=3,
+        capacity=2,
+        num_agents=num_agents,
+        type_distribution=[0.5, 0.5],
+        position_distribution=[0.5, 0.5, 1],
+        num_timesteps=1,
+        reward_scheme="global",
     )
 
     done = False
