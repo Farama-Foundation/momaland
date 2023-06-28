@@ -256,7 +256,10 @@ class MOBeachDomain(ParallelEnv):
     def _get_obs(self, i, section_consumptions, section_agent_types):
         total_same_type = section_agent_types[self.state[i]][self.types[i]]
         t = total_same_type / section_consumptions[self.state[i]]
-        obs = [self.types[i], self.state[i], self.resource_capacities[self.state[i]], section_consumptions[self.state[i]], t]
+        obs = np.array(
+            [self.types[i], self.state[i], self.resource_capacities[self.state[i]], section_consumptions[self.state[i]], t],
+            dtype=np.float32,
+        )
         return obs
 
     def _get_stats(self):
