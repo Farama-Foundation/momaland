@@ -1,3 +1,5 @@
+"""Copied from PettingZoo, adapted to rewards being a numpy array."""
+
 import random
 import re
 import warnings
@@ -5,13 +7,13 @@ from collections import defaultdict
 
 import gymnasium
 import numpy as np
-
 import pettingzoo
 from pettingzoo.utils.conversions import (
     aec_to_parallel_wrapper,
     parallel_to_aec_wrapper,
 )
 from pettingzoo.utils.wrappers import BaseWrapper
+
 
 missing_attr_warning = """This environment does not have {name} defined.
 This is not a required part 'of the API as environments with procedurally

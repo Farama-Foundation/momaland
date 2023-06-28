@@ -15,7 +15,7 @@ def train():
     #     position_distribution=[0.5, 0.5, 1]
     # )
 
-    mobpd_env = beach_domain.MOBeach(
+    mobpd_env = beach_domain.parallel_env(
         sections=3,
         capacity=2,
         num_agents=num_agents,
