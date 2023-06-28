@@ -50,7 +50,7 @@ repos:
     rev: 6.3.0
     hooks:
       - id: pydocstyle
-        exclude: ^(tests/)|(docs/)|(setup.py)|(pyproject.toml)|(momadm_benchmarks/tests/)
+        exclude: ^(tests/)|(docs/)|(setup.py)|(pyproject.toml)|(momadm_benchmarks/test/)
         args:
           - --source
           - --ignore-decorators=override
