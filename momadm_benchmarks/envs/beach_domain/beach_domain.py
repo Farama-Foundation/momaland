@@ -107,6 +107,8 @@ class MOBeachDomain(ParallelEnv):
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
         self.agents = self.possible_agents[:]
         self.types, self.state = self._init_state()
+        self.terminations = {agent: False for agent in self.agents}
+        self.truncations = {agent: False for agent in self.agents}
 
         self.action_spaces = dict(zip(self.agents, [Discrete(len(MOVES))] * num_agents))
         self.observation_spaces = dict(
@@ -118,14 +120,15 @@ class MOBeachDomain(ParallelEnv):
                         high=self.num_agents,
                         # Observation form:
                         # agent type, section id, section capacity, section consumption, % of agents of current type
-                        shape=(1, 5),
+                        shape=(5,),
+                        dtype=np.float32,
                     )
                 ]
                 * num_agents,
             )
         )
         # TODO check reward spaces
-        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=1, shape=(2,))] * num_agents))
+        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=1, shape=(NUM_OBJECTIVES,))] * num_agents))
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
@@ -160,12 +163,12 @@ class MOBeachDomain(ParallelEnv):
 
     def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
-
-        Here it initializes the `num_moves` variable which counts the number of hands that are played.
         Returns the observations for each agent
         """
         self.agents = self.possible_agents[:]
         self.types, self.state = self._init_state()
+        self.terminations = {agent: False for agent in self.agents}
+        self.truncations = {agent: False for agent in self.agents}
         section_consumptions, section_agent_types = self._get_stats()
         observations = {
             agent: self._get_obs(i, section_consumptions, section_agent_types) for i, agent in enumerate(self.agents)
@@ -210,7 +213,7 @@ class MOBeachDomain(ParallelEnv):
 
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
-            act = actions[i]
+            act = actions[agent]
             self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
 
         section_consumptions, section_agent_types = self._get_stats()
@@ -218,6 +221,7 @@ class MOBeachDomain(ParallelEnv):
         self.episode_num += 1
 
         env_termination = self.episode_num >= self.num_timesteps
+        self.terminations = {agent: env_termination for agent in self.agents}
         reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES))
 
         if env_termination:
@@ -251,7 +255,7 @@ class MOBeachDomain(ParallelEnv):
         if self.render_mode == "human":
             self.render()
 
-        return observations, rewards, env_termination, infos
+        return observations, rewards, self.truncations, self.terminations, infos
 
     def _get_obs(self, i, section_consumptions, section_agent_types):
         total_same_type = section_agent_types[self.state[i]][self.types[i]]
