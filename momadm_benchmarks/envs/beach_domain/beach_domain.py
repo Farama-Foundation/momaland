@@ -43,12 +43,12 @@ def env(**kwargs):
 
 def raw_env(render_mode=None):
     """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = parallel_env(render_mode=render_mode)
+    env = MOBeach(render_mode=render_mode)
     env = parallel_to_aec(env)
     return env
 
 
-class parallel_env(ParallelEnv):
+class MOBeach(ParallelEnv):
     """Environment for MO Beach problem domain.
 
     The init method takes in environment arguments and should define the following attributes:
@@ -90,8 +90,9 @@ class parallel_env(ParallelEnv):
         self.num_timesteps = num_timesteps
         self.episode_num = 0
         self.type_distribution = type_distribution
-        assert len(position_distribution) == self.sections, \
-            "number of sections should be equal to the length of the provided position_distribution:"
+        assert (
+            len(position_distribution) == self.sections
+        ), "number of sections should be equal to the length of the provided position_distribution:"
         self.position_distribution = position_distribution
 
         self.render_mode = render_mode

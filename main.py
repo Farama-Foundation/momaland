@@ -15,9 +15,14 @@ def train():
     #     position_distribution=[0.5, 0.5, 1]
     # )
 
-    mobpd_env = beach_domain.parallel_env(
-        sections=3, capacity=2, num_agents=num_agents, type_distribution=[0.5, 0.5],
-        position_distribution=[0.5, 0.5, 1], num_timesteps=1, reward_scheme="global"
+    mobpd_env = beach_domain.MOBeach(
+        sections=3,
+        capacity=2,
+        num_agents=num_agents,
+        type_distribution=[0.5, 0.5],
+        position_distribution=[0.5, 0.5, 1],
+        num_timesteps=1,
+        reward_scheme="global",
     )
 
     done = False
