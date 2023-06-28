@@ -153,7 +153,9 @@ class MOBeachDomain(ParallelEnv):
         """
         self.agents = self.possible_agents[:]
         self.types, self.state = self.init_state()
-        observations = {agent: None for agent in self.agents}
+        section_consumptions, section_agent_types = self.get_stats()
+        observations = {agent: self.get_obs(i, section_consumptions, section_agent_types)
+                        for i, agent in enumerate(self.agents)}
         self.episode_num = 0
 
         if not return_info:
@@ -174,7 +176,6 @@ class MOBeachDomain(ParallelEnv):
             positions = random.choices(
                 [i for i in range(self.sections)], weights=self.position_distribution, k=self.num_agents
             )
-        print("types, positions", types, positions)
         return types, positions
 
     def step(self, actions):
@@ -199,18 +200,10 @@ class MOBeachDomain(ParallelEnv):
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[i]
-
             self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
 
-        section_consumptions = np.zeros(self.sections)
-        section_agent_types = np.zeros((self.sections, len(self.type_distribution)))
+        section_consumptions, section_agent_types = self.get_stats()
 
-        for i in range(len(self.agents)):
-            section_consumptions[self.state[i]] += 1
-            print(i, self.state[i], self.types[i])
-            section_agent_types[self.state[i]][self.types[i]] += 1
-
-        # print(section_agent_types)
         self.episode_num += 1
 
         env_termination = self.episode_num >= self.num_timesteps
@@ -227,7 +220,6 @@ class MOBeachDomain(ParallelEnv):
                 g_capacity = global_capacity_reward(self.resource_capacities, section_consumptions)
                 g_mixture = global_mixture_reward(section_agent_types)
                 reward_per_section = np.array([[g_capacity, g_mixture]] * self.sections)
-                print("reward_per_section", reward_per_section)
 
         # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
         observations = {agent: None for agent in self.agents}
@@ -235,16 +227,7 @@ class MOBeachDomain(ParallelEnv):
         rewards = {self.agents[i]: [0, 0] for _ in range(self.num_agents)}
 
         for i, agent in enumerate(self.agents):
-            total_same_type = section_agent_types[self.state[i]][self.types[i]]
-            t = total_same_type / section_consumptions[self.state[i]]
-            obs = [
-                self.types[i],
-                self.state[i],
-                self.resource_capacities[self.state[i]],
-                section_consumptions[self.state[i]],
-                t,
-            ]
-            observations[agent] = obs
+            observations[agent] = self.get_obs(i, section_consumptions, section_agent_types)
             rewards[agent] = reward_per_section[self.state[i]]
 
         # typically there won't be any information in the infos, but there must
@@ -258,6 +241,27 @@ class MOBeachDomain(ParallelEnv):
             self.render()
 
         return observations, rewards, env_termination, infos
+
+    def get_obs(self, i, section_consumptions, section_agent_types):
+        total_same_type = section_agent_types[self.state[i]][self.types[i]]
+        t = total_same_type / section_consumptions[self.state[i]]
+        obs = [
+            self.types[i],
+            self.state[i],
+            self.resource_capacities[self.state[i]],
+            section_consumptions[self.state[i]],
+            t
+        ]
+        return obs
+
+    def get_stats(self):
+        section_consumptions = np.zeros(self.sections)
+        section_agent_types = np.zeros((self.sections, len(self.type_distribution)))
+
+        for i in range(len(self.agents)):
+            section_consumptions[self.state[i]] += 1
+            section_agent_types[self.state[i]][self.types[i]] += 1
+        return section_consumptions, section_agent_types
 
 
 def global_capacity_reward(capacities, consumptions):
