@@ -1,7 +1,7 @@
 """Main file for showing how to run agents."""
 from random import choices
 
-from envs.beach_domain import beach_domain
+from momadm_benchmarks.envs.beach_domain import beach_domain
 
 
 def train():

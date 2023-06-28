@@ -23,6 +23,10 @@ MOVES = ["LEFT", "RIGHT", "STAY"]
 NUM_OBJECTIVES = 2
 
 
+def parallel_env(**kwargs):
+    return MOBeach(**kwargs)
+
+
 def env(**kwargs):
     """Autowrapper for the beach domain.
 
@@ -41,9 +45,9 @@ def env(**kwargs):
     return env
 
 
-def raw_env(render_mode=None):
+def raw_env(**kwargs):
     """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = MOBeach(render_mode=render_mode)
+    env = parallel_env(**kwargs)
     env = parallel_to_aec(env)
     return env
 
@@ -65,10 +69,10 @@ class MOBeach(ParallelEnv):
         num_timesteps=10,
         num_agents=100,
         reward_scheme="local",
-        sections=6,
+        sections=3,
         capacity=10,
         type_distribution=(0.5, 0.5),
-        position_distribution=None,
+        position_distribution=(0.5, 0.5, 1),
         render_mode=None,
     ):
         """Initializes the beach domain.
@@ -116,6 +120,8 @@ class MOBeach(ParallelEnv):
                 * num_agents,
             )
         )
+        # TODO check reward spaces
+        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=1, shape=(2,))] * num_agents))
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
@@ -129,6 +135,10 @@ class MOBeach(ParallelEnv):
     @override
     def action_space(self, agent):
         return self.action_spaces[agent]
+
+    def reward_space(self, agent):
+        """Returns the reward space for the given agent."""
+        return self.reward_spaces[agent]
 
     def render(self):
         """Renders the environment.
@@ -144,7 +154,7 @@ class MOBeach(ParallelEnv):
         """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
         pass
 
-    def reset(self, seed=None, return_info=False, options=None):
+    def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
 
         Here it initializes the `num_moves` variable which counts the number of hands that are played.
@@ -155,11 +165,8 @@ class MOBeach(ParallelEnv):
         observations = {agent: None for agent in self.agents}
         self.episode_num = 0
 
-        if not return_info:
-            return observations
-        else:
-            infos = {agent: {} for agent in self.agents}
-            return observations, infos
+        infos = {agent: {} for agent in self.agents}
+        return observations, infos
 
     def init_state(self):
         """Initializes the state of the environment. This is called by reset()."""
@@ -173,7 +180,6 @@ class MOBeach(ParallelEnv):
             positions = random.choices(
                 [i for i in range(self.sections)], weights=self.position_distribution, k=self.num_agents
             )
-        print("types, positions", types, positions)
         return types, positions
 
     def step(self, actions):
