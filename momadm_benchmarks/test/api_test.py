@@ -3,7 +3,6 @@
 import random
 import re
 import warnings
-from collections import defaultdict
 
 import gymnasium
 import numpy as np
@@ -128,15 +127,15 @@ def test_observation_action_spaces(env, agent_0):
 
 def test_reward(reward, dim):
     if not isinstance(reward, np.ndarray):
-        warnings.warn("Rewards should be a Numpy array!")
+        assert False, "Rewards should be a Numpy array!"
     if isinstance(reward, np.ndarray):
         if isinstance(reward, np.ndarray) and not reward.shape == (dim,):
             assert False, f"Rewards should have shape (${dim},)"
-        if np.isinf(reward):
+        if np.any(np.isinf(reward)):
             assert False, "Reward must be finite"
-        if np.isnan(reward):
+        if np.any(np.isnan(reward)):
             assert False, "Rewards cannot be NaN"
-        if not np.can_cast(reward.dtype, np.dtype("float64")):
+        if not np.any(np.can_cast(reward.dtype, np.dtype("float64"))):
             assert False, "Reward NumPy array is not a numeric dtype"
 
 
@@ -144,8 +143,9 @@ def test_rewards_terminations_truncations(env, agent_0):
     for agent in env.agents:
         assert isinstance(env.terminations[agent], bool), "Agent's values in terminations must be True or False"
         assert isinstance(env.truncations[agent], bool), "Agent's values in truncations must be True or False"
-        float(env.rewards[agent])  # "Rewards for each agent must be convertible to float
-        test_reward(env.rewards[agent], env.reward_space(agent).shape[0])
+        for r in env.rewards[agent]:
+            float(r)  # "Rewards for each agent must be convertible to float
+        test_reward(env.rewards[agent], env.unwrapped.reward_space(agent).shape[0])
 
 
 def play_test(env, observation_0, num_cycles):
@@ -166,7 +166,9 @@ def play_test(env, observation_0, num_cycles):
     live_agents = set(env.agents[:])
     has_finished = set()
     generated_agents = set()
-    accumulated_rewards = defaultdict(int)
+    accumulated_rewards = {
+        agent: np.zeros(env.unwrapped.reward_space(agent).shape[0], dtype=np.float32) for agent in env.agents
+    }
     for agent in env.agent_iter(env.num_agents * num_cycles):
         generated_agents.add(agent)
         assert agent not in has_finished, "agents cannot resurect! Generate a new agent with a new name."
@@ -188,10 +190,10 @@ def play_test(env, observation_0, num_cycles):
             live_agents.remove(agent)
             has_finished.add(agent)
 
-        assert (
+        assert np.all(
             accumulated_rewards[agent] == reward
         ), "reward returned by last is not the accumulated rewards in its rewards dict"
-        accumulated_rewards[agent] = 0
+        accumulated_rewards[agent] = np.zeros_like(reward, dtype=np.float32)
 
         env.step(action)
 
@@ -245,8 +247,9 @@ def play_test(env, observation_0, num_cycles):
         assert terminated == env.terminations[agent], "terminated from last() and terminations[agent] do not match"
         assert truncated == env.truncations[agent], "truncated from last() and truncations[agent] do not match"
         assert info == env.infos[agent], "Info from last() and infos[agent] do not match"
-        float(env.rewards[agent])  # "Rewards for each agent must be convertible to float
-        test_reward(reward, env.reward_space(agent).shape[0])
+        for r in env.rewards[agent]:
+            float(r)  # "Rewards for each agent must be convertible to float
+        test_reward(reward, env.unwrapped.reward_space(agent).shape[0])
         observation = env.step(action)
         assert observation is None, "step() must not return anything"
 

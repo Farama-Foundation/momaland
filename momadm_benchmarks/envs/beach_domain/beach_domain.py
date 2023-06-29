@@ -13,7 +13,9 @@ import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
 from pettingzoo import ParallelEnv
-from pettingzoo.utils import parallel_to_aec, wrappers
+from pettingzoo.utils import wrappers
+
+from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
 
 
 LEFT = -1
@@ -49,7 +51,7 @@ def env(**kwargs):
 def raw_env(**kwargs):
     """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
     env = parallel_env(**kwargs)
-    env = parallel_to_aec(env)
+    env = mo_parallel_to_aec(env)
     return env
 
 
@@ -64,6 +66,8 @@ class MOBeachDomain(ParallelEnv):
     """
 
     metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
+
+    # TODO does this environment require max_cycle?
 
     def __init__(
         self,
@@ -143,10 +147,12 @@ class MOBeachDomain(ParallelEnv):
     def action_space(self, agent):
         return self.action_spaces[agent]
 
+    @override
     def reward_space(self, agent):
         """Returns the reward space for the given agent."""
         return self.reward_spaces[agent]
 
+    @override
     def render(self):
         """Renders the environment.
 
@@ -157,14 +163,20 @@ class MOBeachDomain(ParallelEnv):
             warn("You are calling render method without specifying any render mode.")
             return
 
+    @override
     def close(self):
         """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
         pass
 
+    @override
     def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
+
         Returns the observations for each agent
         """
+        if seed is not None:
+            np.random.seed(seed)
+            random.seed(seed)
         self.agents = self.possible_agents[:]
         self.types, self.state = self._init_state()
         self.terminations = {agent: False for agent in self.agents}
@@ -222,7 +234,7 @@ class MOBeachDomain(ParallelEnv):
 
         env_termination = self.episode_num >= self.num_timesteps
         self.terminations = {agent: env_termination for agent in self.agents}
-        reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES))
+        reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES), dtype=np.float32)
 
         if env_termination:
             if self.reward_scheme == "local":
@@ -239,7 +251,7 @@ class MOBeachDomain(ParallelEnv):
         # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
         observations = {agent: None for agent in self.agents}
         # Note that agents only receive the reward after the last timestep
-        rewards = {self.agents[i]: [0, 0] for _ in range(self.num_agents)}
+        rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for _ in range(self.num_agents)}
 
         for i, agent in enumerate(self.agents):
             observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
