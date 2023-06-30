@@ -9,6 +9,9 @@ Benchmarks for Multi-Objective Multi-Agent Decision Making
 
 ## Development
 
+### Setup pre-commit
+Clone the repo and run `pre-commit install` to setup the pre-commit hooks.
+
 ### New environment steps
 1. Create a new environment package in `momadm_benchmarks/envs/`
 2. Create a new environment class in `momadm_benchmarks/envs/<env_name>/<env_name>.py`, this class should extend `MOParallelEnv` or `MOAECEnv`. Override the PettingZoo methods (see their [documentation](https://pettingzoo.farama.org/api/aec/)). Additionally, you should define a member `self.reward_spaces` that is a dictionary of space specifying the shape of the reward vector of each agent, as well as a method `reward_space(self, agent) -> Space` that returns the reward space of a given agent.
