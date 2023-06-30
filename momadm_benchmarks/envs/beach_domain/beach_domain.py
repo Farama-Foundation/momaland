@@ -12,10 +12,10 @@ from typing_extensions import override
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
-from pettingzoo import ParallelEnv
 from pettingzoo.utils import wrappers
 
 from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
+from momadm_benchmarks.utils.env import MOParallelEnv
 
 
 LEFT = -1
@@ -55,7 +55,7 @@ def raw_env(**kwargs):
     return env
 
 
-class MOBeachDomain(ParallelEnv):
+class MOBeachDomain(MOParallelEnv):
     """Environment for MO Beach problem domain.
 
     The init method takes in environment arguments and should define the following attributes:
