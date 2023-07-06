@@ -1,7 +1,6 @@
 """Beach problem domain.
 
-From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping for knowledge-based
-multi-objective multi-agent reinforcement learning.
+From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping for knowledge-based multi-objective multi-agent reinforcement learning.
 """
 
 import functools
@@ -28,6 +27,7 @@ NUM_OBJECTIVES = 2
 
 def parallel_env(**kwargs):
     """Env factory function for the beach domain."""
+
     return MOBeachDomain(**kwargs)
 
 
@@ -40,6 +40,7 @@ def env(**kwargs):
     Returns:
         A fully wrapped env
     """
+
     env = raw_env(**kwargs)
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
@@ -50,8 +51,8 @@ def env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """To support the AEC API, the raw_env function just uses the from_parallel function
-    to convert from a ParallelEnv to an AEC env."""
+    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
+
     env = parallel_env(**kwargs)
     env = mo_parallel_to_aec(env)
     return env
@@ -94,6 +95,7 @@ class MOBeachDomain(MOParallelEnv):
             render_mode: render mode
             reward_scheme: the reward scheme to use ('local', or 'global'). Default: local
         """
+
         self.reward_scheme = reward_scheme
         self.sections = sections
         # TODO Extend to distinct capacities per section?
@@ -167,14 +169,12 @@ class MOBeachDomain(MOParallelEnv):
 
     @override
     def close(self):
-        """Close should release any graphical displays, subprocesses, network connections or any other
-        environment data which should not be kept around after the user is no longer using the environment."""
+        """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
         pass
 
     @override
     def reset(self, seed=None, options=None):
-        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(),
-        and step() can be called without issues.
+        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
 
         Returns the observations for each agent
         """
