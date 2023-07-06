@@ -1,6 +1,7 @@
 """Beach problem domain.
 
-From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping for knowledge-based multi-objective multi-agent reinforcement learning.
+From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping for knowledge-based
+multi-objective multi-agent reinforcement learning.
 """
 
 import functools
@@ -49,7 +50,8 @@ def env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
+    """To support the AEC API, the raw_env function just uses the from_parallel function
+    to convert from a ParallelEnv to an AEC env."""
     env = parallel_env(**kwargs)
     env = mo_parallel_to_aec(env)
     return env
@@ -83,14 +85,14 @@ class MOBeachDomain(MOParallelEnv):
         """Initializes the beach domain.
 
         Args:
-            sections: TODO
-            capacity: TODO
+            sections: number of beach sections in the domain
+            capacity: capacity of each beach section
             num_agents: number of agents in the domain
-            type_distribution: TODO # assume that there is an even mixing between two agent types unless specified
-            position_distribution: TODO # assume that agents are evenly distributed among sections unless specified
-            num_timesteps: TODO
+            type_distribution: the distribution of agent types in the domain. Default: 2 types equally distributed.
+            position_distribution: the initial distribution of agents in the domain. Default: uniform over all sections.
+            num_timesteps: number of timesteps in the domain
             render_mode: render mode
-            reward_scheme: TODO # global or local rewards
+            reward_scheme: the reward scheme to use ('local', or 'global'). Default: local
         """
         self.reward_scheme = reward_scheme
         self.sections = sections
@@ -165,12 +167,14 @@ class MOBeachDomain(MOParallelEnv):
 
     @override
     def close(self):
-        """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
+        """Close should release any graphical displays, subprocesses, network connections or any other
+        environment data which should not be kept around after the user is no longer using the environment."""
         pass
 
     @override
     def reset(self, seed=None, options=None):
-        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
+        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(),
+        and step() can be called without issues.
 
         Returns the observations for each agent
         """
