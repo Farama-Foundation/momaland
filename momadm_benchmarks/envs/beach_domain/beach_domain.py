@@ -136,7 +136,11 @@ class MOBeachDomain(MOParallelEnv):
             )
         )
         # TODO check reward spaces
-        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=1, shape=(NUM_OBJECTIVES,))] * num_agents))
+        # maximum capacity reward can be calculated  by calling the _global_capacity_reward()
+        optimal_consumption = [capacity for _ in range(sections)]
+        optimal_consumption[-1] = max(self.num_agents - ((sections-1) * capacity), 0)
+        max_r = _global_capacity_reward(self.resource_capacities, optimal_consumption)
+        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=max_r, shape=(NUM_OBJECTIVES,))] * num_agents))
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
