@@ -68,7 +68,6 @@ class MOBeachDomain(MOParallelEnv):
     metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
 
     # TODO does this environment require max_cycle?
-
     def __init__(
         self,
         num_timesteps=10,
@@ -131,7 +130,7 @@ class MOBeachDomain(MOParallelEnv):
                 * num_agents,
             )
         )
-        # TODO check reward spaces
+
         # maximum capacity reward can be calculated  by calling the _global_capacity_reward()
         optimal_consumption = [capacity for _ in range(sections)]
         optimal_consumption[-1] = max(self.num_agents - ((sections - 1) * capacity), 0)
