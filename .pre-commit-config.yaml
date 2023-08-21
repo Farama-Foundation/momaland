@@ -43,20 +43,20 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/python/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
   - repo: https://github.com/pycqa/pydocstyle
     rev: 6.3.0
     hooks:
       - id: pydocstyle
-        exclude: ^(tests/)|(docs/)|(setup.py)|(pyproject.toml)
+        exclude: ^(tests/)|(docs/)|(setup.py)|(pyproject.toml)|(momadm_benchmarks/test/)
         args:
           - --source
           - --ignore-decorators=override
           - --explain
           - --convention=google
-        additional_dependencies: ["toml"]
+        additional_dependencies: ["tomli"]
   - repo: local
     hooks:
       - id: pyright
