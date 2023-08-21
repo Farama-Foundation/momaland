@@ -27,7 +27,6 @@ NUM_OBJECTIVES = 2
 
 def parallel_env(**kwargs):
     """Env factory function for the beach domain."""
-
     return MOBeachDomain(**kwargs)
 
 
@@ -40,7 +39,6 @@ def env(**kwargs):
     Returns:
         A fully wrapped env
     """
-
     env = raw_env(**kwargs)
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
@@ -52,7 +50,6 @@ def env(**kwargs):
 
 def raw_env(**kwargs):
     """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-
     env = parallel_env(**kwargs)
     env = mo_parallel_to_aec(env)
     return env
@@ -71,7 +68,6 @@ class MOBeachDomain(MOParallelEnv):
     metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
 
     # TODO does this environment require max_cycle?
-
     def __init__(
         self,
         num_timesteps=10,
@@ -95,7 +91,6 @@ class MOBeachDomain(MOParallelEnv):
             render_mode: render mode
             reward_scheme: the reward scheme to use ('local', or 'global'). Default: local
         """
-
         self.reward_scheme = reward_scheme
         self.sections = sections
         # TODO Extend to distinct capacities per section?
@@ -135,10 +130,10 @@ class MOBeachDomain(MOParallelEnv):
                 * num_agents,
             )
         )
-        # TODO check reward spaces
+
         # maximum capacity reward can be calculated  by calling the _global_capacity_reward()
         optimal_consumption = [capacity for _ in range(sections)]
-        optimal_consumption[-1] = max(self.num_agents - ((sections-1) * capacity), 0)
+        optimal_consumption[-1] = max(self.num_agents - ((sections - 1) * capacity), 0)
         max_r = _global_capacity_reward(self.resource_capacities, optimal_consumption)
         self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=max_r, shape=(NUM_OBJECTIVES,))] * num_agents))
 

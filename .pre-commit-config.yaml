@@ -56,7 +56,7 @@ repos:
           - --ignore-decorators=override
           - --explain
           - --convention=google
-        additional_dependencies: ["toml"]
+        additional_dependencies: ["tomli"]
   - repo: local
     hooks:
       - id: pyright
