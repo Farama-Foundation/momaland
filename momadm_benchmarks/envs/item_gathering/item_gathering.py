@@ -1,4 +1,4 @@
-"""Item Gathering environment.
+"""Item Gathering environment, based on the environment from the paper below.
 
 Johan Källström and Fredrik Heintz. 2019. Tunable Dynamics in Agent-Based Simulation using Multi-Objective
 Reinforcement Learning. Presented at the Adaptive and Learning Agents Workshop at AAMAS 2019.
