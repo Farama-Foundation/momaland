@@ -74,23 +74,26 @@ class MOItemGathering(MOParallelEnv):
     def __init__(
         self,
         num_timesteps=10,
-        env_map=None,
+        initial_map=None,
         render_mode=None,
     ):
         """Initializes the item gathering domain.
 
         Args:
             num_timesteps: number of timesteps to run the environment for
-            env_map: map of the environment
+            initial_map: map of the environment
             render_mode: render mode for the environment
         """
         self.num_timesteps = num_timesteps
         self.render_mode = render_mode
 
-        if env_map is not None:
-            self.env_map = env_map
+        if initial_map is not None:
+            self.initial_map = initial_map
         else:
-            self.env_map = deepcopy(DEFAULT_MAP)
+            self.initial_map = DEFAULT_MAP
+
+        # self.env_map is the working copy used in each episode. self.initial_map should not be modified.
+        self.env_map = deepcopy(self.initial_map)
 
         # TODO check if the map is valid, e.g. there should be no #2, all values should be integers,
         #  objective values encodings should be sequential
