@@ -6,6 +6,7 @@ https://liu.diva-portal.org/smash/record.jsf?pid=diva2%3A1362933&dswid=9018
 """
 
 import functools
+from copy import deepcopy
 
 # from gymnasium.utils import EzPickle
 from typing_extensions import override
@@ -15,8 +16,17 @@ from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils import wrappers
 
+from momadm_benchmarks.envs.item_gathering.map_utils import DEFAULT_MAP
 from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
 from momadm_benchmarks.utils.env import MOParallelEnv
+
+
+ACTIONS = {
+    0: np.array([-1, 0], dtype=np.int32),  # up
+    1: np.array([1, 0], dtype=np.int32),  # down
+    2: np.array([0, -1], dtype=np.int32),  # left
+    3: np.array([0, 1], dtype=np.int32),  # right
+}
 
 
 def parallel_env(**kwargs):
@@ -64,76 +74,60 @@ class MOItemGathering(MOParallelEnv):
     def __init__(
         self,
         num_timesteps=10,
-        num_agents=2,
-        rows=6,
-        columns=6,
-        item_distribution=(3, 3, 2),  # red, green, yellow
-        item_locations="fixed",
-        agent_locations="fixed",
-        map=None,
+        env_map=None,
         render_mode=None,
     ):
-        """Initializes the beach domain.
+        """Initializes the item gathering domain.
 
         Args:
             num_timesteps: number of timesteps to run the environment for
-            num_agents: number of agents in the environment
-            rows: number of rows in the grid
-            columns: number of columns in the grid
-            item_distribution: distribution of items in the environment
-            item_locations: location of the item to be gathered
-            agent_locations: starting locations of the agent
-            map: map of the environment
+            env_map: map of the environment
             render_mode: render mode for the environment
         """
         self.num_timesteps = num_timesteps
-        self.num_agents = num_agents
-        self.rows = rows
-        self.columns = columns
-        self.item_distribution = item_distribution
-        self.item_locations = item_locations
-        self.agent_locations = agent_locations
         self.render_mode = render_mode
-        self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
+
+        if env_map is not None:
+            self.env_map = env_map
+        else:
+            self.env_map = deepcopy(DEFAULT_MAP)
+
+        # TODO check if the map is valid, e.g. there should be no #2, all values should be integers,
+        #  objective values encodings should be sequential
+
+        self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list
+        self.env_map[self.env_map == 1] = 0  # remove agent starting positions from map
+
+        self.possible_agents = ["agent_" + str(r) for r in range(len(self.agent_positions))]
         self.agents = self.possible_agents[:]
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
+        self.action_spaces = dict(zip(self.agents, [Discrete(len(ACTIONS))] * len(self.agent_positions)))
 
-        if map is not None:
-            self.map = map
-        else:
-            self.map = np.zeros((self.rows, self.columns), dtype=np.int32)
-
-        self.dir = {
-            0: np.array([-1, 0], dtype=np.int32),  # up
-            1: np.array([1, 0], dtype=np.int32),  # down
-            2: np.array([0, -1], dtype=np.int32),  # left
-            3: np.array([0, 1], dtype=np.int32),  # right
-        }
-
-        self.action_spaces = dict(zip(self.agents, [Discrete(len(self.dir))] * num_agents))
+        # observation space is a 2D array, the same size as the grid
+        # 0 for empty, 1 for the current agent, 2 for other agents, 3 for objective 1, 4 for objective 2, ...
         self.observation_spaces = dict(
             zip(
                 self.agents,
                 [
                     Box(
                         low=0.0,
-                        high=5.0,
-                        # Observation form:
-                        # rows x columns matrix with encoded values for agents and items
-                        shape=(
-                            self.rows,
-                            self.columns,
-                        ),
+                        high=np.max(self.env_map),
+                        shape=self.env_map.shape,
                         dtype=np.float32,
                     )
                 ]
-                * num_agents,
+                * len(self.agent_positions),
             )
         )
 
+        # determine the number of item types and maximum number of each item
+        all_map_entries = np.unique(self.env_map, return_counts=True)
+        indices_of_items = np.argwhere(all_map_entries[0] > 2).flatten()
+        item_counts = np.take(all_map_entries[1], indices_of_items)
+
         self.reward_spaces = dict(
-            zip(self.agents, [Box(low=0, high=max(self.item_distribution), shape=(len(self.item_distribution),))] * num_agents)
+            zip(self.agents, [Box(low=0, high=max(item_counts), shape=(len(item_counts),))] * len(self.agent_positions))
         )
 
     def _init_state(self):
@@ -198,3 +192,20 @@ class MOItemGathering(MOParallelEnv):
         dicts where each dict looks like {agent_1: item_1, agent_2: item_2}
         """
         pass
+
+    def _create_observation(self, agent_id):
+        """Function to create the observation passed to each agent at the end of a timestep.
+
+        Args:
+            agent_id: the id of the agent
+
+        Returns: a 2D Numpy array with the following items encoded:
+        - 0 is empty space
+        - 1 is the position of the agent with the specified agent_id
+        - 2 is the position of any other agents
+        - 3, 4, 5 ... denote the locations of items representing different objectives
+
+        """
+        obs = np.zeros((self.rows, self.columns))
+        # TODO
+        return obs
