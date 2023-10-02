@@ -19,6 +19,12 @@ class MOBipedalWalker(pz_bipedalwalker):
 
     @property
     def reward_space(self):
+        """
+        Reward space shape = 3 element 1D array, each element representing 1 objective.
+        1. package moving forward
+        2. no walkers falling
+        3. package not folling
+        """
         return spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32)
 
 class MOMultiWalkerEnv(pz_multiwalker_base):
