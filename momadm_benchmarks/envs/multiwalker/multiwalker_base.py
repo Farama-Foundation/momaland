@@ -17,9 +17,9 @@ class MOBipedalWalker(pz_bipedalwalker):
     ):
         super.__init__(world, init_x, init_y, n_walkers, seed)
 
-    # @property
-    # def reward_space(self):
-    #     return spaces.Box(low, high, shape, dtype=np.float32) # TODO what is the shape of the reward space
+    @property
+    def reward_space(self):
+        return spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32)
 
 class MOMultiWalkerEnv(pz_multiwalker_base):
     def __init__(
@@ -52,14 +52,14 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
             render_mode=None
         )
         self.setup()
-        last_rewards = [0 for _ in range(self.n_walkers)] # TODO vectorize the scalar 0
+        self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)] 
 
     @override
     def setup(self):
         super.setup()
-        self.reward_space = [agent.reward_space for agent in self.walkers] # TODO implement reward space in MOBipedalWalker
+        self.reward_space = [agent.reward_space for agent in self.walkers]
 
     @override
     def reset(self):
         super.reset()
-        # self.lastrewards = [0 for _ in range(self.n_walkers)] # TODO vectorize the scalar 0 value
+        self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
