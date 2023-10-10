@@ -1,3 +1,9 @@
+"""MO Multiwalker problem.
+
+From Gupta, J. K., Egorov, M., and Kochenderfer, M. (2017). Cooperative multi-agent control using
+deep reinforcement learning. International Conference on Autonomous Agents and Multiagent Systems
+"""
+
 from typing_extensions import override
 
 import numpy as np
@@ -22,6 +28,8 @@ from pettingzoo.sisl.multiwalker.multiwalker_base import (
 
 
 class MOBipedalWalker(pz_bipedalwalker):
+    """Walker Object with the physics implemented."""
+
     def __init(
         self, world, init_x=TERRAIN_STEP * TERRAIN_STARTPAD / 2, init_y=TERRAIN_HEIGHT + 2 * LEG_H, n_walkers=2, seed=None
     ):
@@ -29,16 +37,21 @@ class MOBipedalWalker(pz_bipedalwalker):
 
     @property
     def reward_space(self):
-        """
-        Reward space shape = 3 element 1D array, each element representing 1 objective.
-        1. package moving forward
-        2. no walkers falling
-        3. package not falling
+        """Reward space shape = 3 element 1D array, each element representing 1 objective.
+
+        1. package moving forward.
+        2. no walkers falling.
+        3. package not falling.
         """
         return spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32)
 
 
 class MOMultiWalkerEnv(pz_multiwalker_base):
+    """Multiwalker problem domain environment engine.
+
+    Deals with the simulation of the environment.
+    """
+
     def __init__(
         self,
         n_walkers=3,
@@ -54,6 +67,20 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         max_cycles=500,
         render_mode=None,
     ):
+        """Initializes the `MOMultiWalkerEnv` class.
+
+        Keyword Arguments:
+        n_walkers: number of bipedal walkers in environment.
+        position_noise: noise applied to agent positional sensor observations.
+        angle_noise: noise applied to agent rotational sensor observations.
+        forward_reward: reward applied for an agent standing, scaled by agent's x coordinate.
+        fall_reward: reward applied when an agent falls down.
+        shared_reward: whether reward is distributed among all agents or allocated locally.
+        terminate_reward: reward applied for each fallen walker in environment.
+        terminate_on_fall: toggles whether agent is done if it falls down.
+        terrain_length: length of terrain in number of steps.
+        max_cycles: after max_cycles steps all agents will return done.
+        """
         pz_multiwalker_base.__init__(
             self,
             n_walkers=3,
@@ -74,18 +101,26 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
 
     @override
     def setup(self):
+        """Continuation of the `__init__`."""
         super.setup()
         self.reward_space = [agent.reward_space for agent in self.walkers]
 
     @override
     def reset(self):  # TODO is this correct?
+        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
+
+        Returns the observations for each agent.
+        """
         obs = super.reset()
         self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
         return obs
 
     @override
     def scroll_subroutine(self):
-        """This is the step engine of the environment. Here we have vectorized the reward math from PZ to be MO"""
+        """This is the step engine of the environment.
+
+        Here we have vectorized the reward math from the PettingZoo env to be multi-objective.
+        """
         xpos = np.zeros(self.n_walkers)
         obs = []
         done = False
