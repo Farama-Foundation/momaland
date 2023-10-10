@@ -76,7 +76,7 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         xpos = np.zeros(self.n_walkers)
         obs = []
         done = False
-        rewards = np.zeros(self.n_walkers)
+        rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
 
         for i in range(self.n_walkers):
             if self.walkers[i].hull is None:
@@ -107,12 +107,9 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
             )
             obs.append(np.array(walker_obs + neighbor_obs))
 
-            shaping = -5.0 * abs(walker_obs[0])
-            rewards[i] = shaping - self.prev_shaping[i]
-            self.prev_shaping[i] = shaping
-
-        package_shaping = self.forward_reward * 130 * self.package.position.x / SCALE
-        rewards += package_shaping - self.prev_package_shaping
+        package_shaping = self.forward_reward * 130 * self.package.position.x
+        for agent in rewards: # move forward
+            agent[0] += package_shaping - self.prev_package_shaping 
         self.prev_package_shaping = package_shaping
 
         self.scroll = (
@@ -123,19 +120,22 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
 
         done = [False] * self.n_walkers
         for i, (fallen, walker) in enumerate(zip(self.fallen_walkers, self.walkers)):
-            if fallen:
-                rewards[i] += self.fall_reward
+            if fallen: # agent doesnt fall
+                for agent in rewards:
+                    agent[1] += self.fall_reward
                 if self.remove_on_fall:
                     walker._destroy()
                 if not self.terminate_on_fall:
-                    rewards[i] += self.terminate_reward
+                    for agent in rewards:
+                        agent[1] += self.terminate_reward
                 done[i] = True
-        if (
+        if ( # package doesnt fall
             (self.terminate_on_fall and np.sum(self.fallen_walkers) > 0)
             or self.game_over
             or self.package.position.x < 0
         ):
-            rewards += self.terminate_reward
+            for agent in rewards:
+                agent[2] += self.terminate_reward
             done = [True] * self.n_walkers
         elif (
             self.package.position.x
@@ -143,4 +143,4 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         ):
             done = [True] * self.n_walkers
 
-        return rewards, done, obs 
+        return rewards, done, obs
