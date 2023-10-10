@@ -35,8 +35,3 @@ class mo_env(MOAECEnv, pz_multiwalker):
             break
         self._cumulative_rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents])) # CHECK check copy https://numpy.org/doc/stable/reference/generated/numpy.copy.html
         self.rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))
-
-    # TODO
-    @override
-    def step(self, action):
-        pass
