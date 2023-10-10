@@ -66,6 +66,7 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         self.reward_space = [agent.reward_space for agent in self.walkers]
 
     @override
-    def reset(self):
-        super.reset()
+    def reset(self): # TODO is this correct?
+        obs = super.reset()
         self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
+        return obs
