@@ -9,6 +9,7 @@ from typing_extensions import override
 import numpy as np
 from gymnasium import spaces
 from pettingzoo.sisl.multiwalker.multiwalker_base import (
+    FPS,
     LEG_H,
     SCALE,
     TERRAIN_GRASS,
@@ -81,7 +82,7 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         terrain_length: length of terrain in number of steps.
         max_cycles: after max_cycles steps all agents will return done.
         """
-        pz_multiwalker_base.__init__(
+        super.__init__(
             self,
             n_walkers=3,
             position_noise=1e-3,
@@ -99,6 +100,13 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         self.setup()
         self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
 
+    def _share_rewards(self, rewards):
+        shared_rewards = np.empty((3,))
+        for i in range(len(rewards)):
+            avg_reward = rewards[:, i].mean(axis=1)  # numpy magic: mean of first elements of all nested arrays
+            np.append(shared_rewards, avg_reward, axis=1)
+        return shared_rewards
+
     @override
     def setup(self):
         """Continuation of the `__init__`."""
@@ -106,7 +114,7 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         self.reward_space = [agent.reward_space for agent in self.walkers]
 
     @override
-    def reset(self):  # TODO is this correct?
+    def reset(self):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
 
         Returns the observations for each agent.
@@ -114,6 +122,25 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         obs = super.reset()
         self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
         return obs
+
+    @override
+    def step(self, action, agent_id, is_last):
+        # action is array of size 4
+        action = action.reshape(4)
+        assert self.walkers[agent_id].hull is not None, agent_id
+        self.walkers[agent_id].apply_action(action)
+        if is_last:
+            self.world.Step(1.0 / FPS, 6 * 30, 2 * 30)
+            rewards, done, mod_obs = self.scroll_subroutine()
+            self.last_obs = mod_obs
+            global_reward = self._share_rewards(rewards)  # modified shared MO rewards
+            local_reward = rewards * self.local_ratio
+            self.last_rewards = global_reward * (1.0 - self.local_ratio) + local_reward * self.local_ratio
+            self.last_dones = done
+            self.frames = self.frames + 1
+
+        if self.render_mode == "human":
+            self.render()
 
     @override
     def scroll_subroutine(self):
@@ -153,9 +180,10 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
             neighbor_obs.append(self.np_random.normal(self.package.angle, self.angle_noise))
             obs.append(np.array(walker_obs + neighbor_obs))
 
-        package_shaping = self.forward_reward * 130 * self.package.position.x
+        # Below this point is the MO reward computation. Above this point is the original PZ code.
+        package_shaping = self.forward_reward * self.package.position.x
         for agent in rewards:  # move forward
-            agent[0] += package_shaping - self.prev_package_shaping
+            agent[0] = package_shaping - self.prev_package_shaping
         self.prev_package_shaping = package_shaping
 
         self.scroll = xpos.mean() - VIEWPORT_W / SCALE / 5 - (self.n_walkers - 1) * WALKER_SEPERATION * TERRAIN_STEP
@@ -163,19 +191,16 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         done = [False] * self.n_walkers
         for i, (fallen, walker) in enumerate(zip(self.fallen_walkers, self.walkers)):
             if fallen:  # agent does not fall
-                for agent in rewards:
-                    agent[1] += self.fall_reward
+                rewards[i, 1] = self.fall_reward  # not all, only the one that fell
                 if self.remove_on_fall:
                     walker._destroy()
                 if not self.terminate_on_fall:
                     for agent in rewards:
-                        agent[1] += self.terminate_reward
-                done[i] = True
-        if (  # package does not fall
-            (self.terminate_on_fall and np.sum(self.fallen_walkers) > 0) or self.game_over or self.package.position.x < 0
-        ):
+                        agent[1] = self.terminate_reward
+                        done[i] = True
+        if self.game_over or self.package.position.x < 0:  # package doesn't fall
             for agent in rewards:
-                agent[2] += self.terminate_reward
+                agent[2] = self.terminate_reward
             done = [True] * self.n_walkers
         elif self.package.position.x > (self.terrain_length - TERRAIN_GRASS) * TERRAIN_STEP:
             done = [True] * self.n_walkers
