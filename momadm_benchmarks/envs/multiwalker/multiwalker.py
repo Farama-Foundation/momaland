@@ -11,25 +11,53 @@ from pettingzoo.sisl.multiwalker.multiwalker import raw_env as pz_multiwalker
 from pettingzoo.utils import wrappers
 
 from momadm_benchmarks.envs.multiwalker.multiwalker_base import MOMultiWalkerEnv as _env
+from momadm_benchmarks.utils.conversions import mo_aec_to_parallel
 from momadm_benchmarks.utils.env import MOAECEnv
 
 
 def env(**kwargs):
-    """Autowrapper for the multiwalker domain.
+    """Returns the env in `AEC` format.
 
     Args:
         **kwargs: keyword args to forward to the raw_env function.
 
     Returns:
+        A fully wrapped AEC env.
+    """
+    env = raw_env(**kwargs)
+    return env
+
+
+def parallel_env(**kwargs):
+    """Returns the env in `parallel` format.
+
+    Args:
+        **kwargs: keyword args to forward to the raw_env function.
+
+    Returns:
+        A fully wrapped parallel env.
+    """
+    env = raw_env(**kwargs)
+    env = mo_aec_to_parallel(env)
+    return env
+
+
+def raw_env(**kwargs):
+    """Returns the wrapped env in `AEC` format.
+
+    Args:
+        **kwargs: keyword args to forward to create the `MOMultiwalker` environment.
+
+    Returns:
         A fully wrapped env.
     """
-    env = mo_env(**kwargs)
+    env = MOMultiwalker(**kwargs)
     env = wrappers.ClipOutOfBoundsWrapper(env)
     env = wrappers.OrderEnforcingWrapper(env)
     return env
 
 
-class mo_env(MOAECEnv, pz_multiwalker):
+class MOMultiwalker(MOAECEnv, pz_multiwalker):
     """Environment for MO Multiwalker problem domain.
 
     The init method takes in environment arguments and should define the following attributes:
