@@ -8,7 +8,8 @@ from typing_extensions import override
 
 import numpy as np
 from pettingzoo.sisl.multiwalker.multiwalker import raw_env as pz_multiwalker
-from pettingzoo.utils import wrappers
+from pettingzoo.utils import wrappers, agent_selector
+from gymnasium.utils import EzPickle
 
 from momadm_benchmarks.envs.multiwalker.multiwalker_base import MOMultiWalkerEnv as _env
 from momadm_benchmarks.utils.conversions import mo_aec_to_parallel
@@ -84,7 +85,7 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
         terrain_length: length of terrain in number of steps.
         max_cycles: after max_cycles steps all agents will return done.
         """
-        pz_multiwalker().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.env = _env(*args, **kwargs)  # override engine
         # spaces
         self.reward_spaces = dict(zip(self.agents, self.env.reward_space))
@@ -104,12 +105,9 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
         Returns:
         the observations for each agent
         """
-        pz_multiwalker.reset()  # super
-        zero_reward: np.ndarray
-        for agent in self.agents:
-            zero_reward = np.zeros(self.reward_space(agent).shape[0], dtype=np.float32)
-            break
+        super().reset() # super
+        zero_reward = np.zeros(self.reward_spaces["walker_0"].shape, dtype=np.float32) # np.copy() makes different copies of this.
         self._cumulative_rewards = dict(
             zip(self.agents, [zero_reward.copy() for _ in self.agents])
-        )  # CHECK check copy https://numpy.org/doc/stable/reference/generated/numpy.copy.html
+        )
         self.rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))
