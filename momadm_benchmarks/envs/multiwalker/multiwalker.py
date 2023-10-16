@@ -111,7 +111,7 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
         Returns:
         the observations for each agent
         """
-        super().reset()  # super
+        super().reset(seed)  # super
         zero_reward = np.zeros(
             self.reward_spaces["walker_0"].shape, dtype=np.float32
         )  # np.copy() makes different copies of this.
