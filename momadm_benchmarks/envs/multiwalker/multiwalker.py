@@ -7,9 +7,9 @@ deep reinforcement learning. International Conference on Autonomous Agents and M
 from typing_extensions import override
 
 import numpy as np
+from pettingzoo.sisl.multiwalker.multiwalker import FPS
 from pettingzoo.sisl.multiwalker.multiwalker import raw_env as pz_multiwalker
-from pettingzoo.utils import wrappers, agent_selector
-from gymnasium.utils import EzPickle
+from pettingzoo.utils import wrappers
 
 from momadm_benchmarks.envs.multiwalker.multiwalker_base import MOMultiWalkerEnv as _env
 from momadm_benchmarks.utils.conversions import mo_aec_to_parallel
@@ -26,6 +26,7 @@ def env(**kwargs):
         A fully wrapped AEC env.
     """
     env = raw_env(**kwargs)
+    env = wrappers.ClipOutOfBoundsWrapper(env)
     return env
 
 
@@ -53,8 +54,6 @@ def raw_env(**kwargs):
         A fully wrapped env.
     """
     env = MOMultiwalker(**kwargs)
-    env = wrappers.ClipOutOfBoundsWrapper(env)
-    env = wrappers.OrderEnforcingWrapper(env)
     return env
 
 
@@ -68,6 +67,13 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
     - reward_spaces
     These attributes should not be changed after initialization.
     """
+
+    metadata = {
+        "render_modes": ["human", "rgb_array"],
+        "name": "momultiwalker_v0",
+        "is_parallelizable": True,
+        "render_fps": FPS,
+    }
 
     @override
     def __init__(self, *args, **kwargs):
@@ -105,9 +111,9 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
         Returns:
         the observations for each agent
         """
-        super().reset() # super
-        zero_reward = np.zeros(self.reward_spaces["walker_0"].shape, dtype=np.float32) # np.copy() makes different copies of this.
-        self._cumulative_rewards = dict(
-            zip(self.agents, [zero_reward.copy() for _ in self.agents])
-        )
+        super().reset()  # super
+        zero_reward = np.zeros(
+            self.reward_spaces["walker_0"].shape, dtype=np.float32
+        )  # np.copy() makes different copies of this.
+        self._cumulative_rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))
         self.rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))
