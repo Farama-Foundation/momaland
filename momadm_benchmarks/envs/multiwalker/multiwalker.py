@@ -1,4 +1,4 @@
-"""MO Multiwalker problem.
+"""Adapted form of the Multiwalker problem.
 
 From Gupta, J. K., Egorov, M., and Kochenderfer, M. (2017). Cooperative multi-agent control using
 deep reinforcement learning. International Conference on Autonomous Agents and Multiagent Systems
@@ -17,7 +17,7 @@ from momadm_benchmarks.utils.env import MOAECEnv
 
 
 def env(**kwargs):
-    """Returns the env in `AEC` format.
+    """Returns the wrapped environment in `AEC` format.
 
     Args:
         **kwargs: keyword args to forward to the raw_env function.
@@ -31,7 +31,7 @@ def env(**kwargs):
 
 
 def parallel_env(**kwargs):
-    """Returns the env in `parallel` format.
+    """Returns the wrapped env in `parallel` format.
 
     Args:
         **kwargs: keyword args to forward to the raw_env function.
@@ -45,13 +45,13 @@ def parallel_env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """Returns the wrapped env in `AEC` format.
+    """Returns the environment in `AEC` format.
 
     Args:
         **kwargs: keyword args to forward to create the `MOMultiwalker` environment.
 
     Returns:
-        A fully wrapped env.
+        A raw env.
     """
     env = MOMultiwalker(**kwargs)
     return env
@@ -77,20 +77,6 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
 
     @override
     def __init__(self, *args, **kwargs):
-        """Initializes the multiwalker domain.
-
-        Keyword arguments:
-        n_walkers: number of bipedal walkers in environment.
-        position_noise: noise applied to agent positional sensor observations.
-        angle_noise: noise applied to agent rotational sensor observations.
-        forward_reward: reward applied for an agent standing, scaled by agent's x coordinate.
-        fall_reward: reward applied when an agent falls down.
-        shared_reward: whether reward is distributed among all agents or allocated locally.
-        terminate_reward: reward applied for each fallen walker in environment.
-        terminate_on_fall: toggles whether agent is done if it falls down.
-        terrain_length: length of terrain in number of steps.
-        max_cycles: after max_cycles steps all agents will return done.
-        """
         super().__init__(*args, **kwargs)
         self.env = _env(*args, **kwargs)  # override engine
         # spaces
@@ -102,15 +88,6 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
 
     @override
     def reset(self, seed=None, options=None):
-        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
-
-        Args:
-        seed
-        options
-
-        Returns:
-        the observations for each agent
-        """
         super().reset(seed)  # super
         zero_reward = np.zeros(
             self.reward_spaces["walker_0"].shape, dtype=np.float32

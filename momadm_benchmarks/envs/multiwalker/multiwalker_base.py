@@ -1,4 +1,4 @@
-"""MO Multiwalker problem.
+"""Adapted from the Multiwalker problem.
 
 From Gupta, J. K., Egorov, M., and Kochenderfer, M. (2017). Cooperative multi-agent control using
 deep reinforcement learning. International Conference on Autonomous Agents and Multiagent Systems
@@ -53,6 +53,7 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
     Deals with the simulation of the environment.
     """
 
+    @override
     def __init__(
         self,
         n_walkers=3,
@@ -68,20 +69,6 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         max_cycles=500,
         render_mode=None,
     ):
-        """Initializes the `MOMultiWalkerEnv` class.
-
-        Keyword Arguments:
-        n_walkers: number of bipedal walkers in environment.
-        position_noise: noise applied to agent positional sensor observations.
-        angle_noise: noise applied to agent rotational sensor observations.
-        forward_reward: reward applied for an agent standing, scaled by agent's x coordinate.
-        fall_reward: reward applied when an agent falls down.
-        shared_reward: whether reward is distributed among all agents or allocated locally.
-        terminate_reward: reward applied for each fallen walker in environment.
-        terminate_on_fall: toggles whether agent is done if it falls down.
-        terrain_length: length of terrain in number of steps.
-        max_cycles: after max_cycles steps all agents will return done.
-        """
         super().__init__(
             n_walkers=3,
             position_noise=1e-3,
@@ -99,14 +86,6 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         self.setup()
         self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
 
-    def _share_rewards(self, rewards):
-        shared_rewards = np.empty((3,))
-        # print(rewards)
-        for i in range(len(rewards)):
-            avg_reward = rewards[:][i].mean()  # numpy magic: mean of first elements of all nested arrays
-            shared_rewards[i] = avg_reward
-        return shared_rewards
-
     @override
     def setup(self):
         """Continuation of the `__init__`."""
@@ -117,10 +96,6 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
 
     @override
     def reset(self):
-        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
-
-        Returns the observations for each agent.
-        """
         obs = super().reset()
         self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
         return obs
@@ -135,14 +110,9 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         if is_last:
             self.world.Step(1.0 / FPS, 6 * 30, 2 * 30)
             rewards, done, mod_obs = self.scroll_subroutine()
-            # print("step:", agent_id, rewards)
-            # print("reward type:", type(rewards))
             self.last_obs = mod_obs
-            global_reward = self._share_rewards(rewards)  # modified shared MO rewards
+            global_reward = np.mean(rewards, axis=0)  # modified shared MO rewards
             local_reward = rewards * self.local_ratio
-            # print("global_reward:", global_reward)
-            # print("local ratio:", self.local_ratio)
-            # print("local reward", local_reward)
             self.last_rewards = global_reward * (1.0 - self.local_ratio) + local_reward * self.local_ratio
             self.last_dones = done
             self.frames = self.frames + 1
@@ -160,7 +130,6 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         obs = []
         done = False
         rewards = np.array([np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)])
-        # print("sub type:", type(rewards))
 
         for i in range(self.n_walkers):
             if self.walkers[i].hull is None:
@@ -215,6 +184,4 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         elif self.package.position.x > (self.terrain_length - TERRAIN_GRASS) * TERRAIN_STEP:
             done = [True] * self.n_walkers
 
-        # print("subroutine:", rewards)
-        # print("sub type:", type(rewards))
         return rewards, done, obs

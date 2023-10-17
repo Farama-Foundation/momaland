@@ -1,4 +1,4 @@
-"""Multiwalker domain environment for multi-objective optimization."""
+"""Multiwalker domain environment for MOMARL."""
 from momadm_benchmarks.envs.multiwalker.multiwalker import env, parallel_env, raw_env
 
 
