@@ -94,7 +94,7 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
             remove_on_fall=True,
             terrain_length=TERRAIN_LENGTH,
             max_cycles=500,
-            render_mode=None,
+            render_mode=render_mode,
         )
         self.setup()
         self.last_rewards = [np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)]
