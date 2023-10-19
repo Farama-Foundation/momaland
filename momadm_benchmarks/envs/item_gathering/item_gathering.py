@@ -89,6 +89,14 @@ class MOItemGathering(MOParallelEnv):
         self.current_timestep = 0
         self.render_mode = render_mode
 
+        # check is the initial map has any entries equal to 2
+        assert (
+            len(np.argwhere(initial_map == 2).flatten()) == 0
+        ), "Initial map cannot contain any 2s. That values is reserved for other agents, in the observation space."
+
+        # check if the initial map has any entries equal to 1
+        assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
+
         if initial_map is not None:
             self.initial_map = initial_map
         else:
@@ -97,8 +105,7 @@ class MOItemGathering(MOParallelEnv):
         # self.env_map is the working copy used in each episode. self.initial_map should not be modified.
         self.env_map = deepcopy(self.initial_map)
 
-        # TODO check if the map is valid, e.g. there should be no #2, all values should be integers,
-        #  objective values encodings should be sequential
+        #  TODO objective values encodings should be sequential?
 
         self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list
         self.env_map[self.env_map == 1] = 0  # remove agent starting positions from map
@@ -130,6 +137,8 @@ class MOItemGathering(MOParallelEnv):
         all_map_entries = np.unique(self.env_map, return_counts=True)
         indices_of_items = np.argwhere(all_map_entries[0] > 2).flatten()
         item_counts = np.take(all_map_entries[1], indices_of_items)
+        print(item_counts)
+        assert len(item_counts) > 0, "There are no resources in the map."
 
         self.reward_spaces = dict(
             zip(self.agents, [Box(low=0, high=max(item_counts), shape=(len(item_counts),))] * len(self.agent_positions))
