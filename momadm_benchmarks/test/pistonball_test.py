@@ -23,7 +23,6 @@ for agent in env.agents:
     env.last()
     action = env.action_space(agent).sample()
     env.step(action)
-    env.render()
     time.sleep(0.1)
 
 # Close the environment

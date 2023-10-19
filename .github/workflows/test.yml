@@ -23,7 +23,7 @@ jobs:
         pip install pytest
         sudo apt-get update
         sudo apt-get install libglu1-mesa-dev libgl1-mesa-dev libosmesa6-dev xvfb patchelf ffmpeg cmake swig
-        pip install pettingzoo
+        pip install pettingzoo[all]
         pip install -e .[all]
     - name: Full Python tests
       run: |
