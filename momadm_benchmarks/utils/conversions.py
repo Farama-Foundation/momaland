@@ -61,7 +61,7 @@ class mo_aec_to_parallel_wrapper(aec_to_parallel_wrapper, MOParallelEnv):
 
     @override
     def reward_space(self, agent):
-        return self.aec_env.reward_spaces(agent)
+        return self.aec_env.reward_spaces[agent]
 
     @override
     def step(self, actions):
