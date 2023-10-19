@@ -88,9 +88,9 @@ class MOMultiwalker(MOAECEnv, pz_multiwalker):
 
     @override
     def reset(self, seed=None, options=None):
-        super().reset(seed)  # super
+        super().reset(seed, options)  # super
         zero_reward = np.zeros(
-            self.reward_spaces["walker_0"].shape, dtype=np.float32
+            self.reward_spaces[self.agents[0]].shape, dtype=np.float32
         )  # np.copy() makes different copies of this.
         self._cumulative_rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))
         self.rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))

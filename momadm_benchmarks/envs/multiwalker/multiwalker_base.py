@@ -31,10 +31,26 @@ from pettingzoo.sisl.multiwalker.multiwalker_base import (
 class MOBipedalWalker(pz_bipedalwalker):
     """Walker Object with the physics implemented."""
 
-    def __init(
-        self, world, init_x=TERRAIN_STEP * TERRAIN_STARTPAD / 2, init_y=TERRAIN_HEIGHT + 2 * LEG_H, n_walkers=2, seed=None
+    @override
+    def __init__(
+        self,
+        world,
+        forward_reward,
+        fall_reward,
+        terminate_reward,
+        init_x=TERRAIN_STEP * TERRAIN_STARTPAD / 2,
+        init_y=TERRAIN_HEIGHT + 2 * LEG_H,
+        n_walkers=2,
+        seed=None,
+        terrain_length=TERRAIN_LENGTH,
+        terrain_step=TERRAIN_STEP,
     ):
         super().__init__(world, init_x, init_y, n_walkers, seed)
+        self.forward_reward = forward_reward
+        self.fall_reward = fall_reward
+        self.terminate_reward = terminate_reward
+        self.terrain_length = terrain_length
+        self.terrain_step = terrain_step
 
     @property
     def reward_space(self):
@@ -44,7 +60,12 @@ class MOBipedalWalker(pz_bipedalwalker):
         2. no walkers falling.
         3. package not falling.
         """
-        return spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32)
+        return spaces.Box(
+            low=np.array([-(self.terrain_step * self.forward_reward), self.fall_reward, self.terminate_reward]),
+            high=np.array([self.terrain_step * self.forward_reward, 0, 0]),
+            shape=(3,),
+            dtype=np.float32,
+        )
 
 
 class MOMultiWalkerEnv(pz_multiwalker_base):
@@ -91,7 +112,18 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         """Continuation of the `__init__`."""
         super().setup()
         init_y = TERRAIN_HEIGHT + 2 * LEG_H
-        self.walkers = [MOBipedalWalker(self.world, init_x=sx, init_y=init_y, seed=self.seed_val) for sx in self.start_x]
+        self.walkers = [
+            MOBipedalWalker(
+                self.world,
+                self.forward_reward,
+                self.fall_reward,
+                self.terminate_reward,
+                init_x=sx,
+                init_y=init_y,
+                seed=self.seed_val,
+            )
+            for sx in self.start_x
+        ]
         self.reward_space = [agent.reward_space for agent in self.walkers]
 
     @override
@@ -106,7 +138,6 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
         action = action.reshape(4)
         assert self.walkers[agent_id].hull is not None, agent_id
         self.walkers[agent_id].apply_action(action)
-        # print("action:", action)
         if is_last:
             self.world.Step(1.0 / FPS, 6 * 30, 2 * 30)
             rewards, done, mod_obs = self.scroll_subroutine()
@@ -160,6 +191,7 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
 
         # Below this point is the MO reward computation. Above this point is the original PZ code.
         package_shaping = self.forward_reward * self.package.position.x
+        print("before:", rewards)
         rewards[:][0] = package_shaping - self.prev_package_shaping  # move forward
         self.prev_package_shaping = package_shaping
 
@@ -179,9 +211,11 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
             done = [True] * self.n_walkers
 
         if self.game_over or self.package.position.x < 0:  # package doesn't fall
+            done = [True] * self.n_walkers
             rewards[:][2] = self.terminate_reward
 
         elif self.package.position.x > (self.terrain_length - TERRAIN_GRASS) * TERRAIN_STEP:
             done = [True] * self.n_walkers
 
+        print("after:", rewards)
         return rewards, done, obs
