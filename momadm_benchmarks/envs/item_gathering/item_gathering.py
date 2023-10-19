@@ -6,6 +6,7 @@ https://liu.diva-portal.org/smash/record.jsf?pid=diva2%3A1362933&dswid=9018
 """
 
 import functools
+import random
 from copy import deepcopy
 
 # from gymnasium.utils import EzPickle
@@ -85,6 +86,7 @@ class MOItemGathering(MOParallelEnv):
             render_mode: render mode for the environment
         """
         self.num_timesteps = num_timesteps
+        self.current_timestep = 0
         self.render_mode = render_mode
 
         if initial_map is not None:
@@ -169,7 +171,8 @@ class MOItemGathering(MOParallelEnv):
 
     @override
     def close(self):
-        """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
+        """Close should release any graphical displays, subprocesses, network connections or any other environment data
+        which should not be kept around after the user is no longer using the environment."""
         pass
 
     @override
@@ -178,7 +181,36 @@ class MOItemGathering(MOParallelEnv):
 
         Returns the observations for each agent
         """
-        pass
+        if seed is not None:  # TODO Decide whether we need the seed
+            np.random.seed(seed)
+            random.seed(seed)
+        self.agents = self.possible_agents[:]
+        print("self.agents", self.agents)
+        self.terminations = {agent: False for agent in self.agents}
+        self.truncations = {agent: False for agent in self.agents}
+
+        self.env_map = deepcopy(self.initial_map)  # Reset the environment map to the initial map provided
+        self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list
+        self.env_map[self.env_map == 1] = 0  # remove agent starting positions from map
+
+        observations = {agent: self._create_observation(i) for i, agent in enumerate(self.agents)}
+        self.time_num = 0
+
+        infos = {agent: {} for agent in self.agents}
+        return observations, infos
+
+    def is_valid_position(self, position):
+        """Check if the new position of an agent is valid.
+
+        Args:
+            position: the new position [x, y]
+
+        Returns: a boolean indicating whether the new position is valid
+
+        """
+        row_valid = 0 <= position[0] < self.env_map.position[0]
+        col_valid = 0 <= position[1] < self.env_map.position[1]
+        return row_valid and col_valid
 
     def step(self, actions):
         """Steps in the environment.
@@ -194,7 +226,87 @@ class MOItemGathering(MOParallelEnv):
         - infos
         dicts where each dict looks like {agent_1: item_1, agent_2: item_2}
         """
-        pass
+        pass  # implemented with pass for now, the commented code below is an initial rough attempt at implementation
+
+        """
+        # what happens if two agents want to move onto the same item? randomly allocate the item randomly
+        # what happens if two agents want the same square? one of the agents is chosen at random to move onto it, the other one stays where it is
+        # do items reappear? after 1 timestep? After multiple timesteps
+        # environment termination, after all timesteps are exhausted or all items or gathered
+
+        # If a user passes in actions with no agents, then just return empty observations, etc.
+        if not actions:
+            self.agents = []
+            return {}, {}, {}, {}, {}
+
+        new_positions = deepcopy(self.agent_positions)
+
+        # Apply actions and update system state
+        # TODO test this
+        for i, agent in enumerate(self.agents):
+            act = actions[agent]
+            new_position = self.agent_positions[i] + ACTIONS[act]
+            if self.is_valid_position(new_position):
+                new_positions[i] = new_position
+
+        # check for collisions, resolve here only the collision, have final new position list at end
+        # for i in range(len(new_positions)):
+        #     for j in range(i+1, len(new_positions)):
+        #         elif new_positions[]
+
+        # create empty reward vectors - figure out later
+        # rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for _ in range(self.num_agents)}
+        temp_rewards = []  # TODO for now, need to change
+        for i in range(len(new_positions)):
+            temp_rewards.append([0, 0, 0])
+
+        # update all reward vectors with collected items (if any), delete items from the map
+        for i in range(len(new_positions)):
+            value_in_cell = self.env_map[new_positions[i][0], new_positions[i][1]]
+            if value_in_cell > 2:
+                item_type = value_in_cell - 2  # type of item is value in cell - 2
+                temp_rewards[i][item_type] = temp_rewards[i][item_type] + 1
+                self.env_map[new_positions[i][0], new_positions[i][1]] = 0
+
+        # section_consumptions, section_agent_types = self._get_stats()
+        #
+        # self.current_timestep += 1
+        #
+        # env_termination = self.current_timestep >= self.num_timesteps
+        # self.terminations = {agent: env_termination for agent in self.agents}
+        # reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES), dtype=np.float32)
+        #
+        # if env_termination:
+        #     if self.reward_scheme == "local":
+        #         for i in range(self.sections):
+        #             lr_capacity = _local_capacity_reward(self.resource_capacities[i], section_consumptions[i])
+        #             lr_mixture = _local_mixture_reward(section_agent_types[i])
+        #             reward_per_section[i] = np.array([lr_capacity, lr_mixture])
+        #
+        #     elif self.reward_scheme == "global":
+        #         g_capacity = _global_capacity_reward(self.resource_capacities, section_consumptions)
+        #         g_mixture = _global_mixture_reward(section_agent_types)
+        #         reward_per_section = np.array([[g_capacity, g_mixture]] * self.sections)
+        #
+        # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
+        observations = {agent: None for agent in self.agents}
+
+        for i, agent in enumerate(self.agents):
+            observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
+            rewards[agent] = temp_rewards[i]
+
+        # typically there won't be any information in the infos, but there must
+        # still be an entry for each agent
+        infos = {agent: {} for agent in self.agents}
+
+        if env_termination:
+            self.agents = []
+
+        if self.render_mode == "human":
+            self.render()
+
+        return observations, rewards, self.truncations, self.terminations, infos
+        """
 
     def _create_observation(self, agent_id):
         """Function to create the observation passed to each agent at the end of a timestep.
@@ -209,6 +321,11 @@ class MOItemGathering(MOParallelEnv):
         - 3, 4, 5 ... denote the locations of items representing different objectives
 
         """
-        obs = np.zeros((self.rows, self.columns))
-        # TODO
+        obs = deepcopy(self.env_map)
+        for i in range(len(self.agent_positions)):
+            if i == agent_id:
+                marker = 1
+            else:
+                marker = 2
+            obs[self.agent_positions[i][0], self.agent_positions[i][1]] = marker
         return obs

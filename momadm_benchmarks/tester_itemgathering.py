@@ -7,7 +7,7 @@ from momadm_benchmarks.envs.item_gathering import item_gathering
 
 
 def train():
-    """Train a random agent on the beach domain."""
+    """Train a random agent on the item gathering domain."""
     test_map = np.array(
         [
             [0, 0, 0, 0, 0, 0, 0, 1],
@@ -23,7 +23,7 @@ def train():
 
     ig_env = item_gathering.parallel_env(
         num_timesteps=10,
-        env_map=test_map,
+        initial_map=test_map,
         render_mode=None,
     )
 
@@ -32,6 +32,8 @@ def train():
     #     render_mode=None,
     # )
 
+    print(ig_env.reset())
+
     done = False
     while not done:
         rand_act = choices(item_gathering.ACTIONS, k=len(ig_env.agents))
@@ -39,9 +41,9 @@ def train():
         for i, agent in enumerate(ig_env.agents):
             actions[agent] = rand_act[i]
         print("Actions: ", actions)
-        observations, rewards, done, _, _ = ig_env.step(actions)
-        print("Observations: ", observations)
-        print("Rewards: ", rewards)
+        # observations, rewards, done, _, _ = ig_env.step(actions)
+        # print("Observations: ", observations)
+        # print("Rewards: ", rewards)
 
 
 if __name__ == "__main__":
