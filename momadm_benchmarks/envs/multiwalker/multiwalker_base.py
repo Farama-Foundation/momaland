@@ -191,31 +191,31 @@ class MOMultiWalkerEnv(pz_multiwalker_base):
 
         # Below this point is the MO reward computation. Above this point is the original PZ code.
         package_shaping = self.forward_reward * self.package.position.x
-        print("before:", rewards)
-        rewards[:][0] = package_shaping - self.prev_package_shaping  # move forward
+        # print("before:", rewards)
+        rewards[:, 0] = package_shaping - self.prev_package_shaping  # obj1: move forward
         self.prev_package_shaping = package_shaping
 
         self.scroll = xpos.mean() - VIEWPORT_W / SCALE / 5 - (self.n_walkers - 1) * WALKER_SEPERATION * TERRAIN_STEP
 
         done = [False] * self.n_walkers
         for i, (fallen, walker) in enumerate(zip(self.fallen_walkers, self.walkers)):
-            if fallen:  # agent does not fall
-                rewards[i][1] = self.fall_reward  # not all, only the one that fell
+            if fallen:  # obj2: agent does not fall
+                rewards[i, 1] = self.fall_reward  # not all, only the one that fell
                 if self.remove_on_fall:
                     walker._destroy()
-                if not self.terminate_on_fall:
-                    rewards[:][1] = self.terminate_reward
+                if self.terminate_on_fall:
+                    rewards[:, 1] = self.terminate_reward
                 done[i] = True
 
         if self.terminate_on_fall and np.sum(self.fallen_walkers) > 0:
             done = [True] * self.n_walkers
 
-        if self.game_over or self.package.position.x < 0:  # package doesn't fall
+        if self.game_over or self.package.position.x < 0:  # obj3: package doesn't fall
             done = [True] * self.n_walkers
-            rewards[:][2] = self.terminate_reward
+            rewards[:, 2] = self.terminate_reward
 
         elif self.package.position.x > (self.terrain_length - TERRAIN_GRASS) * TERRAIN_STEP:
             done = [True] * self.n_walkers
 
-        print("after:", rewards)
+        # print("after:", rewards)
         return rewards, done, obs
