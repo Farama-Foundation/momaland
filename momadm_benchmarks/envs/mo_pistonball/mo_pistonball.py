@@ -90,7 +90,7 @@ class MOPistonball(MOAECEnv, PistonballEnv):
             max_cycles=max_cycles,
             render_mode=render_mode,
         )
-        self.reward_dim = 2
+        self.reward_dim = 3  # [global, local, time]
         self.reward_spaces = {
             f"piston_{i}": Box(low=-np.inf, high=np.inf, shape=(self.reward_dim,), dtype=np.float32)
             for i in range(self.num_agents)
@@ -102,8 +102,57 @@ class MOPistonball(MOAECEnv, PistonballEnv):
 
     @override
     def step(self, action):
-        """Step the environment."""
-        super().step(action)
+        if self.terminations[self.agent_selection] or self.truncations[self.agent_selection]:
+            self._was_dead_step(action)
+            return
+
+        action = np.asarray(action)
+        agent = self.agent_selection
+        if self.continuous:
+            self.move_piston(self.pistonList[self.agent_name_mapping[agent]], action)
+        else:
+            self.move_piston(self.pistonList[self.agent_name_mapping[agent]], action - 1)
+
+        self.space.step(self.dt)
+        if self._agent_selector.is_last():
+            ball_min_x = int(self.ball.position[0] - self.ball_radius)
+            ball_next_x = self.ball.position[0] - self.ball_radius + self.ball.velocity[0] * self.dt
+            if ball_next_x <= self.wall_width + 1:
+                self.terminate = True
+            # ensures that the ball can't pass through the wall
+            ball_min_x = max(self.wall_width, ball_min_x)
+            self.draw()
+            local_reward = self.get_local_reward(self.lastX, ball_min_x)
+            # Opposite order due to moving right to left
+            global_reward = (100 / self.distance) * (self.lastX - ball_min_x)
+            if not self.terminate:
+                time_penalty = self.time_penalty
+            else:
+                time_penalty = 0
+            agent_rewards = np.zeros((self.n_pistons, self.reward_dim))
+            agent_rewards[:, 0] = global_reward
+            agent_rewards[self.get_nearby_pistons(), 1] = local_reward
+            agent_rewards[:, 2] = time_penalty
+            self.rewards = dict(zip(self.agents, agent_rewards))
+            self.lastX = ball_min_x
+            self.frames += 1
+        else:
+            self._clear_rewards()
+
+        self.truncate = self.frames >= self.max_cycles
+        # Clear the list of recent pistons for the next reward cycle
+        if self.frames % self.recentFrameLimit == 0:
+            self.recentPistons = set()
+        if self._agent_selector.is_last():
+            self.terminations = dict(zip(self.agents, [self.terminate for _ in self.agents]))
+            self.truncations = dict(zip(self.agents, [self.truncate for _ in self.agents]))
+
+        self.agent_selection = self._agent_selector.next()
+        self._cumulative_rewards[agent] = np.zeros(self.reward_dim)
+        self._accumulate_rewards()
+
+        if self.render_mode == "human":
+            self.render()
 
     @override
     def reset(self, seed=None, options=None):

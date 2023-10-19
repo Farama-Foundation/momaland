@@ -1,5 +1,4 @@
 """Test the multi-objective pistonball environment."""
-import time
 
 from momadm_benchmarks.envs.mo_pistonball import mo_pistonball_v0
 
@@ -20,10 +19,9 @@ env.reset(seed=42)
 
 # Sample random actions for each agent and run the environment.
 for agent in env.agents:
-    env.last()
+    observation, reward, termination, truncation, info = env.last()
     action = env.action_space(agent).sample()
     env.step(action)
-    time.sleep(0.1)
 
 # Close the environment
 env.close()
