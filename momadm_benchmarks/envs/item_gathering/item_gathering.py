@@ -135,22 +135,21 @@ class MOItemGathering(MOParallelEnv):
 
         # determine the number of item types and maximum number of each item
         all_map_entries = np.unique(self.env_map, return_counts=True)
+        self.item_dict = {}
+        for i, item in enumerate(all_map_entries[0][np.where(all_map_entries[0] > 2)]):
+            self.item_dict[item] = i
         indices_of_items = np.argwhere(all_map_entries[0] > 2).flatten()
         item_counts = np.take(all_map_entries[1], indices_of_items)
-        print(item_counts)
+        self.num_objectives = len(item_counts)
+
         assert len(item_counts) > 0, "There are no resources in the map."
 
         self.reward_spaces = dict(
-            zip(self.agents, [Box(low=0, high=max(item_counts), shape=(len(item_counts),))] * len(self.agent_positions))
+            zip(self.agents, [Box(low=0, high=max(item_counts), shape=(self.num_objectives,))] * len(self.agent_positions))
         )
 
-    def _init_state(self):
-        """Initializes the state of the environment. This is called by reset()."""
-        pass
-
-        # this cache ensures that same space object is returned for the same agent
-        # allows action space seeding to work as expected
-
+    # this cache ensures that same space object is returned for the same agent
+    # allows action space seeding to work as expected
     @functools.lru_cache(maxsize=None)
     @override
     def observation_space(self, agent):
@@ -194,7 +193,6 @@ class MOItemGathering(MOParallelEnv):
             np.random.seed(seed)
             random.seed(seed)
         self.agents = self.possible_agents[:]
-        print("self.agents", self.agents)
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
 
@@ -208,7 +206,7 @@ class MOItemGathering(MOParallelEnv):
         infos = {agent: {} for agent in self.agents}
         return observations, infos
 
-    def is_valid_position(self, position):
+    def _is_valid_position(self, position):
         """Check if the new position of an agent is valid.
 
         Args:
@@ -217,8 +215,8 @@ class MOItemGathering(MOParallelEnv):
         Returns: a boolean indicating whether the new position is valid
 
         """
-        row_valid = 0 <= position[0] < self.env_map.position[0]
-        col_valid = 0 <= position[1] < self.env_map.position[1]
+        row_valid = 0 <= position[0] < len(self.env_map)
+        col_valid = 0 <= position[1] < len(self.env_map[0])
         return row_valid and col_valid
 
     def step(self, actions):
@@ -235,79 +233,64 @@ class MOItemGathering(MOParallelEnv):
         - infos
         dicts where each dict looks like {agent_1: item_1, agent_2: item_2}
         """
-        pass  # implemented with pass for now, the commented code below is an initial rough attempt at implementation
-
-        """
-        # what happens if two agents want to move onto the same item? randomly allocate the item randomly
-        # what happens if two agents want the same square? one of the agents is chosen at random to move onto it, the other one stays where it is
-        # do items reappear? after 1 timestep? After multiple timesteps
-        # environment termination, after all timesteps are exhausted or all items or gathered
-
         # If a user passes in actions with no agents, then just return empty observations, etc.
         if not actions:
             self.agents = []
             return {}, {}, {}, {}, {}
 
         new_positions = deepcopy(self.agent_positions)
-
         # Apply actions and update system state
-        # TODO test this
         for i, agent in enumerate(self.agents):
             act = actions[agent]
+            print(agent, ACTIONS[act])
             new_position = self.agent_positions[i] + ACTIONS[act]
-            if self.is_valid_position(new_position):
+            if self._is_valid_position(new_position):
+                # update the position, if it is a valid step
                 new_positions[i] = new_position
 
-        # check for collisions, resolve here only the collision, have final new position list at end
-        # for i in range(len(new_positions)):
-        #     for j in range(i+1, len(new_positions)):
-        #         elif new_positions[]
+        # Check for collisions, resolve here only the collision, have final new position list at end
+        collisions = []
+        max_collisions = 100
+        for i in range(len(new_positions) - 1):
+            for j in range(i + 1, len(new_positions)):
+                # if agents are on the same location
+                if np.array_equal(new_positions[i], new_positions[j]):
+                    # randomly choose between colliding agents
+                    choice = random.choice([i, j])
+                    # and re-assign the position of the selected agent to its old position
+                    new_positions[choice] = self.agent_positions[choice]
+                    collisions.append(choice)
 
-        # create empty reward vectors - figure out later
-        # rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for _ in range(self.num_agents)}
-        temp_rewards = []  # TODO for now, need to change
-        for i in range(len(new_positions)):
-            temp_rewards.append([0, 0, 0])
+        while len(collisions) > 0 and max_collisions > 0:
+            new_positions, collisions = self._verify_collisions(collisions, new_positions)
+            max_collisions -= 1
+        assert collisions == [], "Collision resolution failed"
 
-        # update all reward vectors with collected items (if any), delete items from the map
-        for i in range(len(new_positions)):
-            value_in_cell = self.env_map[new_positions[i][0], new_positions[i][1]]
-            if value_in_cell > 2:
-                item_type = value_in_cell - 2  # type of item is value in cell - 2
-                temp_rewards[i][item_type] = temp_rewards[i][item_type] + 1
-                self.env_map[new_positions[i][0], new_positions[i][1]] = 0
+        # update the agent positions now that all collisions are resolved
+        self.agent_positions = deepcopy(new_positions)
 
-        # section_consumptions, section_agent_types = self._get_stats()
-        #
-        # self.current_timestep += 1
-        #
-        # env_termination = self.current_timestep >= self.num_timesteps
-        # self.terminations = {agent: env_termination for agent in self.agents}
-        # reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES), dtype=np.float32)
-        #
-        # if env_termination:
-        #     if self.reward_scheme == "local":
-        #         for i in range(self.sections):
-        #             lr_capacity = _local_capacity_reward(self.resource_capacities[i], section_consumptions[i])
-        #             lr_mixture = _local_mixture_reward(section_agent_types[i])
-        #             reward_per_section[i] = np.array([lr_capacity, lr_mixture])
-        #
-        #     elif self.reward_scheme == "global":
-        #         g_capacity = _global_capacity_reward(self.resource_capacities, section_consumptions)
-        #         g_mixture = _global_mixture_reward(section_agent_types)
-        #         reward_per_section = np.array([[g_capacity, g_mixture]] * self.sections)
-        #
-        # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
+        # initialise rewards and observations
+        rewards = {agent: np.array(np.zeros(self.num_objectives)) for agent in self.agents}
         observations = {agent: None for agent in self.agents}
 
+        # update all reward vectors with collected items (if any), delete items from the map
+        for i in range(len(self.agent_positions)):
+            value_in_cell = self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]]
+            if value_in_cell > 2:
+                rewards[self.agents[i]][self.item_dict[value_in_cell]] += 1
+                self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]] = 0
+
         for i, agent in enumerate(self.agents):
-            observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
-            rewards[agent] = temp_rewards[i]
+            observations[agent] = self._create_observation(i)
 
         # typically there won't be any information in the infos, but there must
         # still be an entry for each agent
         infos = {agent: {} for agent in self.agents}
 
+        # environment termination, after all timesteps are exhausted or all items or gathered
+        self.time_num += 1
+        env_termination = self.time_num >= self.num_timesteps or np.sum(self.env_map) == 0
+        self.terminations = {agent: env_termination for agent in self.agents}
         if env_termination:
             self.agents = []
 
@@ -315,7 +298,6 @@ class MOItemGathering(MOParallelEnv):
             self.render()
 
         return observations, rewards, self.truncations, self.terminations, infos
-        """
 
     def _create_observation(self, agent_id):
         """Function to create the observation passed to each agent at the end of a timestep.
@@ -338,3 +320,26 @@ class MOItemGathering(MOParallelEnv):
                 marker = 2
             obs[self.agent_positions[i][0], self.agent_positions[i][1]] = marker
         return obs
+
+    def _verify_collisions(self, check_set, new_positions):
+        """Function to check for collisions between agents.
+
+        Args:
+            check_set: the set of positions to check for collisions
+            new_positions: the new positions of the agents
+
+        Returns:
+            new_positions: the new positions of the agents after resolving collisions
+            collisions: the list of agents that collided and for which the position changed
+        """
+        collisions = []
+        for i in check_set:
+            for j in range(len(new_positions)):
+                if i != j:
+                    if np.array_equal(new_positions[i], new_positions[j]):
+                        # randomly choose between colliding agents
+                        choice = random.choice([i, j])
+                        # and re-assign the position of the selected agent to its old position
+                        new_positions[choice] = self.agent_positions[choice]
+                        collisions.append(choice)
+        return new_positions, collisions

@@ -20,9 +20,22 @@ def train():
             [1, 0, 0, 0, 0, 0, 0, 0],
         ]
     )
+    test_map = np.array(
+        [
+            [0, 0, 4, 1, 1],
+            [1, 3, 4, 5, 3],
+        ]
+    )
+
+    test_map = np.array(
+        [
+            [1, 1],
+            [5, 3],
+        ]
+    )
 
     ig_env = item_gathering.parallel_env(
-        num_timesteps=10,
+        num_timesteps=50,
         initial_map=test_map,
         render_mode=None,
     )
@@ -35,15 +48,17 @@ def train():
     print(ig_env.reset())
 
     done = False
-    while not done:
-        rand_act = choices(item_gathering.ACTIONS, k=len(ig_env.agents))
+    for _ in range(10):
+        # while not done:
+        rand_act = choices(list(item_gathering.ACTIONS.keys()), k=len(ig_env.agents))
         actions = {}
         for i, agent in enumerate(ig_env.agents):
             actions[agent] = rand_act[i]
-        print("Actions: ", actions)
-        # observations, rewards, done, _, _ = ig_env.step(actions)
-        # print("Observations: ", observations)
-        # print("Rewards: ", rewards)
+        # print("Actions: ", actions)
+        observations, rewards, truncation, done, _ = ig_env.step(actions)
+        print("Observations: ", observations)
+        print("Rewards: ", rewards)
+        print("Done: ", done)
 
 
 if __name__ == "__main__":
