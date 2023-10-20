@@ -123,7 +123,7 @@ class MOItemGathering(MOParallelEnv):
                         low=0.0,
                         high=np.max(self.env_map),
                         shape=self.env_map.shape,
-                        dtype=np.float32,
+                        dtype=np.int64,
                     )
                 ]
                 * len(self.agent_positions),
