@@ -89,6 +89,11 @@ class MOItemGathering(MOParallelEnv):
         self.current_timestep = 0
         self.render_mode = render_mode
 
+        if initial_map is not None:
+            self.initial_map = initial_map
+        else:
+            self.initial_map = DEFAULT_MAP
+
         # check is the initial map has any entries equal to 2
         assert (
             len(np.argwhere(initial_map == 2).flatten()) == 0
@@ -96,11 +101,6 @@ class MOItemGathering(MOParallelEnv):
 
         # check if the initial map has any entries equal to 1
         assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
-
-        if initial_map is not None:
-            self.initial_map = initial_map
-        else:
-            self.initial_map = DEFAULT_MAP
 
         # self.env_map is the working copy used in each episode. self.initial_map should not be modified.
         self.env_map = deepcopy(self.initial_map)
