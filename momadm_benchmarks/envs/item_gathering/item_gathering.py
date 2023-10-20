@@ -70,7 +70,7 @@ class MOItemGathering(MOParallelEnv):
     These attributes should not be changed after initialization.
     """
 
-    metadata = {"render_modes": ["human"], "name": "iteamgathering_v0"}
+    metadata = {"render_modes": ["human"], "name": "moitemgathering_v0"}
 
     def __init__(
         self,
