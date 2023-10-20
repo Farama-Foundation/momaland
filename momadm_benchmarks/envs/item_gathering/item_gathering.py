@@ -47,7 +47,7 @@ def env(**kwargs):
     env = raw_env(**kwargs)
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
-    # Provides a wide vareity of helpful user errors
+    # Provides a wide variety of helpful user errors
     # Strongly recommended
     env = wrappers.OrderEnforcingWrapper(env)
     return env
@@ -104,8 +104,6 @@ class MOItemGathering(MOParallelEnv):
 
         # self.env_map is the working copy used in each episode. self.initial_map should not be modified.
         self.env_map = deepcopy(self.initial_map)
-
-        #  TODO objective values encodings should be sequential?
 
         self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list
         self.env_map[self.env_map == 1] = 0  # remove agent starting positions from map
