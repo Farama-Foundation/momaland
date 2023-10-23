@@ -1,4 +1,5 @@
-"""Surround environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point."""
+"""Escort environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point moving to one point to another."""
+
 import time
 from typing import Optional
 from typing_extensions import override
@@ -51,11 +52,11 @@ def raw_env(*args, **kwargs):
     Returns:
         A raw env.
     """
-    return Surround(*args, **kwargs)
+    return Escort(*args, **kwargs)
 
 
-class Surround(MOBaseParallelEnv):
-    """A Parallel Environment where drone learn how to surround a target point."""
+class Escort(MOBaseParallelEnv):
+    """A Parallel Environment where drone learn how to surround a moving target, going straight to one point to another."""
 
     metadata = {"render_modes": ["human"], "is_parallelizable": True, "render_fps": 20}
 
@@ -63,37 +64,54 @@ class Surround(MOBaseParallelEnv):
         self,
         drone_ids: npt.NDArray[np.int32],
         init_flying_pos: npt.NDArray[np.int32],
-        target_location: npt.NDArray[np.int32],
+        init_target_location: npt.NDArray[np.int32],
+        final_target_location: npt.NDArray[np.int32],
         target_id: Optional[int] = None,
+        num_intermediate_points: int = 50,
         render_mode=None,
         size: int = 2,
         multi_obj: bool = True,
     ):
-        """Surround environment for Crazyflies 2.
+        """Escort environment for Crazyflies 2.
 
         Args:
             drone_ids: Array of drone ids
             init_flying_pos: Array of initial positions of the drones when they are flying
-            target_location: Array of the position of the target point
-            target_id: Target id if you want a real drone target
-            render_mode: Render mode: "human" or None
+            init_target_location: Array of the initial position of the moving target
+            final_target_location: Array of the final position of the moving target
+            target_id: target id if you want a real drone target
+            num_intermediate_points: Number of intermediate points in the target trajectory
+            render_mode: Render mode: "human", or None
             size: Size of the map
             multi_obj: Whether to return a multi-objective reward
         """
         self.num_drones = len(drone_ids)
         self._agent_location = dict()
-        self._target_location = {"unique": target_location}  # unique target location for all agents
+        self._target_location = {"unique": init_target_location}  # unique target location for all agents
         self._init_flying_pos = dict()
         self._agents_names = np.array(["agent_" + str(i) for i in drone_ids])
         self.timestep = 0
 
+        # There are two more ref points than intermediate points, one for the initial and final target locations
+        self.num_ref_points = num_intermediate_points + 2
+        # Ref is a 2d arrays for the target
+        # it contains the reference points (xyz) for the target at each timestep
+        self.ref: np.ndarray = np.array([init_target_location])
+
         for i, agent in enumerate(self._agents_names):
             self._init_flying_pos[agent] = init_flying_pos[i].copy()
+
+        for t in range(1, self.num_ref_points):
+            self.ref = np.append(
+                self.ref,
+                [init_target_location + (final_target_location - init_target_location) * t / self.num_ref_points],
+                axis=0,
+            )
+
         self._agent_location = self._init_flying_pos.copy()
 
         self.size = size
         self.multi_obj = multi_obj
-
         super().__init__(
             render_mode=render_mode,
             size=size,
@@ -118,6 +136,18 @@ class Surround(MOBaseParallelEnv):
         return spaces.Box(low=-1 * np.ones(3, dtype=np.float32), high=np.ones(3, dtype=np.float32), dtype=np.float32)
 
     @override
+    def _reward_space(self, agent):
+        if self.multi_obj:
+            return spaces.Box(
+                low=np.array([-10, -10], dtype=np.float32),
+                high=np.array([1, np.inf], dtype=np.float32),
+                shape=(2,),
+                dtype=np.float32,
+            )
+        else:
+            return None
+
+    @override
     def _compute_obs(self):
         obs = dict()
         for agent in self._agents_names:
@@ -134,6 +164,12 @@ class Surround(MOBaseParallelEnv):
     def _transition_state(self, actions):
         target_point_action = dict()
         state = self._agent_location
+        # new targets
+        self._previous_target = self._target_location.copy()
+        if self.timestep < self.num_ref_points:
+            self._target_location["unique"] = self.ref[self.timestep]
+        else:  # the target has stopped
+            self._target_location["unique"] = self.ref[-1]
 
         for agent in self.agents:
             # Actions are clipped to stay in the map and scaled to do max 20cm in one step
@@ -190,7 +226,7 @@ class Surround(MOBaseParallelEnv):
                 reward[agent] = np.array([reward_close_to_target, reward_far_from_other_agents])
             else:
                 # MO reward linearly combined using hardcoded weights
-                reward[agent] = 0.8 * reward_close_to_target + 0.2 * reward_far_from_other_agents
+                reward[agent] = 0.9995 * reward_close_to_target + 0.0005 * reward_far_from_other_agents
 
         return reward
 
@@ -204,11 +240,10 @@ class Surround(MOBaseParallelEnv):
         for agent in self.agents:
             # collision between two drones
             for other_agent in self.agents:
-                if (
-                    other_agent != agent
-                    and np.linalg.norm(self._agent_location[agent] - self._agent_location[other_agent]) < CLOSENESS_THRESHOLD
-                ):
-                    terminated[agent] = True
+                if other_agent != agent:
+                    terminated[agent] = terminated[agent] or (
+                        np.linalg.norm(self._agent_location[agent] - self._agent_location[other_agent]) < CLOSENESS_THRESHOLD
+                    )
 
             # collision with the ground
             terminated[agent] = terminated[agent] or (self._agent_location[agent][2] < CLOSENESS_THRESHOLD)
@@ -230,6 +265,7 @@ class Surround(MOBaseParallelEnv):
         if self.timestep == 200:
             truncation = {agent: True for agent in self._agents_names}
             self.agents = []
+            self.timestep = 0
         else:
             truncation = {agent: False for agent in self._agents_names}
         return truncation
@@ -237,8 +273,6 @@ class Surround(MOBaseParallelEnv):
     @override
     def _compute_info(self):
         info = dict()
-        for agent in self._agents_names:
-            info[agent] = {}
         return info
 
     @override
@@ -247,41 +281,22 @@ class Surround(MOBaseParallelEnv):
 
 
 if __name__ == "__main__":
-    prll_env = Surround(
-        drone_ids=np.array([0, 1, 2, 3, 4]),
-        render_mode=None,
-        init_flying_pos=np.array([[0, 0, 1], [2, 1, 1], [0, 1, 1], [2, 2, 1], [1, 0, 1]]),
-        target_location=np.array([1, 1, 2.5]),
+    prll_env = Escort(
+        drone_ids=np.array([0, 1, 2, 3]),
+        render_mode="human",
+        init_flying_pos=np.array([[0, 0, 1], [1, 1, 1], [0, 1, 1], [2, 2, 1]]),
+        init_target_location=np.array([1, 1, 2.5]),
+        final_target_location=np.array([-2, -2, 3]),
+        num_intermediate_points=150,
     )
 
-    steps = 500
+    observations, infos = prll_env.reset()
 
-    def play():
-        """Execution of the environment with random actions."""
-        observations, infos = prll_env.reset()
-        global_step = 0
-
-        while global_step < steps:
-            while global_step < steps and prll_env.agents:
-                actions = {
-                    agent: prll_env.action_space(agent).sample() for agent in prll_env.agents
-                }  # this is where you would insert your policy
-                observations, rewards, terminations, truncations, infos = prll_env.step(actions)
-
-                global_step += 1
-            observations, infos = prll_env.reset()
-
-    durations = np.zeros(10)
-
-    print("start")
-
-    for i in range(10):
-        start = time.time()
-
-        play()
-
-        end = time.time() - start
-
-        durations[i] = end
-
-    print("durations : ", durations)
+    while prll_env.agents:
+        actions = {
+            agent: prll_env.action_space(agent).sample() for agent in prll_env.agents
+        }  # this is where you would insert your policy
+        observations, rewards, terminations, truncations, infos = prll_env.step(actions)
+        prll_env.render()
+        print("obs", observations, "reward", rewards)
+        time.sleep(0.02)

@@ -1,10 +1,10 @@
-"""Surround environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point."""
+"""Catch environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point trying to escape."""
+
 import time
 from typing import Optional
 from typing_extensions import override
 
 import numpy as np
-import numpy.typing as npt
 from gymnasium import spaces
 
 from momadm_benchmarks.envs.crazyrl.crazyRL_base import (
@@ -51,48 +51,55 @@ def raw_env(*args, **kwargs):
     Returns:
         A raw env.
     """
-    return Surround(*args, **kwargs)
+    return Catch(*args, **kwargs)
 
 
-class Surround(MOBaseParallelEnv):
-    """A Parallel Environment where drone learn how to surround a target point."""
+class Catch(MOBaseParallelEnv):
+    """A Parallel Environment where drone learn how to surround a moving target trying to escape."""
 
     metadata = {"render_modes": ["human"], "is_parallelizable": True, "render_fps": 20}
 
     def __init__(
         self,
-        drone_ids: npt.NDArray[np.int32],
-        init_flying_pos: npt.NDArray[np.int32],
-        target_location: npt.NDArray[np.int32],
+        drone_ids: np.ndarray,
+        init_flying_pos: np.ndarray,
+        init_target_location: np.ndarray,
+        target_speed: float,
         target_id: Optional[int] = None,
         render_mode=None,
         size: int = 2,
         multi_obj: bool = True,
     ):
-        """Surround environment for Crazyflies 2.
+        """Catch environment for Crazyflies 2.
 
         Args:
             drone_ids: Array of drone ids
             init_flying_pos: Array of initial positions of the drones when they are flying
-            target_location: Array of the position of the target point
-            target_id: Target id if you want a real drone target
-            render_mode: Render mode: "human" or None
+            init_target_location: Array of the initial position of the moving target
+            target_speed: Distance traveled by the target at each timestep
+            target_id: Target id if you want a real target
+            render_mode: Render mode: "human", "real" or None
             size: Size of the map
             multi_obj: Whether to return a multi-objective reward
         """
         self.num_drones = len(drone_ids)
+
         self._agent_location = dict()
-        self._target_location = {"unique": target_location}  # unique target location for all agents
+
+        self._target_location = {"unique": init_target_location}  # unique target location for all agents
+
+        self.target_speed = target_speed
+
         self._init_flying_pos = dict()
         self._agents_names = np.array(["agent_" + str(i) for i in drone_ids])
         self.timestep = 0
 
         for i, agent in enumerate(self._agents_names):
             self._init_flying_pos[agent] = init_flying_pos[i].copy()
-        self._agent_location = self._init_flying_pos.copy()
 
-        self.size = size
+        self._agent_location = self._init_flying_pos.copy()
         self.multi_obj = multi_obj
+        self.size = size
 
         super().__init__(
             render_mode=render_mode,
@@ -120,6 +127,7 @@ class Surround(MOBaseParallelEnv):
     @override
     def _compute_obs(self):
         obs = dict()
+
         for agent in self._agents_names:
             obs[agent] = self._agent_location[agent].copy()
             obs[agent] = np.append(obs[agent], self._target_location["unique"])
@@ -130,10 +138,42 @@ class Surround(MOBaseParallelEnv):
 
         return obs
 
+    def _move_target(self):
+        # mean of the agent's positions
+        mean = np.array([0, 0, 0])
+        for agent in self.agents:
+            mean = mean + self._agent_location[agent]
+
+        mean = mean / self.num_drones
+
+        dist = np.linalg.norm(mean - self._target_location["unique"])
+        self._target_location["unique"] = self._target_location["unique"].copy()
+
+        # go to the opposite direction of the mean of the agents
+        if dist > 0.2:
+            self._target_location["unique"] += (self._target_location["unique"] - mean) / dist * self.target_speed
+
+        # if the mean of the agents is too close to the target, move the target in a random direction, slowly because
+        # it hesitates
+        else:
+            self._target_location["unique"] += np.random.random_sample(3) * self.target_speed * 0.1
+
+        # if the target is out of the map, put it back in the map
+        np.clip(
+            self._target_location["unique"],
+            [-self.size, -self.size, 0.2],
+            [self.size, self.size, 3],
+            out=self._target_location["unique"],
+        )
+
     @override
     def _transition_state(self, actions):
         target_point_action = dict()
         state = self._agent_location
+
+        # new targets
+        self._previous_target = self._target_location.copy()
+        self._move_target()
 
         for agent in self.agents:
             # Actions are clipped to stay in the map and scaled to do max 20cm in one step
@@ -190,7 +230,7 @@ class Surround(MOBaseParallelEnv):
                 reward[agent] = np.array([reward_close_to_target, reward_far_from_other_agents])
             else:
                 # MO reward linearly combined using hardcoded weights
-                reward[agent] = 0.8 * reward_close_to_target + 0.2 * reward_far_from_other_agents
+                reward[agent] = 0.9995 * reward_close_to_target + 0.0005 * reward_far_from_other_agents
 
         return reward
 
@@ -204,11 +244,10 @@ class Surround(MOBaseParallelEnv):
         for agent in self.agents:
             # collision between two drones
             for other_agent in self.agents:
-                if (
-                    other_agent != agent
-                    and np.linalg.norm(self._agent_location[agent] - self._agent_location[other_agent]) < CLOSENESS_THRESHOLD
-                ):
-                    terminated[agent] = True
+                if other_agent != agent:
+                    terminated[agent] = terminated[agent] or (
+                        np.linalg.norm(self._agent_location[agent] - self._agent_location[other_agent]) < CLOSENESS_THRESHOLD
+                    )
 
             # collision with the ground
             terminated[agent] = terminated[agent] or (self._agent_location[agent][2] < CLOSENESS_THRESHOLD)
@@ -230,6 +269,7 @@ class Surround(MOBaseParallelEnv):
         if self.timestep == 200:
             truncation = {agent: True for agent in self._agents_names}
             self.agents = []
+            self.timestep = 0
         else:
             truncation = {agent: False for agent in self._agents_names}
         return truncation
@@ -237,8 +277,6 @@ class Surround(MOBaseParallelEnv):
     @override
     def _compute_info(self):
         info = dict()
-        for agent in self._agents_names:
-            info[agent] = {}
         return info
 
     @override
@@ -247,41 +285,21 @@ class Surround(MOBaseParallelEnv):
 
 
 if __name__ == "__main__":
-    prll_env = Surround(
-        drone_ids=np.array([0, 1, 2, 3, 4]),
-        render_mode=None,
-        init_flying_pos=np.array([[0, 0, 1], [2, 1, 1], [0, 1, 1], [2, 2, 1], [1, 0, 1]]),
-        target_location=np.array([1, 1, 2.5]),
+    prll_env = Catch(
+        drone_ids=np.array([0, 1, 2, 3]),
+        render_mode="human",
+        init_flying_pos=np.array([[0, 0, 1], [1, 1, 1], [0, 1, 1], [2, 2, 1]]),
+        init_target_location=np.array([1, 1, 2.5]),
+        target_speed=0.1,
     )
 
-    steps = 500
+    observations, infos = prll_env.reset()
 
-    def play():
-        """Execution of the environment with random actions."""
-        observations, infos = prll_env.reset()
-        global_step = 0
-
-        while global_step < steps:
-            while global_step < steps and prll_env.agents:
-                actions = {
-                    agent: prll_env.action_space(agent).sample() for agent in prll_env.agents
-                }  # this is where you would insert your policy
-                observations, rewards, terminations, truncations, infos = prll_env.step(actions)
-
-                global_step += 1
-            observations, infos = prll_env.reset()
-
-    durations = np.zeros(10)
-
-    print("start")
-
-    for i in range(10):
-        start = time.time()
-
-        play()
-
-        end = time.time() - start
-
-        durations[i] = end
-
-    print("durations : ", durations)
+    while prll_env.agents:
+        actions = {
+            agent: prll_env.action_space(agent).sample() for agent in prll_env.agents
+        }  # this is where you would insert your policy
+        observations, rewards, terminations, truncations, infos = prll_env.step(actions)
+        prll_env.render()
+        print("obs", observations, "reward", rewards)
+        time.sleep(0.02)
