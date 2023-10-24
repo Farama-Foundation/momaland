@@ -137,7 +137,7 @@ class mo_parallel_to_aec_wrapper(parallel_to_aec_wrapper, MOAECEnv):
         observation = self.observe(agent) if observe else None
         return (
             observation,
-            self._cumulative_rewards[agent].astype(np.float32),
+            self._cumulative_rewards[agent],
             self.terminations[agent],
             self.truncations[agent],
             self.infos[agent],
