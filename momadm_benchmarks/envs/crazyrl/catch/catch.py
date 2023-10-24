@@ -254,6 +254,8 @@ class Catch(CrazyRLBaseParallelEnv):
         for agent in self.agents:
             terminated[agent] = False
 
+        # print('beginning:', type(terminated["agent_0"]))
+
         for agent in self.agents:
             # collision between two drones
             for other_agent in self.agents:
@@ -274,6 +276,8 @@ class Catch(CrazyRLBaseParallelEnv):
                 for other_agent in self.agents:
                     terminated[other_agent] = True
                 self.agents = []
+
+            terminated[agent] = bool(terminated[agent])
 
         return terminated
 

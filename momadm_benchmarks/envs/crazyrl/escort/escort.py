@@ -258,6 +258,8 @@ class Escort(CrazyRLBaseParallelEnv):
                     terminated[other_agent] = True
                 self.agents = []
 
+            terminated[agent] = bool(terminated[agent])
+
         return terminated
 
     @override
