@@ -147,8 +147,8 @@ class Catch(CrazyRLBaseParallelEnv):
             for other_agent in self._agents_names:
                 if other_agent != agent:
                     obs[agent] = np.append(obs[agent], self._agent_location[other_agent])
+            obs[agent] = np.array(obs[agent], dtype=(np.float32))
 
-        print(type(obs))
         return obs
 
     def _move_target(self):

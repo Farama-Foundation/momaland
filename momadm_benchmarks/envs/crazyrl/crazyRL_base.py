@@ -299,6 +299,11 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
     def action_space(self, agent):
         return self._action_space(agent)
 
+    @functools.lru_cache(maxsize=None)
+    @override
+    def reward_space(self, agent):
+        return self._reward_space(agent)
+
     def _get_drones_state(self):
         """Return the state of all drones (xyz position) inside a dict with the same keys of agent_location and target_location."""
         if self.render_mode == "human":
