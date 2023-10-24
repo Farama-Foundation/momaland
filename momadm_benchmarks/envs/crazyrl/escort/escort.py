@@ -223,7 +223,7 @@ class Escort(CrazyRLBaseParallelEnv):
                 reward_close_to_target = -10
 
             if self.multi_obj:
-                reward[agent] = np.array([reward_close_to_target, reward_far_from_other_agents])
+                reward[agent] = np.array([reward_close_to_target, reward_far_from_other_agents], dtype=np.float32)
             else:
                 # MO reward linearly combined using hardcoded weights
                 reward[agent] = 0.9995 * reward_close_to_target + 0.0005 * reward_far_from_other_agents
