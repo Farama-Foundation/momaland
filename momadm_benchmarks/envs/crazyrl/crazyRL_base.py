@@ -76,16 +76,15 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
     """
 
     metadata = {
-        "render_modes": ["human", "real"],
+        "render_modes": ["human"],
         "is_parallelizable": False,
-        "render_fps": 10,
+        "render_fps": FPS,
     }
 
     def __init__(
         self,
         agents_names: np.ndarray,
         drone_ids: np.ndarray,
-        target_id: Optional[str] = None,
         init_flying_pos: Optional[Dict[str, np.ndarray]] = None,
         target_location: Optional[Dict[str, np.ndarray]] = None,
         size: int = 3,

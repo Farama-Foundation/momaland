@@ -132,6 +132,18 @@ class mo_parallel_to_aec_wrapper(parallel_to_aec_wrapper, MOAECEnv):
         self._cumulative_rewards[new_agent] = np.zeros(self.reward_space(new_agent).shape[0], dtype=np.float32)
 
     @override
+    def last(self, observe=True):
+        agent = self.agent_selection
+        observation = self.observe(agent) if observe else None
+        return (
+            observation,
+            self._cumulative_rewards[agent].astype(np.float32),
+            self.terminations[agent],
+            self.truncations[agent],
+            self.infos[agent],
+        )
+
+    @override
     def step(self, action: ActionType):
         if self.terminations[self.agent_selection] or self.truncations[self.agent_selection]:
             del self._actions[self.agent_selection]
