@@ -129,7 +129,7 @@ class MOPistonball(MOAECEnv, PistonballEnv):
                 time_penalty = self.time_penalty
             else:
                 time_penalty = 0
-            agent_rewards = np.zeros((self.n_pistons, self.reward_dim))
+            agent_rewards = np.zeros((self.n_pistons, self.reward_dim), dtype=np.float32)
             agent_rewards[:, 0] = global_reward
             agent_rewards[self.get_nearby_pistons(), 1] = local_reward
             agent_rewards[:, 2] = time_penalty
