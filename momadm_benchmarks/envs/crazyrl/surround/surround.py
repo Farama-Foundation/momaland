@@ -1,15 +1,14 @@
 """Surround environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point."""
 import time
-from typing import Optional
 from typing_extensions import override
 
 import numpy as np
-import numpy.typing as npt
 from gymnasium import spaces
 
 from momadm_benchmarks.envs.crazyrl.crazyRL_base import (
     CLOSENESS_THRESHOLD,
-    MOBaseParallelEnv,
+    FPS,
+    CrazyRLBaseParallelEnv,
     _distance_to_target,
 )
 from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
@@ -54,17 +53,16 @@ def raw_env(*args, **kwargs):
     return Surround(*args, **kwargs)
 
 
-class Surround(MOBaseParallelEnv):
+class Surround(CrazyRLBaseParallelEnv):
     """A Parallel Environment where drone learn how to surround a target point."""
 
-    metadata = {"render_modes": ["human"], "is_parallelizable": True, "render_fps": 20}
+    metadata = {"render_modes": ["human"], "name": "mosurround_v0", "is_parallelizable": True, "render_fps": FPS}
 
     def __init__(
         self,
-        drone_ids: npt.NDArray[np.int32],
-        init_flying_pos: npt.NDArray[np.int32],
-        target_location: npt.NDArray[np.int32],
-        target_id: Optional[int] = None,
+        drone_ids=np.array([0, 1, 2, 3, 4]),
+        init_flying_pos=np.array([[0, 0, 1], [2, 1, 1], [0, 1, 1], [2, 2, 1], [1, 0, 1]]),
+        target_location=np.array([1, 1, 2.5]),
         render_mode=None,
         size: int = 2,
         multi_obj: bool = True,
@@ -87,12 +85,15 @@ class Surround(MOBaseParallelEnv):
         self._agents_names = np.array(["agent_" + str(i) for i in drone_ids])
         self.timestep = 0
 
+        self.multi_obj = multi_obj
+        self.reward_spaces = {}
         for i, agent in enumerate(self._agents_names):
             self._init_flying_pos[agent] = init_flying_pos[i].copy()
+            self.reward_spaces[agent] = self._reward_space(agent)
+
         self._agent_location = self._init_flying_pos.copy()
 
         self.size = size
-        self.multi_obj = multi_obj
 
         super().__init__(
             render_mode=render_mode,
@@ -101,7 +102,6 @@ class Surround(MOBaseParallelEnv):
             target_location=self._target_location,
             agents_names=self._agents_names,
             drone_ids=drone_ids,
-            target_id=target_id,
         )
 
     @override
@@ -116,6 +116,18 @@ class Surround(MOBaseParallelEnv):
     @override
     def _action_space(self, agent):
         return spaces.Box(low=-1 * np.ones(3, dtype=np.float32), high=np.ones(3, dtype=np.float32), dtype=np.float32)
+
+    @override
+    def _reward_space(self, agent):
+        if self.multi_obj:
+            return spaces.Box(
+                low=np.array([-10, -10], dtype=np.float32),
+                high=np.array([1, np.inf], dtype=np.float32),
+                shape=(2,),
+                dtype=np.float32,
+            )
+        else:
+            return None
 
     @override
     def _compute_obs(self):

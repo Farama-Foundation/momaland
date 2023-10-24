@@ -55,9 +55,10 @@ def _distance_to_target(agent_location: npt.NDArray[np.float32], target_location
 
 
 CLOSENESS_THRESHOLD = 0.1
+FPS = 20
 
 
-class MOBaseParallelEnv(MOParallelEnv):
+class CrazyRLBaseParallelEnv(MOParallelEnv):
     """The Base environment inheriting from pettingZoo Parallel environment class.
 
     The main API methods of this class are:
@@ -176,7 +177,6 @@ class MOBaseParallelEnv(MOParallelEnv):
 
         if self.render_mode == "human":
             self._render_frame()
-
         return observation, infos
 
     @override

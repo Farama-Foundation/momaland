@@ -1,16 +1,15 @@
 """Escort environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point moving to one point to another."""
 
 import time
-from typing import Optional
 from typing_extensions import override
 
 import numpy as np
-import numpy.typing as npt
 from gymnasium import spaces
 
 from momadm_benchmarks.envs.crazyrl.crazyRL_base import (
     CLOSENESS_THRESHOLD,
-    MOBaseParallelEnv,
+    FPS,
+    CrazyRLBaseParallelEnv,
     _distance_to_target,
 )
 from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
@@ -55,18 +54,17 @@ def raw_env(*args, **kwargs):
     return Escort(*args, **kwargs)
 
 
-class Escort(MOBaseParallelEnv):
+class Escort(CrazyRLBaseParallelEnv):
     """A Parallel Environment where drone learn how to surround a moving target, going straight to one point to another."""
 
-    metadata = {"render_modes": ["human"], "is_parallelizable": True, "render_fps": 20}
+    metadata = {"render_modes": ["human"], "name": "moescort_v0", "is_parallelizable": True, "render_fps": FPS}
 
     def __init__(
         self,
-        drone_ids: npt.NDArray[np.int32],
-        init_flying_pos: npt.NDArray[np.int32],
-        init_target_location: npt.NDArray[np.int32],
-        final_target_location: npt.NDArray[np.int32],
-        target_id: Optional[int] = None,
+        drone_ids=np.array([0, 1, 2, 3]),
+        init_flying_pos=np.array([[0, 0, 1], [1, 1, 1], [0, 1, 1], [2, 2, 1]]),
+        init_target_location=np.array([1, 1, 2.5]),
+        final_target_location=np.array([-2, -2, 3]),
         num_intermediate_points: int = 50,
         render_mode=None,
         size: int = 2,
@@ -92,14 +90,17 @@ class Escort(MOBaseParallelEnv):
         self._agents_names = np.array(["agent_" + str(i) for i in drone_ids])
         self.timestep = 0
 
+        self.multi_obj = multi_obj
+        self.reward_spaces = {}
+        for i, agent in enumerate(self._agents_names):
+            self._init_flying_pos[agent] = init_flying_pos[i].copy()
+            self.reward_spaces[agent] = self._reward_space(agent)
+
         # There are two more ref points than intermediate points, one for the initial and final target locations
         self.num_ref_points = num_intermediate_points + 2
         # Ref is a 2d arrays for the target
         # it contains the reference points (xyz) for the target at each timestep
         self.ref: np.ndarray = np.array([init_target_location])
-
-        for i, agent in enumerate(self._agents_names):
-            self._init_flying_pos[agent] = init_flying_pos[i].copy()
 
         for t in range(1, self.num_ref_points):
             self.ref = np.append(
@@ -109,9 +110,8 @@ class Escort(MOBaseParallelEnv):
             )
 
         self._agent_location = self._init_flying_pos.copy()
-
         self.size = size
-        self.multi_obj = multi_obj
+
         super().__init__(
             render_mode=render_mode,
             size=size,
@@ -119,7 +119,6 @@ class Escort(MOBaseParallelEnv):
             target_location=self._target_location,
             agents_names=self._agents_names,
             drone_ids=drone_ids,
-            target_id=target_id,
         )
 
     @override
@@ -273,6 +272,8 @@ class Escort(MOBaseParallelEnv):
     @override
     def _compute_info(self):
         info = dict()
+        for agent in self._agents_names:
+            info[agent] = {}
         return info
 
     @override
