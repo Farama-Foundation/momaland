@@ -59,13 +59,13 @@ class Catch(CrazyRLBaseParallelEnv):
         """Catch environment in CrazyRL.
 
         Args:
-            - render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
-            - size (int, optional): Size of the area sides
-            - num_drones: amount of drones
-            - init_flying_pos (Dict, optional): A dictionary containing the name of the agent as key and where each value
+            render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
+            size (int, optional): Size of the area sides
+            num_drones: amount of drones
+            init_flying_pos (Dict, optional): A dictionary containing the name of the agent as key and where each value
                 is a (3)-shaped array containing the initial XYZ position of the drones.
-            - init_target_location (Dict, optional): A dictionary containing a (3)-shaped array for the XYZ position of the target.
-            - target_speed: Distance traveled by the target at each timestep
+            init_target_location (Dict, optional): A dictionary containing a (3)-shaped array for the XYZ position of the target.
+            target_speed: Distance traveled by the target at each timestep
         """
 
         super().__init__(*args, **kwargs)
@@ -115,10 +115,6 @@ class Catch(CrazyRLBaseParallelEnv):
             )
 
         return target_point_action
-
-    @override
-    def state(self):
-        return np.append(np.array(list(self.agent_location.values())).flatten(), self.target_location["unique"])
 
 
 if __name__ == "__main__":
