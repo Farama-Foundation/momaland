@@ -1,7 +1,6 @@
 """The Base environment inheriting from pettingZoo Parallel environment class."""
-import functools
 from copy import copy
-from typing import Dict, Optional
+from typing import Optional
 from typing_extensions import override
 
 import numpy as np
@@ -66,13 +65,13 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
     - reset
     - render
     - close
-    - seed
+    - state
 
     they are defined in this main environment and the following attributes can be set in child env through the compute
     method set:
         action_space: The Space object corresponding to valid actions
         observation_space: The Space object corresponding to valid observations
-        reward_range: A tuple corresponding to the min and max possible rewards
+        reward_space: The Space object corresponding to valid rewards
     """
 
     metadata = {
@@ -83,37 +82,46 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
 
     def __init__(
         self,
-        agents_names: np.ndarray,
-        drone_ids: np.ndarray,
-        init_flying_pos: Optional[Dict[str, np.ndarray]] = None,
-        target_location: Optional[Dict[str, np.ndarray]] = None,
-        size: int = 3,
         render_mode: Optional[str] = None,
+        size: int = 3,
+        num_drones: int = 4,
+        init_flying_pos=np.array([[0, 0, 1], [1, 1, 1], [0, 1, 1], [2, 2, 1]]),
+        init_target_location=np.array([1, 1, 2.5]),
     ):
-        """Initialization of a generic aviary environment.
+        """Initialization of a CrazyRL environment.
 
         Args:
-            agents_names (list): list of agent names use as key for the dict
-            drone_ids (list): ids of the drones (ignored in simulation mode)
-            target_id (int, optional): ids of the targets (ignored in simulation mode). This is to control a real target with a real drone. Only supported in envs with one target.
-            init_flying_pos (Dict, optional): A dictionary containing the name of the agent as key and where each value
-                is a (3)-shaped array containing the initial XYZ position of the drones.
-            target_location (Dict, optional): A dictionary containing a (3)-shaped array for the XYZ position of the target.
+            render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
             size (int, optional): Size of the area sides
-            render_mode (str, optional): The mode to display the rendering of the environment. Can be real, human or None.
-                Real mode is used for real tests on the field, human mode is used to display the environment on a PyGame
-                window and None mode is used to disable the rendering.
+            num_drones: amount of drones
+            init_flying_pos: Array of initial positions of the drones when they are flying
+                is a (3)-shaped array containing the initial XYZ position of the drones.
+            init_target_location (Dict, optional): Array of the initial position of the moving target
         """
+        self.num_drones = num_drones
+        self.agents_names = np.array(["agent_" + str(i) for i in range(self.num_drones)])
         self.size = size  # The size of the square grid
-        self._agent_location = init_flying_pos.copy()
-        self._previous_location = init_flying_pos.copy()  # for potential based reward
-        self._init_flying_pos = init_flying_pos
-        self._init_target_location = target_location
-        self._target_location = target_location
-        self._previous_target = target_location.copy()
-        self.possible_agents = agents_names.tolist()
+
+        # locations
+        self.init_flying_pos = {agent: init_flying_pos[i].copy() for i, agent in enumerate(self.agents_names)}
+        self.agent_location = self.init_flying_pos.copy()
+        self.previous_location = self.init_flying_pos.copy()  # for potential based reward
+        self.agent_location = self.init_flying_pos.copy()
+
+        # targets
+        self.init_target_location = {"unique": init_target_location}  # unique target location for all agents
+        self.target_location = self.init_target_location.copy()
+        self.previous_target = self.init_target_location.copy()
+
+        self.possible_agents = self.agents_names.tolist()
         self.timestep = 0
         self.agents = []
+        self.size = size
+
+        # spaces
+        self.action_spaces = dict(zip(self.agents_names, [self._action_space() for agent in self.agents_names]))
+        self.observation_spaces = dict(zip(self.agents_names, [self._observation_space() for agent in self.agents_names]))
+        self.reward_spaces = dict(zip(self.agents_names, [self._reward_space() for agent in self.agents_names]))
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -123,17 +131,36 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
             self.window = None
             self.clock = None
 
-    def _observation_space(self, agent) -> spaces.Space:
-        """Returns the observation space of the environment. Must be implemented in a subclass."""
-        raise NotImplementedError
+    def _observation_space(self):
+        return spaces.Box(
+            low=np.tile(np.array([-self.size, -self.size, 0], dtype=np.float32), self.num_drones + 1),
+            high=np.tile(np.array([self.size, self.size, 3], dtype=np.float32), self.num_drones + 1),
+            shape=(3 * (self.num_drones + 1),),  # coordinates of the drones and the target
+            dtype=np.float32,
+        )
 
-    def _action_space(self, agent) -> spaces.Space:
-        """Returns the action space of the environment. Must be implemented in a subclass."""
-        raise NotImplementedError
+    def _action_space(self):
+        return spaces.Box(low=-1 * np.ones(3, dtype=np.float32), high=np.ones(3, dtype=np.float32), dtype=np.float32)
 
-    def _compute_obs(self):
-        """Returns the current observation of the environment. Must be implemented in a subclass."""
-        raise NotImplementedError
+    def _reward_space(self):
+        return spaces.Box(
+            low=np.array([-10, -10], dtype=np.float32),
+            high=np.array([1, np.inf], dtype=np.float32),
+            shape=(2,),
+            dtype=np.float32,
+        )
+
+    def action_space(self, agent):
+        """Returns the action space for the given agent."""
+        return self.action_spaces[agent]
+
+    def observation_space(self, agent):
+        """Returns the observation space for the given agent."""
+        return self.observation_spaces[agent]
+
+    def reward_space(self, agent):
+        """Returns the reward space for the given agent."""
+        return self.reward_spaces[agent]
 
     def _transition_state(self, action):
         """Computes the action passed to `.step()` into action matching the mode environment. Must be implemented in a subclass.
@@ -143,33 +170,122 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
         """
         raise NotImplementedError
 
+    def _compute_obs(self):
+        obs = dict()
+
+        for agent in self.agents_names:
+            obs[agent] = self.agent_location[agent].copy()
+            obs[agent] = np.append(obs[agent], self.target_location["unique"])
+
+            for other_agent in self.agents_names:
+                if other_agent != agent:
+                    obs[agent] = np.append(obs[agent], self.agent_location[other_agent])
+            obs[agent] = np.array(obs[agent], dtype=(np.float32))
+
+        return obs
+
     def _compute_reward(self):
-        """Computes the current reward value(s). Must be implemented in a subclass."""
-        raise NotImplementedError
+        # Reward is the mean distance to the other agents minus the distance to the target
+        reward = dict()
+
+        for agent in self.agents_names:
+            reward_far_from_other_agents = 0
+            reward_close_to_target = 0
+
+            # mean distance to the other agents
+            for other_agent in self.agents_names:
+                if other_agent != agent:
+                    reward_far_from_other_agents += np.linalg.norm(
+                        self.agent_location[agent] - self.agent_location[other_agent]
+                    )
+
+            reward_far_from_other_agents /= self.num_drones - 1
+
+            # distance to the target
+            # (!) targets and locations must be updated before this
+            dist_from_old_target = _distance_to_target(self.agent_location[agent], self.previous_target["unique"])
+            old_dist = _distance_to_target(self.previous_location[agent], self.previous_target["unique"])
+
+            # reward should be new_potential - old_potential but since the distances should be negated we reversed the signs
+            # -new_potential - (-old_potential) = old_potential - new_potential
+            reward_close_to_target = old_dist - dist_from_old_target
+
+            # collision between two drones
+            for other_agent in self.agents_names:
+                if other_agent != agent and (
+                    np.linalg.norm(self.agent_location[agent] - self.agent_location[other_agent]) < CLOSENESS_THRESHOLD
+                ):
+                    reward_far_from_other_agents = -10
+                    reward_close_to_target = -10
+
+            # collision with the ground or the target
+            if (
+                self.agent_location[agent][2] < CLOSENESS_THRESHOLD
+                or np.linalg.norm(self.agent_location[agent] - self.target_location["unique"]) < CLOSENESS_THRESHOLD
+            ):
+                reward_far_from_other_agents = -10
+                reward_close_to_target = -10
+
+            reward[agent] = np.array([reward_close_to_target, reward_far_from_other_agents], dtype=np.float32)
+
+        return reward
 
     def _compute_terminated(self):
-        """Computes the current done value(s). Must be implemented in a subclass."""
-        raise NotImplementedError
+        terminated = dict()
+
+        for agent in self.agents:
+            terminated[agent] = False
+
+        for agent in self.agents:
+            # collision between two drones
+            for other_agent in self.agents:
+                if other_agent != agent:
+                    terminated[agent] = terminated[agent] or (
+                        np.linalg.norm(self.agent_location[agent] - self.agent_location[other_agent]) < CLOSENESS_THRESHOLD
+                    )
+
+            # collision with the ground
+            terminated[agent] = terminated[agent] or (self.agent_location[agent][2] < CLOSENESS_THRESHOLD)
+
+            # collision with the target
+            terminated[agent] = terminated[agent] or (
+                np.linalg.norm(self.agent_location[agent] - self.target_location["unique"]) < CLOSENESS_THRESHOLD
+            )
+
+            if terminated[agent]:
+                for other_agent in self.agents:
+                    terminated[other_agent] = True
+                self.agents = []
+
+            terminated[agent] = bool(terminated[agent])
+
+        return terminated
 
     def _compute_truncation(self):
-        """Computes the current done value(s). Must be implemented in a subclass."""
-        raise NotImplementedError
+        if self.timestep == 200:
+            truncation = {agent: True for agent in self.agents_names}
+            self.agents = []
+            self.timestep = 0
+        else:
+            truncation = {agent: False for agent in self.agents_names}
+        return truncation
 
     def _compute_info(self):
-        """Computes the current info dict(s). Must be implemented in a subclass."""
-        raise NotImplementedError
+        info = dict()
+        for agent in self.agents_names:
+            info[agent] = {}
+        return info
 
     # PettingZoo API
     @override
     def reset(self, seed=None, return_info=False, options=None):
         self.timestep = 0
         self.agents = copy(self.possible_agents)
-        self._target_location = self._init_target_location.copy()
-        self._previous_target = self._init_target_location.copy()
+        self.target_location = self.init_target_location.copy()
+        self.previous_target = self.init_target_location.copy()
 
-        if self.render_mode == "human":
-            self._agent_location = self._init_flying_pos.copy()
-            self._previous_location = self._init_flying_pos.copy()
+        self.agent_location = self.init_flying_pos.copy()
+        self.previous_location = self.init_flying_pos.copy()
 
         observation = self._compute_obs()
         infos = self._compute_info()
@@ -182,16 +298,17 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
     def step(self, actions):
         self.timestep += 1
 
+        new_locations = self._transition_state(actions)
+        self.previous_location = self.agent_location
+        self.agent_location = new_locations
+
         if self.render_mode == "human":
             self.render()
-            new_locations = self._transition_state(actions)
-            self._previous_location = self._agent_location
-            self._agent_location = new_locations
 
+        observations = self._compute_obs()
+        rewards = self._compute_reward()
         terminations = self._compute_terminated()
         truncations = self._compute_truncation()
-        rewards = self._compute_reward()
-        observations = self._compute_obs()
         infos = self._compute_info()
 
         return observations, rewards, terminations, truncations, infos
@@ -258,7 +375,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        for agent in self._agent_location.values():
+        for agent in self.agent_location.values():
             glPushMatrix()
             point(np.array([agent[0], agent[1], agent[2]]))
 
@@ -268,7 +385,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
         field(self.size)
         axes()
 
-        for target in self._target_location.values():
+        for target in self.target_location.values():
             glPushMatrix()
             target_point(np.array([target[0], target[1], target[2]]))
             glPopMatrix()
@@ -287,23 +404,3 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
             if self.window is not None:
                 pygame.display.quit()
                 pygame.quit()
-
-    @functools.lru_cache(maxsize=None)
-    @override
-    def observation_space(self, agent):
-        return self._observation_space(agent)
-
-    @functools.lru_cache(maxsize=None)
-    @override
-    def action_space(self, agent):
-        return self._action_space(agent)
-
-    @functools.lru_cache(maxsize=None)
-    @override
-    def reward_space(self, agent):
-        return self._reward_space(agent)
-
-    def _get_drones_state(self):
-        """Return the state of all drones (xyz position) inside a dict with the same keys of agent_location and target_location."""
-        if self.render_mode == "human":
-            return list(self._target_location.values()), self._agent_location
