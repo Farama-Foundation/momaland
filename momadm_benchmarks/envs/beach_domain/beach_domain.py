@@ -42,9 +42,6 @@ def env(**kwargs):
     env = raw_env(**kwargs)
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
-    # Provides a wide vareity of helpful user errors
-    # Strongly recommended
-    env = wrappers.OrderEnforcingWrapper(env)
     return env
 
 
