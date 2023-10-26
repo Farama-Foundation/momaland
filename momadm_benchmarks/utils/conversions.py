@@ -12,7 +12,6 @@ from pettingzoo.utils.conversions import (
     parallel_to_aec_wrapper,
 )
 from pettingzoo.utils.env import AECEnv, ParallelEnv
-from pettingzoo.utils.wrappers import OrderEnforcingWrapper
 
 from momadm_benchmarks.utils.env import MOAECEnv, MOParallelEnv
 
@@ -23,7 +22,7 @@ def mo_aec_to_parallel(aec_env: AECEnv) -> ParallelEnv:
     In the case of an existing parallel environment wrapped using a `parallel_to_aec_wrapper`, this function will return the original parallel environment.
     Otherwise, it will apply the `aec_to_parallel_wrapper` to convert the environment.
     """
-    if isinstance(aec_env, OrderEnforcingWrapper) and isinstance(aec_env.env, parallel_to_aec_wrapper):
+    if isinstance(aec_env.env, parallel_to_aec_wrapper):
         return aec_env.env.env
     else:
         par_env = mo_aec_to_parallel_wrapper(aec_env)
@@ -40,8 +39,7 @@ def mo_parallel_to_aec(par_env: ParallelEnv) -> AECEnv:
         return par_env.aec_env
     else:
         aec_env = mo_parallel_to_aec_wrapper(par_env)
-        ordered_env = OrderEnforcingWrapper(aec_env)
-        return ordered_env
+        return aec_env
 
 
 class mo_aec_to_parallel_wrapper(aec_to_parallel_wrapper, MOParallelEnv):
