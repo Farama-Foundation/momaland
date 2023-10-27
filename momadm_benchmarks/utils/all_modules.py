@@ -1,3 +1,10 @@
+"""Environment registry.
+
+Used for:
+- testing
+- rendering GIF images
+"""
+
 from momadm_benchmarks.envs.beach_domain import mobeach_v0
 from momadm_benchmarks.envs.crazyrl.catch import mocatch_v0
 from momadm_benchmarks.envs.crazyrl.escort import moescort_v0

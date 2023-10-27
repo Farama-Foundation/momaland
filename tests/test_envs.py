@@ -5,8 +5,7 @@ import pytest
 from pettingzoo.test import parallel_api_test, seed_test
 
 from momadm_benchmarks.test.api_test import api_test
-
-from .all_modules import all_environments
+from momadm_benchmarks.utils.all_modules import all_environments
 
 
 @pytest.mark.parametrize(("name", "env_module"), list(all_environments.items()))
