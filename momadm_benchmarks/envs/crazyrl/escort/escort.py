@@ -58,7 +58,7 @@ class Escort(CrazyRLBaseParallelEnv):
         """Escort environment in CrazyRL.
 
         Args:
-            render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
+            render_mode (str, optional): The mode to display the rendering of the environment. Can be human, rgb_array or None.
             size (int, optional): Size of the area sides
             num_drones: amount of drones
             init_flying_pos (Dict, optional): A dictionary containing the name of the agent as key and where each value
