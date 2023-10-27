@@ -52,7 +52,7 @@ def raw_env(*args, **kwargs):
 class Catch(CrazyRLBaseParallelEnv):
     """A Parallel Environment where drone learn how to surround a moving target trying to escape."""
 
-    metadata = {"render_modes": ["human"], "name": "mocatch_v0", "is_parallelizable": True, "render_fps": FPS}
+    metadata = {"render_modes": ["human", "rgb_array"], "name": "mocatch_v0", "is_parallelizable": True, "render_fps": FPS}
 
     @override
     def __init__(self, *args, target_speed=0.1, **kwargs):

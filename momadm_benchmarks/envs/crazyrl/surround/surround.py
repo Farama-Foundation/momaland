@@ -51,7 +51,7 @@ def raw_env(*args, **kwargs):
 class Surround(CrazyRLBaseParallelEnv):
     """A Parallel Environment where drone learn how to surround a target point."""
 
-    metadata = {"render_modes": ["human"], "name": "mosurround_v0", "is_parallelizable": True, "render_fps": FPS}
+    metadata = {"render_modes": ["human", "rgb_array"], "name": "mosurround_v0", "is_parallelizable": True, "render_fps": FPS}
 
     @override
     def __init__(self, *args, **kwargs):

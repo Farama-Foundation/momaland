@@ -52,7 +52,7 @@ def raw_env(*args, **kwargs):
 class Escort(CrazyRLBaseParallelEnv):
     """A Parallel Environment where drone learn how to surround a moving target, going straight to one point to another."""
 
-    metadata = {"render_modes": ["human"], "name": "moescort_v0", "is_parallelizable": True, "render_fps": FPS}
+    metadata = {"render_modes": ["human", "rgb_array"], "name": "moescort_v0", "is_parallelizable": True, "render_fps": FPS}
 
     def __init__(self, *args, num_intermediate_points: int = 50, final_target_location=np.array([-2, -2, 3]), **kwargs):
         """Escort environment in CrazyRL.
