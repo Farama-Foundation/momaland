@@ -31,12 +31,12 @@ ACTIONS = {
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the beach domain."""
+    """Env factory function for the item gathering problem."""
     return MOItemGathering(**kwargs)
 
 
 def env(**kwargs):
-    """Autowrapper for the beach domain.
+    """Autowrapper for the item gathering problem.
 
     Args:
         **kwargs: keyword args to forward to the raw_env function
