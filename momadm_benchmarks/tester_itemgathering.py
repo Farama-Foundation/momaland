@@ -3,22 +3,11 @@
 import numpy as np
 
 from momadm_benchmarks.envs.item_gathering import item_gathering
+from momadm_benchmarks.envs.item_gathering.map_utils import generate_map
 
 
 def train():
     """Train a random agent on the item gathering domain."""
-    test_map = np.array(
-        [
-            [0, 0, 0, 0, 0, 0, 0, 1],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 4, 0, 0],
-            [0, 0, 4, 0, 4, 5, 0, 0],
-            [0, 0, 0, 3, 0, 0, 0, 0],
-            [0, 0, 3, 3, 0, 5, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [1, 0, 0, 0, 0, 0, 0, 0],
-        ]
-    )
     test_map = np.array(
         [
             [1, 0, 4, 1, 1],
@@ -26,9 +15,13 @@ def train():
         ]
     )
 
+    test_map = generate_map(rows=8, columns=8, item_distribution=(4, 4, 4, 2, 2), num_agents=10)
+    print(test_map)
+
     ig_env = item_gathering.parallel_env(
         num_timesteps=50,
         initial_map=test_map,
+        randomise=True,
         render_mode=None,
     )
 
