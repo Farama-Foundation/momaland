@@ -286,9 +286,11 @@ class MOItemGathering(MOParallelEnv):
 
         # environment termination, after all timesteps are exhausted or all items or gathered
         self.time_num += 1
-        env_termination = self.time_num >= self.num_timesteps or np.sum(self.env_map) == 0
+        env_termination = bool(np.sum(self.env_map) == 0)
+        env_truncation = bool(self.time_num >= self.num_timesteps)
         self.terminations = {agent: env_termination for agent in self.agents}
-        if env_termination:
+        self.truncations = {agent: env_truncation for agent in self.agents}
+        if env_termination or env_truncation:
             self.agents = []
 
         if self.render_mode == "human":
