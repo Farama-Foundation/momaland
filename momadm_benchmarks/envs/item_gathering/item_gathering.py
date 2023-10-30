@@ -3,6 +3,13 @@
 Johan Källström and Fredrik Heintz. 2019. Tunable Dynamics in Agent-Based Simulation using Multi-Objective
 Reinforcement Learning. Presented at the Adaptive and Learning Agents Workshop at AAMAS 2019.
 https://liu.diva-portal.org/smash/record.jsf?pid=diva2%3A1362933&dswid=9018
+
+Notes:
+    - In contrast to the original environment, the observation space is a 2D array of integers, i.e.,
+    the map of the environment, where each integer represents either agents (1 for the agent receiving the observation,
+     2 for the other agents) or items (3, 4, etc., depending on the number of items).
+    - The number of agents and items is configurable, by providing an initial map.
+    - If no initial map is provided, the environment uses a default map
 """
 
 import functools
@@ -23,41 +30,39 @@ from momadm_benchmarks.utils.env import MOParallelEnv
 
 
 ACTIONS = {
-    0: np.array([-1, 0], dtype=np.int32),  # up
-    1: np.array([1, 0], dtype=np.int32),  # down
-    2: np.array([0, -1], dtype=np.int32),  # left
-    3: np.array([0, 1], dtype=np.int32),  # right
+    0: np.array([0, 0], dtype=np.int32),  # stay
+    1: np.array([-1, 0], dtype=np.int32),  # up
+    2: np.array([1, 0], dtype=np.int32),  # down
+    3: np.array([0, -1], dtype=np.int32),  # left
+    4: np.array([0, 1], dtype=np.int32),  # right
 }
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the item gathering problem."""
-    return MOItemGathering(**kwargs)
+    """Parallel env factory function for the item gathering problem."""
+    return raw_env(**kwargs)
 
 
 def env(**kwargs):
     """Autowrapper for the item gathering problem.
 
     Args:
-        **kwargs: keyword args to forward to the raw_env function
+        **kwargs: keyword args to forward to the parallel_env function
 
     Returns:
         A fully wrapped env
     """
-    env = raw_env(**kwargs)
+    env = parallel_env(**kwargs)
+    env = mo_parallel_to_aec(env)
+
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
-    # Provides a wide variety of helpful user errors
-    # Strongly recommended
-    env = wrappers.OrderEnforcingWrapper(env)
     return env
 
 
 def raw_env(**kwargs):
-    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = parallel_env(**kwargs)
-    env = mo_parallel_to_aec(env)
-    return env
+    """Env factory function for the item gathering problem."""
+    return MOItemGathering(**kwargs)
 
 
 class MOItemGathering(MOParallelEnv):
@@ -75,7 +80,7 @@ class MOItemGathering(MOParallelEnv):
     def __init__(
         self,
         num_timesteps=10,
-        initial_map=None,
+        initial_map=DEFAULT_MAP,
         render_mode=None,
     ):
         """Initializes the item gathering domain.
@@ -89,17 +94,14 @@ class MOItemGathering(MOParallelEnv):
         self.current_timestep = 0
         self.render_mode = render_mode
 
-        if initial_map is not None:
-            # check is the initial map has any entries equal to 2
-            assert (
-                len(np.argwhere(initial_map == 2).flatten()) == 0
-            ), "Initial map cannot contain any 2s. That values is reserved for other agents, in the observation space."
+        # check is the initial map has any entries equal to 2
+        assert (
+            len(np.argwhere(initial_map == 2).flatten()) == 0
+        ), "Initial map cannot contain any 2s. That values is reserved for other agents, in the observation space."
 
-            # check if the initial map has any entries equal to 1
-            assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
-            self.initial_map = initial_map
-        else:
-            self.initial_map = DEFAULT_MAP
+        # check if the initial map has any entries equal to 1
+        assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
+        self.initial_map = initial_map
 
         # self.env_map is the working copy used in each episode. self.initial_map should not be modified.
         self.env_map = deepcopy(self.initial_map)
@@ -112,6 +114,7 @@ class MOItemGathering(MOParallelEnv):
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
         self.action_spaces = dict(zip(self.agents, [Discrete(len(ACTIONS))] * len(self.agent_positions)))
+        print(self.action_spaces)
 
         # observation space is a 2D array, the same size as the grid
         # 0 for empty, 1 for the current agent, 2 for other agents, 3 for objective 1, 4 for objective 2, ...
@@ -160,32 +163,20 @@ class MOItemGathering(MOParallelEnv):
 
     @override
     def reward_space(self, agent):
-        """Returns the reward space for the given agent."""
         return self.reward_spaces[agent]
 
     @override
     def render(self):
-        """Renders the environment.
-
-        In human mode, it can print to terminal, open
-        up a graphical window, or open up some other display that a human can see and understand.
-        """
         if self.render_mode is None:
             warn("You are calling render method without specifying any render mode.")
             return
 
     @override
     def close(self):
-        """Close should release any graphical displays, subprocesses, network connections or any other environment data
-        which should not be kept around after the user is no longer using the environment."""
         pass
 
     @override
     def reset(self, seed=None, options=None):
-        """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
-
-        Returns the observations for each agent
-        """
         if seed is not None:  # TODO Decide whether we need the seed
             np.random.seed(seed)
             random.seed(seed)
@@ -203,15 +194,8 @@ class MOItemGathering(MOParallelEnv):
         infos = {agent: {} for agent in self.agents}
         return observations, infos
 
+    @override
     def _is_valid_position(self, position):
-        """Check if the new position of an agent is valid.
-
-        Args:
-            position: the new position [x, y]
-
-        Returns: a boolean indicating whether the new position is valid
-
-        """
         row_valid = 0 <= position[0] < len(self.env_map)
         col_valid = 0 <= position[1] < len(self.env_map[0])
         return row_valid and col_valid
@@ -239,7 +223,6 @@ class MOItemGathering(MOParallelEnv):
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[agent]
-            print(agent, ACTIONS[act])
             new_position = self.agent_positions[i] + ACTIONS[act]
             if self._is_valid_position(new_position):
                 # update the position, if it is a valid step
@@ -247,17 +230,10 @@ class MOItemGathering(MOParallelEnv):
 
         # Check for collisions, resolve here only the collision, have final new position list at end
         collisions = []
-        max_collisions = 100
-        for i in range(len(new_positions) - 1):
-            for j in range(i + 1, len(new_positions)):
-                # if agents are on the same location
-                if np.array_equal(new_positions[i], new_positions[j]):
-                    # randomly choose between colliding agents
-                    choice = random.choice([i, j])
-                    # and re-assign the position of the selected agent to its old position
-                    new_positions[choice] = self.agent_positions[choice]
-                    collisions.append(choice)
+        # initial collision check, verify all agent pairs
+        new_positions, collisions = self._verify_collisions(collisions, new_positions)
 
+        max_collisions = self.num_agents * 10
         while len(collisions) > 0 and max_collisions > 0:
             new_positions, collisions = self._verify_collisions(collisions, new_positions)
             max_collisions -= 1
@@ -320,7 +296,7 @@ class MOItemGathering(MOParallelEnv):
             obs[self.agent_positions[i][0], self.agent_positions[i][1]] = marker
         return obs
 
-    def _verify_collisions(self, check_set, new_positions):
+    def _verify_collisions(self, check_set, positions):
         """Function to check for collisions between agents.
 
         Args:
@@ -332,13 +308,22 @@ class MOItemGathering(MOParallelEnv):
             collisions: the list of agents that collided and for which the position changed
         """
         collisions = []
-        for i in check_set:
-            for j in range(len(new_positions)):
-                if i != j:
-                    if np.array_equal(new_positions[i], new_positions[j]):
-                        # randomly choose between colliding agents
-                        choice = random.choice([i, j])
-                        # and re-assign the position of the selected agent to its old position
-                        new_positions[choice] = self.agent_positions[choice]
-                        collisions.append(choice)
-        return new_positions, collisions
+        if len(check_set) == 0:
+            for i in range(len(positions) - 1):
+                for j in range(i + 1, len(positions)):
+                    self._verify_positions(i, j, positions, collisions)
+        else:
+            for i in check_set:
+                for j in range(len(positions)):
+                    if i != j:
+                        self._verify_positions(i, j, positions, collisions)
+        return positions, collisions
+
+    def _verify_positions(self, i, j, positions, collisions):
+        # if agents are on the same location
+        if np.array_equal(positions[i], positions[j]):
+            # randomly choose between colliding agents
+            choice = random.choice([i, j])
+            # and re-assign the position of the selected agent to its old position
+            positions[choice] = self.agent_positions[choice]
+            collisions.append(choice)
