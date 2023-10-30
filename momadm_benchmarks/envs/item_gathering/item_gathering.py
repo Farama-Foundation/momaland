@@ -24,7 +24,7 @@ from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils import wrappers
 
-from momadm_benchmarks.envs.item_gathering.map_utils import DEFAULT_MAP
+from momadm_benchmarks.envs.item_gathering.map_utils import DEFAULT_MAP, randomise_map
 from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
 from momadm_benchmarks.utils.env import MOParallelEnv
 
@@ -81,6 +81,7 @@ class MOItemGathering(MOParallelEnv):
         self,
         num_timesteps=10,
         initial_map=DEFAULT_MAP,
+        randomise=False,
         render_mode=None,
     ):
         """Initializes the item gathering domain.
@@ -88,11 +89,13 @@ class MOItemGathering(MOParallelEnv):
         Args:
             num_timesteps: number of timesteps to run the environment for
             initial_map: map of the environment
+            randomise: whether to randomise the map, at each episode
             render_mode: render mode for the environment
         """
         self.num_timesteps = num_timesteps
         self.current_timestep = 0
         self.render_mode = render_mode
+        self.randomise = randomise
 
         # check is the initial map has any entries equal to 2
         assert (
@@ -184,7 +187,11 @@ class MOItemGathering(MOParallelEnv):
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
 
-        self.env_map = deepcopy(self.initial_map)  # Reset the environment map to the initial map provided
+        # Reset the environment map
+        if self.randomise:
+            self.env_map = deepcopy(randomise_map(self.initial_map))
+        else:
+            self.env_map = deepcopy(self.initial_map)
         self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list
         self.env_map[self.env_map == 1] = 0  # remove agent starting positions from map
 
