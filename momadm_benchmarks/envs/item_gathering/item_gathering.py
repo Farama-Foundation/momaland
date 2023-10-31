@@ -180,7 +180,7 @@ class MOItemGathering(MOParallelEnv):
 
     @override
     def reset(self, seed=None, options=None):
-        if seed is not None:  # TODO Decide whether we need the seed
+        if seed is not None:
             np.random.seed(seed)
             random.seed(seed)
         self.agents = self.possible_agents[:]
@@ -189,7 +189,7 @@ class MOItemGathering(MOParallelEnv):
 
         # Reset the environment map
         if self.randomise:
-            self.env_map = deepcopy(randomise_map(self.initial_map))
+            self.env_map = randomise_map(deepcopy(self.initial_map))
         else:
             self.env_map = deepcopy(self.initial_map)
         self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list

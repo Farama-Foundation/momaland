@@ -1,7 +1,4 @@
-"""Map utils for the Item Gathering Environment.
-
-TODO later - write helper function to generate maps according to user configuration
-"""
+"""Map utils for the Item Gathering Environment."""
 
 import numpy as np
 
