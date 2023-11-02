@@ -67,8 +67,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
     - close
     - state
 
-    they are defined in this main environment and the following attributes can be set in child env through the compute
-    method set:
+    they are defined in this main environment, as well as the following attributes:
         action_space: The Space object corresponding to valid actions
         observation_space: The Space object corresponding to valid observations
         reward_space: The Space object corresponding to valid rewards
@@ -76,7 +75,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
 
     metadata = {
         "render_modes": ["human"],
-        "is_parallelizable": False,
+        "is_parallelizable": True,
         "render_fps": FPS,
     }
 
@@ -94,9 +93,9 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
             render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
             size (int, optional): Size of the area sides
             num_drones: amount of drones
-            init_flying_pos: Array of initial positions of the drones when they are flying
+            init_flying_pos: 2d array containing the coordinates of the agents
                 is a (3)-shaped array containing the initial XYZ position of the drones.
-            init_target_location (Dict, optional): Array of the initial position of the moving target
+            init_target_location: Array of the initial position of the moving target
         """
         self.num_drones = num_drones
         self.agents_names = np.array(["agent_" + str(i) for i in range(self.num_drones)])
@@ -106,12 +105,11 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
         self.init_flying_pos = {agent: init_flying_pos[i].copy() for i, agent in enumerate(self.agents_names)}
         self.agent_location = self.init_flying_pos.copy()
         self.previous_location = self.init_flying_pos.copy()  # for potential based reward
-        self.agent_location = self.init_flying_pos.copy()
 
         # targets
-        self.init_target_location = {"unique": init_target_location}  # unique target location for all agents
-        self.target_location = self.init_target_location.copy()
-        self.previous_target = self.init_target_location.copy()
+        self.init_target_location = init_target_location.copy()
+        self.target_location = init_target_location.copy()
+        self.previous_target = init_target_location.copy()
 
         self.possible_agents = self.agents_names.tolist()
         self.timestep = 0
@@ -175,7 +173,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
 
         for agent in self.agents_names:
             obs[agent] = self.agent_location[agent].copy()
-            obs[agent] = np.append(obs[agent], self.target_location["unique"])
+            obs[agent] = np.append(obs[agent], self.target_location)
 
             for other_agent in self.agents_names:
                 if other_agent != agent:
@@ -185,7 +183,6 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
         return obs
 
     def _compute_reward(self):
-        # Reward is the mean distance to the other agents minus the distance to the target
         reward = dict()
 
         for agent in self.agents_names:
@@ -203,8 +200,8 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
 
             # distance to the target
             # (!) targets and locations must be updated before this
-            dist_from_old_target = _distance_to_target(self.agent_location[agent], self.previous_target["unique"])
-            old_dist = _distance_to_target(self.previous_location[agent], self.previous_target["unique"])
+            dist_from_old_target = _distance_to_target(self.agent_location[agent], self.previous_target)
+            old_dist = _distance_to_target(self.previous_location[agent], self.previous_target)
 
             # reward should be new_potential - old_potential but since the distances should be negated we reversed the signs
             # -new_potential - (-old_potential) = old_potential - new_potential
@@ -221,7 +218,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
             # collision with the ground or the target
             if (
                 self.agent_location[agent][2] < CLOSENESS_THRESHOLD
-                or np.linalg.norm(self.agent_location[agent] - self.target_location["unique"]) < CLOSENESS_THRESHOLD
+                or np.linalg.norm(self.agent_location[agent] - self.target_location) < CLOSENESS_THRESHOLD
             ):
                 reward_far_from_other_agents = -10
                 reward_close_to_target = -10
@@ -249,7 +246,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
 
             # collision with the target
             terminated[agent] = terminated[agent] or (
-                np.linalg.norm(self.agent_location[agent] - self.target_location["unique"]) < CLOSENESS_THRESHOLD
+                np.linalg.norm(self.agent_location[agent] - self.target_location) < CLOSENESS_THRESHOLD
             )
 
             if terminated[agent]:
@@ -291,7 +288,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
         infos = self._compute_info()
 
         if self.render_mode == "human":
-            self._render_frame()
+            self.render()
         return observation, infos
 
     @override
@@ -315,10 +312,6 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
 
     @override
     def render(self):
-        if self.render_mode == "human":
-            self._render_frame()
-
-    def _render_frame(self):
         """Renders the current frame of the environment. Only works in human rendering mode."""
 
         def init_window():
@@ -351,7 +344,7 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
             self.viewMatrix = glGetFloatv(GL_MODELVIEW_MATRIX)
             glLoadIdentity()
 
-        if self.window is None and self.render_mode == "human":
+        if self.window is None:
             init_window()
 
         # if self.clock is None and self.render_mode == "human":
@@ -385,10 +378,10 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
         field(self.size)
         axes()
 
-        for target in self.target_location.values():
-            glPushMatrix()
-            target_point(np.array([target[0], target[1], target[2]]))
-            glPopMatrix()
+        # for target in self.target_location:
+        glPushMatrix()
+        target_point(np.array([self.target_location[0], self.target_location[1], self.target_location[2]]))
+        glPopMatrix()
 
         pygame.event.pump()
         pygame.display.flip()

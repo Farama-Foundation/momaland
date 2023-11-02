@@ -52,18 +52,18 @@ def raw_env(*args, **kwargs):
 class Escort(CrazyRLBaseParallelEnv):
     """A Parallel Environment where drone learn how to surround a moving target, going straight to one point to another."""
 
-    metadata = {"render_modes": ["human", "rgb_array"], "name": "moescort_v0", "is_parallelizable": True, "render_fps": FPS}
+    metadata = {"render_modes": ["human"], "name": "moescort_v0", "is_parallelizable": True, "render_fps": FPS}
 
     def __init__(self, *args, num_intermediate_points: int = 50, final_target_location=np.array([-2, -2, 3]), **kwargs):
         """Escort environment in CrazyRL.
 
         Args:
-            render_mode (str, optional): The mode to display the rendering of the environment. Can be human, rgb_array or None.
+            render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
             size (int, optional): Size of the area sides
             num_drones: amount of drones
-            init_flying_pos (Dict, optional): A dictionary containing the name of the agent as key and where each value
+            init_flying_pos: 2d array containing the coordinates of the agents
                 is a (3)-shaped array containing the initial XYZ position of the drones.
-            init_target_location (Dict, optional): A dictionary containing a (3)-shaped array for the XYZ position of the target.
+            init_target_location: A (3)-shaped array for the XYZ position of the target.
             final_target_location: Array of the final position of the moving target
             num_intermediate_points: Number of intermediate points in the target trajectory
         """
@@ -75,14 +75,14 @@ class Escort(CrazyRLBaseParallelEnv):
         self.num_ref_points = num_intermediate_points + 2
         # Ref is a 2d arrays for the target
         # it contains the reference points (xyz) for the target at each timestep
-        self.ref: np.ndarray = np.array([self.init_target_location["unique"]])
+        self.ref: np.ndarray = np.array([self.init_target_location])
 
         for t in range(1, self.num_ref_points):
             self.ref = np.append(
                 self.ref,
                 [
-                    self.init_target_location["unique"]
-                    + (self.final_target_location - self.init_target_location["unique"]) * t / self.num_ref_points
+                    self.init_target_location
+                    + (self.final_target_location - self.init_target_location) * t / self.num_ref_points
                 ],
                 axis=0,
             )
@@ -92,11 +92,11 @@ class Escort(CrazyRLBaseParallelEnv):
         target_point_action = dict()
         state = self.agent_location
         # new targets
-        self._previous_target = self.target_location.copy()
+        self.previous_target = self.target_location.copy()
         if self.timestep < self.num_ref_points:
-            self.target_location["unique"] = self.ref[self.timestep]
+            self.target_location = self.ref[self.timestep]
         else:  # the target has stopped
-            self.target_location["unique"] = self.ref[-1]
+            self.target_location = self.ref[-1]
 
         for agent in self.agents:
             # Actions are clipped to stay in the map and scaled to do max 20cm in one step

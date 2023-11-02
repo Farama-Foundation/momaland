@@ -52,19 +52,19 @@ def raw_env(*args, **kwargs):
 class Catch(CrazyRLBaseParallelEnv):
     """A Parallel Environment where drone learn how to surround a moving target trying to escape."""
 
-    metadata = {"render_modes": ["human", "rgb_array"], "name": "mocatch_v0", "is_parallelizable": True, "render_fps": FPS}
+    metadata = {"render_modes": ["human"], "name": "mocatch_v0", "is_parallelizable": True, "render_fps": FPS}
 
     @override
     def __init__(self, *args, target_speed=0.1, **kwargs):
         """Catch environment in CrazyRL.
 
         Args:
-            render_mode (str, optional): The mode to display the rendering of the environment. Can be human, rgb_array or None.
+            render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
             size (int, optional): Size of the area sides
             num_drones: amount of drones
-            init_flying_pos (Dict, optional): A dictionary containing the name of the agent as key and where each value
+            init_flying_pos: 2d array containing the coordinates of the agents
                 is a (3)-shaped array containing the initial XYZ position of the drones.
-            init_target_location (Dict, optional): A dictionary containing a (3)-shaped array for the XYZ position of the target.
+            init_target_location: Array of the initial position of the moving target
             target_speed: Distance traveled by the target at each timestep
         """
 
@@ -79,24 +79,24 @@ class Catch(CrazyRLBaseParallelEnv):
 
         mean = mean / self.num_drones
 
-        dist = np.linalg.norm(mean - self.target_location["unique"])
-        self.target_location["unique"] = self.target_location["unique"].copy()
+        dist = np.linalg.norm(mean - self.target_location)
+        self.target_location = self.target_location.copy()
 
         # go to the opposite direction of the mean of the agents
         if dist > 0.2:
-            self.target_location["unique"] += (self.target_location["unique"] - mean) / dist * self.target_speed
+            self.target_location += (self.target_location - mean) / dist * self.target_speed
 
         # if the mean of the agents is too close to the target, move the target in a random direction, slowly because
         # it hesitates
         else:
-            self.target_location["unique"] += np.random.random_sample(3) * self.target_speed * 0.1
+            self.target_location += np.random.random_sample(3) * self.target_speed * 0.1
 
         # if the target is out of the map, put it back in the map
         np.clip(
-            self.target_location["unique"],
+            self.target_location,
             [-self.size, -self.size, 0.2],
             [self.size, self.size, 3],
-            out=self.target_location["unique"],
+            out=self.target_location,
         )
 
     @override
