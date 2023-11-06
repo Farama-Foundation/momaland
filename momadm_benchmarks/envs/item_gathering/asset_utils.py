@@ -30,7 +30,6 @@ def get_colored(asset: str, count: int):
 
     for i in range(count - 1):  # subtracting the default asset
         rgb = rng.random((3, 3))
-        print(rgb)
         matrix = (rgb[0, 0], rgb[1, 0], rgb[2, 0], 0, rgb[0, 1], rgb[1, 1], rgb[2, 1], 0, rgb[0, 2], rgb[1, 2], rgb[2, 2], 0)
 
         # Apply above transform, reinsert alpha and save
@@ -47,7 +46,7 @@ def del_colored(asset: str, count: int):
         count: `int` value. The amount of total agents/items in the environment.
 
     """
-    assert asset == "item" or asset == "agent", "You must specify an asset to get colored versions of."
+    assert asset == "item" or asset == "agent", "You must specify an asset to delete colored versions of."
 
     path = os.path.dirname(os.path.realpath(__file__))
 
