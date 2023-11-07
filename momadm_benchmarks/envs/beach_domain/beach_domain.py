@@ -26,8 +26,8 @@ NUM_OBJECTIVES = 2
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the beach domain."""
-    return MOBeachDomain(**kwargs)
+    """Parallel env factory function for the beach problem domain."""
+    return raw_env(**kwargs)
 
 
 def env(**kwargs):
@@ -39,17 +39,17 @@ def env(**kwargs):
     Returns:
         A fully wrapped env
     """
-    env = raw_env(**kwargs)
+    env = parallel_env(**kwargs)
+    env = mo_parallel_to_aec(env)
+
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
     return env
 
 
 def raw_env(**kwargs):
-    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = parallel_env(**kwargs)
-    env = mo_parallel_to_aec(env)
-    return env
+    """Env factory function for the beach problem domain."""
+    return MOBeachDomain(**kwargs)
 
 
 class MOBeachDomain(MOParallelEnv):
