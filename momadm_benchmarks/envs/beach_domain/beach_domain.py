@@ -251,7 +251,7 @@ class MOBeachDomain(MOParallelEnv):
         # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
         observations = {agent: None for agent in self.agents}
         # Note that agents only receive the reward after the last timestep
-        rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for _ in range(self.num_agents)}
+        rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for i in range(self.num_agents)}
 
         for i, agent in enumerate(self.agents):
             observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
