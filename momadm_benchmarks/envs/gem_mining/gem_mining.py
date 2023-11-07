@@ -33,37 +33,33 @@ NUM_OBJECTIVES = 2
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the beach domain."""
-    return MOGemMining(**kwargs)
+    """Parallel env factory function for the gem mining domain."""
+    return raw_env(**kwargs)
 
 
 def env(**kwargs):
     """Autowrapper for the gem mining domain.
 
     Args:
-        **kwargs: keyword args to forward to the raw_env function
+        **kwargs: keyword args to forward to the parallel_env function
 
     Returns:
         A fully wrapped env
     """
-    env = raw_env(**kwargs)
+    env = parallel_env(**kwargs)
+    env = mo_parallel_to_aec(env)
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
-    # Provides a wide vareity of helpful user errors
-    # Strongly recommended
-    env = wrappers.OrderEnforcingWrapper(env)
     return env
 
 
 def raw_env(**kwargs):
-    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = parallel_env(**kwargs)
-    env = mo_parallel_to_aec(env)
-    return env
+    """Env factory function for the gem mining domain."""
+    return MOGemMining(**kwargs)
 
 
 class MOGemMining(MOParallelEnv):
-    """Environment for MO Beach problem domain.
+    """Environment for MO gem mining domain.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -72,7 +68,7 @@ class MOGemMining(MOParallelEnv):
     These attributes should not be changed after initialization.
     """
 
-    metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
+    metadata = {"render_modes": ["human"], "name": "mogem_v0"}
 
     # TODO does this environment require max_cycle?
     def __init__(
