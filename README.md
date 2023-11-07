@@ -18,5 +18,5 @@ Clone the repo and run `pre-commit install` to setup the pre-commit hooks.
 3. Define the factory functions to create your class: `parallel_env` returns a parallel version of the env, `env` returns an AEC version, and `raw_env` that is the pure class constructor (it is not used in practice). (!) use the conversions that are defined inside our repository, e.g. `mo_parallel_to_aec` instead of `parallel_to_aec` from PZ.
 4. (!) do not use `OrderEnforcingWrapper`, it prevents from accessing the `reward_space` of the env :-(;
 5. Add a versioned constructor of your env in the directory which exports the factory functions (see `mobeach_v0.py` for an example).
-6. Add your environment to the tests in `tests/all_modules.py`
+6. Add your environment to the tests in `utils/all_modules.py`
 7. Run `pytest` to check that everything works
