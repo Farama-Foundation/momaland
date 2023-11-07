@@ -195,7 +195,7 @@ class MOItemGathering(MOParallelEnv):
 
             if self.render_mode == "human":
                 pygame.display.init()
-                pygame.display.set_caption("Resource Gathering")
+                pygame.display.set_caption("Item Gathering")
                 self.window = pygame.display.set_mode(self.window_size)
             else:
                 self.window = pygame.Surface(self.window_size)
