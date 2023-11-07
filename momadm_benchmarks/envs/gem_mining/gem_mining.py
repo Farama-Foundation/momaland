@@ -11,59 +11,53 @@ Created on Tue Oct 24 16:31:14 2023
 """
 
 import functools
+import json
+import os
 import random
-
-# from gymnasium.utils import EzPickle
+from collections import defaultdict
 from typing_extensions import override
 
+import networkx as nx
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils import wrappers
+from sympy import diff, lambdify, sympify
 
 from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
 from momadm_benchmarks.utils.env import MOParallelEnv
 
 
-LEFT = -1
-RIGHT = 1
-STAY = 0
-MOVES = ["LEFT", "RIGHT", "STAY"]
-NUM_OBJECTIVES = 2
-
-
 def parallel_env(**kwargs):
-    """Env factory function for the beach domain."""
-    return MOGemMining(**kwargs)
+    """Env factory function for the congestion game."""
+    return raw_env(**kwargs)
 
 
 def env(**kwargs):
-    """Autowrapper for the gem mining domain.
+    """Auto-wrapper for the congestion game.
 
     Args:
-        **kwargs: keyword args to forward to the raw_env function
+        **kwargs: keyword args to forward to the parallel_env function.
 
     Returns:
-        A fully wrapped env
+        A fully wrapped AEC env
     """
-    env = raw_env(**kwargs)
+    env = parallel_env(**kwargs)
+    # convert parallel version of the env to an AEC version
+    env = mo_parallel_to_aec(env)
+
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
-    # Provides a wide vareity of helpful user errors
-    # Strongly recommended
-    env = wrappers.OrderEnforcingWrapper(env)
     return env
 
 
 def raw_env(**kwargs):
-    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = parallel_env(**kwargs)
-    env = mo_parallel_to_aec(env)
-    return env
+    """Env factory function for the congestion game."""
+    return MOGemMining(**kwargs)
 
 
 class MOGemMining(MOParallelEnv):
-    """Environment for MO Beach problem domain.
+    """Environment for MO Congestion Game problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -72,55 +66,47 @@ class MOGemMining(MOParallelEnv):
     These attributes should not be changed after initialization.
     """
 
-    metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
-
-    # TODO does this environment require max_cycle?
     def __init__(
         self,
-        num_timesteps=10,
-        num_agents=100,
-        reward_scheme="local",
-        sections=6,
-        capacity=10,
-        type_distribution=(0.5, 0.5),
-        position_distribution=None,
+        problem_name="Braess_1_4200_10_c1",
+        num_agents=4200,
+        toll_mode="mct",
+        random_toll_percentage=0.1,
+        num_timesteps=1,
         render_mode=None,
     ):
-        """Initializes the beach domain.
+        """Initializes the congestion game.
 
         Args:
-            sections: number of beach sections in the domain
-            capacity: capacity of each beach section
-            num_agents: number of agents in the domain
-            type_distribution: the distribution of agent types in the domain. Default: 2 types equally distributed.
-            position_distribution: the initial distribution of agents in the domain. Default: uniform over all sections.
-            num_timesteps: number of timesteps in the domain
+            problem_name: the name of the network that will be used
+            num_agents: number of agents in the network
+            toll_mode: the tolling mode that is used, tolls are either placed randomly "random" or using marginal cost tolling "mct"
+            random_toll_percentage: in the case of random tolling the percentage of roads that will be taxed
+            num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
-            reward_scheme: the reward scheme to use ('local', or 'global'). Default: local
         """
-        self.reward_scheme = reward_scheme
-        self.sections = sections
-        # TODO Extend to distinct capacities per section?
-        self.resource_capacities = [capacity for _ in range(sections)]
+        # Read in the problem from the corresponding .json file in the networks directory
+        self.graph, self.od, self.routes = self._read_problem(problem_name)
+        # Keep track of the current flow on each link the network
+        self.flows = {f"{edge[0]}-{edge[1]}": 0 for edge in self.graph.edges}
+
+        # Episodes/Timesteps
         self.num_timesteps = num_timesteps
         self.episode_num = 0
-        self.type_distribution = type_distribution
-        if position_distribution is None:
-            self.position_distribution = [1 / sections for _ in range(sections)]
-        else:
-            assert (
-                len(position_distribution) == self.sections
-            ), "number of sections should be equal to the length of the provided position_distribution:"
-            self.position_distribution = position_distribution
 
         self.render_mode = render_mode
-        self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
+        self.possible_agents = ["agent_" + str(i) for i in range(num_agents)]
         self.agents = self.possible_agents[:]
-        self.types, self.state = self._init_state()
+        # each driver gets assigned a random origin-destination (OD) pair by _init_state()
+        self.drivers_od = self._init_state()
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
 
-        self.action_spaces = dict(zip(self.agents, [Discrete(len(MOVES))] * num_agents))
+        # compute the possible routes each agent can take based on its OD pair
+        route_choices_per_agent = [Discrete(len(self.routes[od])) for od in self.drivers_od]
+        # action space can be different for agents when there are multiple OD pairs with different numbers of routes
+        self.action_spaces = dict(zip(self.agents, route_choices_per_agent))
+        # stateless setting, agents receive a constant '0' as an observation in each timestep
         self.observation_spaces = dict(
             zip(
                 self.agents,
@@ -128,28 +114,36 @@ class MOGemMining(MOParallelEnv):
                     Box(
                         low=0,
                         high=self.num_agents,
-                        # Observation form:
-                        # agent type, section id, section capacity, section consumption, % of agents of current type
-                        shape=(5,),
+                        shape=(1,),
                         dtype=np.float32,
                     )
                 ]
                 * num_agents,
             )
         )
+        # keep track of the maximum link latency and cost to scale the rewards returned to the agents
+        self._max_link_latency = None
+        self._max_link_cost = None
+        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=2000, shape=(2,))] * num_agents))
 
-        # maximum capacity reward can be calculated  by calling the _global_capacity_reward()
-        optimal_consumption = [capacity for _ in range(sections)]
-        optimal_consumption[-1] = max(self.num_agents - ((sections - 1) * capacity), 0)
-        # max_r = _global_capacity_reward(self.resource_capacities, optimal_consumption)
-        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=10, shape=(NUM_OBJECTIVES,))] * num_agents))
+        # Each arc can have a different latency function (e.g. constant travel time / travel time dependent on flow)
+        self.latency_functions = dict()
+        self.toll_mode = toll_mode  # "random" or "mct"
+        assert (
+            self.toll_mode == "random" or self.toll_mode == "mct"
+        ), "chosen toll mode not supported, use either random or mct"
+        self.random_toll_percentage = random_toll_percentage
+        # Marginal cost is given by the product of the flow and the derivative of the latency function of the arc
+        self.cost_function = dict()
+        self._create_latency_and_cost_function(nx.get_edge_attributes(self.graph, "latency_function"), num_agents)
+
+    metadata = {"render_modes": ["human"], "name": "mocongestion_v0"}
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
     @functools.lru_cache(maxsize=None)
     @override
     def observation_space(self, agent):
-        # gymnasium spaces are defined and documented here: https://gymnasiuspspom.farama.org/api/spaces/
         return self.observation_spaces[agent]
 
     @functools.lru_cache(maxsize=None)
@@ -159,16 +153,10 @@ class MOGemMining(MOParallelEnv):
 
     @override
     def reward_space(self, agent):
-        """Returns the reward space for the given agent."""
         return self.reward_spaces[agent]
 
     @override
     def render(self):
-        """Renders the environment.
-
-        In human mode, it can print to terminal, open
-        up a graphical window, or open up some other display that a human can see and understand.
-        """
         if self.render_mode is None:
             warn("You are calling render method without specifying any render mode.")
             return
@@ -188,13 +176,11 @@ class MOGemMining(MOParallelEnv):
             np.random.seed(seed)
             random.seed(seed)
         self.agents = self.possible_agents[:]
-        self.types, self.state = self._init_state()
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
-        section_consumptions, section_agent_types = self._get_stats()
-        observations = {
-            agent: self._get_obs(i, section_consumptions, section_agent_types) for i, agent in enumerate(self.agents)
-        }
+        # Reset the flows of each arc
+        self.flows = {f"{edge[0]}-{edge[1]}": 0 for edge in self.graph.edges}
+        observations = {agent: np.array([0], dtype=np.float32) for i, agent in enumerate(self.agents)}
         self.episode_num = 0
 
         infos = {agent: {} for agent in self.agents}
@@ -202,17 +188,9 @@ class MOGemMining(MOParallelEnv):
 
     def _init_state(self):
         """Initializes the state of the environment. This is called by reset()."""
-        types = random.choices(
-            [i for i in range(len(self.type_distribution))], weights=self.type_distribution, k=self.num_agents
-        )
-
-        if self.position_distribution is None:
-            positions = [random.randint(0, self.sections - 1) for _ in self.agents]
-        else:
-            positions = random.choices(
-                [i for i in range(self.sections)], weights=self.position_distribution, k=self.num_agents
-            )
-        return types, positions
+        # randomly distribute drivers among possible OD pairs
+        drivers_od = [random.choice(self.od) for _ in self.agents]
+        return drivers_od
 
     def step(self, actions):
         """Steps in the environment.
@@ -233,66 +211,201 @@ class MOGemMining(MOParallelEnv):
             self.agents = []
             return {}, {}, {}, {}, {}
 
-        # Apply actions and update system state
+        # - Actions -#
+        # keep track of the flow on each route, update the flow on the links of the roads at once afterward
+        agents_on_routes = defaultdict(int)
+        # keep track of each route selected by each agent
+        agent_routes = []
         for i, agent in enumerate(self.agents):
             act = actions[agent]
-            self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
+            # get the OD pair of the agent, so we know which route the agent has chosen
+            agent_od = self.drivers_od[i]
+            agent_route = self.routes[agent_od][act]
+            agents_on_routes[agent_route] += 1
+            # save chosen route of agent
+            agent_routes.append(agent_route)
+        # add the flow of all routes to the links of each route:
+        for route in agents_on_routes:
+            self._add_flow_to_route(route, agents_on_routes[route])
 
-        section_consumptions, section_agent_types = self._get_stats()
+        # - Observations -#
+        # return constant observations '0' as this is a stateless setting
+        observations = {agent: np.array([0], dtype=np.float32) for agent in self.agents}
 
-        self.episode_num += 1
+        # - Rewards -#
+        # compute latency and cost of each route
+        latency_routes, cost_routes = self._compute_latency_and_cost(agents_on_routes)
 
-        env_termination = self.episode_num >= self.num_timesteps
-        self.terminations = {agent: env_termination for agent in self.agents}
-        reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES), dtype=np.float32)
+        rewards = dict()
+        for i in range(len(self.agents)):
+            # get the route which was taken by the agent
+            agent_route = agent_routes[i]
+            latency_reward = latency_routes[agent_route]
+            cost_reward = cost_routes[agent_route]
+            # retrieve the ID of the agent
+            agent_id = self.agents[i]
+            rewards[agent_id] = np.array([-latency_reward, -cost_reward], dtype=np.float32)
 
-        if env_termination:
-            if self.reward_scheme == "local":
-                for i in range(self.sections):
-                    lr_capacity = 10  # _local_capacity_reward(self.resource_capacities[i], section_consumptions[i])
-                    lr_mixture = 10  # _local_mixture_reward(section_agent_types[i])
-                    reward_per_section[i] = np.array([lr_capacity, lr_mixture])
-
-            elif self.reward_scheme == "global":
-                g_capacity = 10  # _global_capacity_reward(self.resource_capacities, section_consumptions)
-                g_mixture = 10  # _global_mixture_reward(section_agent_types)
-                reward_per_section = np.array([[g_capacity, g_mixture]] * self.sections)
-
-        # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
-        observations = {agent: None for agent in self.agents}
-        # Note that agents only receive the reward after the last timestep
-        rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for _ in range(self.num_agents)}
-
-        for i, agent in enumerate(self.agents):
-            observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
-            rewards[agent] = reward_per_section[self.state[i]]
-
-        # typically there won't be any information in the infos, but there must
-        # still be an entry for each agent
+        # - Infos -#
+        # typically there won't be any information in the infos, but there must still be an entry for each agent
         infos = {agent: {} for agent in self.agents}
 
-        if env_termination:
-            self.agents = []
+        # stateless bandit setting where each episode only lasts 1 timestep
+        self.terminations = {agent: True for i, agent in enumerate(self.agents)}
+        self.agents = []
 
         if self.render_mode == "human":
             self.render()
 
         return observations, rewards, self.truncations, self.terminations, infos
 
-    def _get_obs(self, i, section_consumptions, section_agent_types):
-        total_same_type = section_agent_types[self.state[i]][self.types[i]]
-        t = total_same_type / section_consumptions[self.state[i]]
-        obs = np.array(
-            [self.types[i], self.state[i], self.resource_capacities[self.state[i]], section_consumptions[self.state[i]], t],
-            dtype=np.float32,
-        )
-        return obs
+    # - Helper Methods -#
+    def _read_problem(self, problem_name):
+        """Reads in the .JSON file of the chosen problem.
 
-    def _get_stats(self):
-        section_consumptions = np.zeros(self.sections)
-        section_agent_types = np.zeros((self.sections, len(self.type_distribution)))
+        Parses the network which is loaded in NetworkX as well as the
+        possible origin/destination (OD) pairs and the possible routes the agents can choose to travel from the origins
+        to the destinations.
 
-        for i in range(len(self.agents)):
-            section_consumptions[self.state[i]] += 1
-            section_agent_types[self.state[i]][self.types[i]] += 1
-        return section_consumptions, section_agent_types
+        Args:
+            problem_name: the name of the problem which will be used, needs to correspond to the name of a .json file in the './networks/' directory.
+
+        Returns: a tuple containing the following items in order:
+            - graph: a NetworkX representation of the network
+            - od: the possible origin/destination pairs in this problem
+            - routes: the possible routes that can be used to travel from the origins to the destinations
+        """
+        # if problem file already contains '.json' extension, ignore, else add extension to problem name
+        if not problem_name.endswith(".json"):
+            problem_name = problem_name + ".json"
+        # open the .json file of the problem name from the local 'networks/' directory
+        local_problem_file = os.path.join(os.path.dirname(__file__), "networks", problem_name)
+        with open(local_problem_file) as graph_json:
+            # load the .json
+            data = json.load(graph_json)
+            # - Graph -#
+            graph = nx.node_link_graph(data["graph"])
+            # - Origin/Destination pairs -#
+            od = data["od"]
+            # - Possible routes for OD pairs -#
+            routes = data["routes"]
+
+            return graph, od, routes
+
+    def _create_latency_and_cost_function(self, edges_latency_attributes, num_agents):
+        """Creates latency and cost functions for each edge of the network.
+
+        Edges latency and cost functions are based on the .JSON file of the chosen problem. Each edge can have different travel times (latency function) and monetary costs.
+
+        Args:
+            edges_latency_attributes: parsed latency functions of links of the network
+            num_agents: the total number of agents in the network
+        """
+        for edge in edges_latency_attributes:
+            # retrieve latency attributes
+            expr = edges_latency_attributes[edge]["expr"]
+            param = edges_latency_attributes[edge]["param"]
+            constants = edges_latency_attributes[edge]["constants"]
+            # keys of latency_function and cost_function dict are "source-target" strings instead of tuples
+            edge_name = f"{edge[0]}-{edge[1]}"
+            # - Latency Function - #
+            latency_formula = sympify(expr)
+            simplified_latency = latency_formula.subs(constants)
+            self.latency_functions[edge_name] = simplified_latency
+
+            # - Cost Function - #
+            # two toll modes are supported, either tolls are placed randomly on x% of roads OR marginal cost tolling is applied
+            if self.toll_mode == "random":
+                # if tolls are placed randomly, each road has a 'random_toll_percentage' chance of containing a toll equal to its latency
+                if random.random() < self.random_toll_percentage:
+                    self.cost_function[edge_name] = simplified_latency
+                else:
+                    self.cost_function[edge_name] = sympify("0")
+
+            elif self.toll_mode == "mct":
+                latency_deriv = diff(latency_formula, param)
+                # marginal cost toll is computed as the product of the flow and the derivative of the latency function
+                simplified_deriv = latency_deriv.subs(constants)
+                mct_formula = sympify(f"{param}*" + str(simplified_deriv))
+                self.cost_function[edge_name] = mct_formula
+
+            # - Max Latency and Cost - #
+            # keep track of max latency and cost to later scale latency and costs of links for rewards
+            # check if this link produces maximum latency
+            current_latency = lambdify(param, self.latency_functions[edge_name])(num_agents)
+            if self._max_link_latency is None or self._max_link_latency < current_latency:
+                self._max_link_latency = current_latency
+            # check if this link produces maximum latency
+            current_cost = lambdify(param, self.cost_function[edge_name])(num_agents)
+            if self._max_link_cost is None or self._max_link_cost < current_cost:
+                self._max_link_cost = current_cost
+
+    def _add_flow_to_route(self, route, flow_to_add):
+        """Adds 'flow_to_add' cars to all the links of 'route'.
+
+        This is needed to compute the latency and cost after drivers have chosen their routes. Each driver on a road contributes 1 to the total flow on that road.
+
+        Args:
+            route: the route to which the flow should be added
+            flow_to_add: the quantity of flow to add (the amount of drivers that chose this road)
+
+        Returns:
+            /
+        """
+        # Routes are strings which consists of links joined by ','
+        links_of_route = route.split(",")
+        # Add the flow to each link of the route
+        for link in links_of_route:
+            self.flows[link] += flow_to_add
+
+    def _compute_latency_and_cost(self, routes):
+        """Compute the latency and cost of a specific route based on the flow on its links.
+
+        The latency and cost of a route is the sum of the latencies and costs of its links.
+
+        Args:
+            routes: the routes for which the total latency and cost will be computed. Contains all roads that
+            were used by at least 1 agent.
+
+        Returns:
+            total_latencies: the total latency of each provided route
+            total_cost: the total (monetary) cost of each provided route
+        """
+        all_used_routes = list(routes.keys())
+        total_latencies = {route: 0 for route in all_used_routes}
+        total_cost = {route: 0 for route in all_used_routes}
+        for route in routes:
+            # get links of route
+            links_of_route = route.split(",")
+            total_latencies[route] = sum(map(lambda link: self._get_scaled_link_latency(link), links_of_route))
+            total_cost[route] = sum(map(lambda link: self._get_scaled_link_cost(link), links_of_route))
+        # return the total (sum) latency and cost of this specific route
+        return total_latencies, total_cost
+
+    def _get_scaled_link_latency(self, link):
+        """Computes the scaled latency of a link in the network.
+
+        The scaled latency of a link is its current latency (based on its flow) divided by the maximum latency possible on any link
+
+        Args:
+            link: the link for which the latency is computed
+
+        Returns:
+            scaled_latency: the scaled latency
+        """
+        latency_c = lambdify("f", self.latency_functions[link])
+        return latency_c(self.flows[link]) / self._max_link_latency
+
+    def _get_scaled_link_cost(self, link):
+        """Computes the scaled (monetary) cost of a link in the network.
+
+        The scaled cost of a link is its current cost (based on its flow) divided by the maximum cost possible on any link
+
+        Args:
+            link: the link for which the cost is computed
+
+        Returns:
+            scaled_cost: the scaled cost
+        """
+        cost_c = lambdify("f", self.cost_function[link])
+        return cost_c(self.flows[link]) / self._max_link_cost
