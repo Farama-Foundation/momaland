@@ -143,6 +143,8 @@ class MOItemGathering(MOParallelEnv):
         self.item_dict = {}
         for i, item in enumerate(all_map_entries[0][np.where(all_map_entries[0] > 2)]):
             self.item_dict[item] = i
+
+        print(self.item_dict)
         indices_of_items = np.argwhere(all_map_entries[0] > 2).flatten()
         item_counts = np.take(all_map_entries[1], indices_of_items)
         self.num_objectives = len(item_counts)
@@ -241,7 +243,9 @@ class MOItemGathering(MOParallelEnv):
 
                 # items
                 elif int(self.env_map[i, j]) > 2:
-                    ind = int(self.env_map[i, j]) - 3  # item 3 will have 0th index
+                    ind = (
+                        int(self.env_map[i, j]) - list(self.item_dict.keys())[0]
+                    )  # item n will have will have 0th (n-n) index
                     self.window.blit(self.item_imgs[ind], tuple(np.array([j + 0.22, i + 0.25]) * self.cell_size[0]))
 
         if self.render_mode == "human":
