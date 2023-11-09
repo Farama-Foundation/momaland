@@ -154,7 +154,6 @@ class MOCongestionGame(MOParallelEnv):
             warn("You are calling render method without specifying any render mode.")
             return
 
-    @override
     def close(self):
         """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
         pass
@@ -173,7 +172,7 @@ class MOCongestionGame(MOParallelEnv):
         self.truncations = {agent: False for agent in self.agents}
         # Reset the flows of each arc
         self.flows = {f"{edge[0]}-{edge[1]}": 0 for edge in self.graph.edges}
-        observations = {agent: np.array([0], dtype=np.float32) for i, agent in enumerate(self.agents)}
+        observations = {agent: np.array([0], dtype=np.float32) for agent in self.agents}
         self.episode_num = 0
 
         infos = {agent: {} for agent in self.agents}
@@ -244,7 +243,7 @@ class MOCongestionGame(MOParallelEnv):
         infos = {agent: {} for agent in self.agents}
 
         # stateless bandit setting where each episode only lasts 1 timestep
-        self.terminations = {agent: True for i, agent in enumerate(self.agents)}
+        self.terminations = {agent: True for agent in self.agents}
         self.agents = []
 
         if self.render_mode == "human":
