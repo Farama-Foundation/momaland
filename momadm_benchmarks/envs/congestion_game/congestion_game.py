@@ -78,6 +78,8 @@ class MOCongestionGame(MOParallelEnv):
             num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
         """
+        # the maximum length of a route in the chosen problem
+        self._max_route_length = 0
         # Read in the problem from the corresponding .json file in the networks directory
         self.graph, self.od, self.routes = self._read_problem(problem_name)
         # Keep track of the current flow on each link the network
@@ -117,7 +119,9 @@ class MOCongestionGame(MOParallelEnv):
         # keep track of the maximum link latency and cost to scale the rewards returned to the agents
         self._max_link_latency = None
         self._max_link_cost = None
-        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=2000, shape=(2,))] * num_agents))
+        # the latency and cost of links are scaled (at most 1), the maximum latency and cost is therefore at most the length of the longest route
+        # latency and cost are both negative rewards, agents aim to find routes with minimal latency and cost
+        self.reward_spaces = dict(zip(self.agents, [Box(low=-self._max_route_length, high=0, shape=(2,))] * num_agents))
 
         # Each arc can have a different latency function (e.g. constant travel time / travel time dependent on flow)
         self.latency_functions = dict()
@@ -281,6 +285,9 @@ class MOCongestionGame(MOParallelEnv):
             od = data["od"]
             # - Possible routes for OD pairs -#
             routes = data["routes"]
+            # compute max route length
+            for route in routes:
+                self.max_route_length = max(self._max_route_length, len(route))
 
             return graph, od, routes
 
