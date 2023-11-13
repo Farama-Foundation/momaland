@@ -33,7 +33,7 @@ either the cell is empty, or the other agent has a token in that cell.
 The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
 The `action_mask` is a binary vector where each index of the vector represents whether the action is legal or not.
 The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal move ends the
-game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents.
+game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
 
 
 ### Action Space
@@ -74,13 +74,13 @@ ANGLES = ["LEFT", "STRAIGHT", "RIGHT"]
 
 
 def env(**kwargs):
-    """Autowrapper for the MOBreakthrough domain.
+    """Returns the wrapped MOBreakthrough environment in `AEC` format.
 
     Args:
         **kwargs: keyword args to forward to the raw_env function
 
     Returns:
-        A fully wrapped env
+        A fully wrapped AEC env
     """
     env = raw_env(**kwargs)
     # This wrapper terminates the game with the current player losing in case of illegal values.
@@ -107,10 +107,10 @@ def parallel_env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """Returns the MOConnect4 environment in `AEC` format.
+    """Returns the MOBreakthrough environment in `AEC` format.
 
     Args:
-        **kwargs: keyword args to forward to create the `MOConnect4` environment.
+        **kwargs: keyword args to forward to create the `MOBreakthrough` environment.
 
     Returns:
         A raw env.
@@ -369,9 +369,9 @@ class MOBreakthrough(MOAECEnv):
         self.board[:, -2:] = opp_piece
 
     def _move_to_int(self, x, y, direction):
-        """Convert move to location on board."""
+        """Convert move coordinates and direction to integer move encoding."""
         return x * 3 * self.board_height + y * 3 + ANGLES.index(direction)
 
     def _int_to_move(self, move):
-        """Convert location on board to move."""
+        """Convert integer move encoding to move coordinates and direction."""
         return (move // 3) // self.board_height, (move // 3) % self.board_height, ANGLES[move % 3]
