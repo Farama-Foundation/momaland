@@ -32,6 +32,7 @@ dependencies = [
     "gymnasium >=0.28",
     "pettingzoo@git+https://github.com/Farama-Foundation/PettingZoo",
     "numpy >=1.21.0",
+    "pygame >=2.0.1",
     "PyOpenGL >=3.1.7",
     "PyOpenGL-accelerate >=3.1.7"
 ]
