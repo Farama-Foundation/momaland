@@ -23,7 +23,7 @@ introduction/api
 :hidden:
 :caption: Environments
 
-environments/crazyrl
+environments/all-envs
 ```
 
 ```{toctree}
