@@ -13,7 +13,7 @@ from pettingzoo.utils.conversions import (
 )
 from pettingzoo.utils.env import AECEnv, ParallelEnv
 
-from momadm_benchmarks.utils.env import MOAECEnv, MOParallelEnv
+from momaland.utils.env import MOAECEnv, MOParallelEnv
 
 
 def mo_aec_to_parallel(aec_env: AECEnv) -> ParallelEnv:

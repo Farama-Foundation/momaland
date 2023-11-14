@@ -26,10 +26,10 @@ from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils import wrappers
 
-from momadm_benchmarks.envs.item_gathering.asset_utils import del_colored, get_colored
-from momadm_benchmarks.envs.item_gathering.map_utils import DEFAULT_MAP, randomise_map
-from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
-from momadm_benchmarks.utils.env import MOParallelEnv
+from momaland.envs.item_gathering.asset_utils import del_colored, get_colored
+from momaland.envs.item_gathering.map_utils import DEFAULT_MAP, randomise_map
+from momaland.utils.conversions import mo_parallel_to_aec
+from momaland.utils.env import MOParallelEnv
 
 
 ACTIONS = {

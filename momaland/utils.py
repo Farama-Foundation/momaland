@@ -1,4 +1,4 @@
-"""Helper functions for the MOMADM benchmarks."""
+"""Helper functions for the MOMAland."""
 import errno
 import os
 

@@ -1,7 +1,7 @@
 """Export everything in the repo for import from other libraries."""
 
-import momadm_benchmarks.envs
-import momadm_benchmarks.utils
+import momaland.envs
+import momaland.utils
 
 
 __version__ = "0.0.1"

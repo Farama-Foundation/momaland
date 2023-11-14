@@ -1,6 +1,6 @@
 """Utilities such as base classes and conversions."""
 
-from momadm_benchmarks.utils.conversions import (
+from momaland.utils.conversions import (
     mo_aec_to_parallel,
     mo_aec_to_parallel_wrapper,
     mo_parallel_to_aec,
