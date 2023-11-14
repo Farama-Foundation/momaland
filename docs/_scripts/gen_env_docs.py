@@ -136,7 +136,7 @@ title: {title_env_name}
         env_table += f"| Action Space | {action_space_str} |\n"
         env_table += f"| Observation Space | {obs_space_str} |\n"
         env_table += f"| Reward Space | {rew_space_str} |\n"
-        env_table += f'| Import | `TODO.{env_spec.id}")` | \n'
+        env_table += f"| Import | `momaland.envs.{env_spec.id}` | \n"
 
         if docstring is None:
             docstring = "No information provided"
