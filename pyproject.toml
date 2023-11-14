@@ -33,8 +33,8 @@ dependencies = [
     "pettingzoo@git+https://github.com/Farama-Foundation/PettingZoo",
     "numpy >=1.21.0",
     "pygame >=2.0.1",
-    "PyOpenGL ==3.1.1a1",
-    "PyOpenGL-accelerate ==3.1.1a1"
+    "PyOpenGL ==3.1.6",
+    "PyOpenGL-accelerate >=3.1.1"
 ]
 dynamic = ["version"]
 
