@@ -42,10 +42,8 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
     "sphinx.ext.githubpages",
-    "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "myst_parser",
-    "sphinx_github_changelog",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -76,7 +74,7 @@ html_theme_options = {
     # "light_logo": "img/PettingZoo.svg",
     # "dark_logo": "img/PettingZoo_White.svg",
     # "gtag": "G-Q4EGMJ3R24",
-    "versioning": False,
+    # "versioning": False,
     "source_repository": "https://github.com/rradules/momaland/",
     "source_branch": "main",
     "source_directory": "docs/",
@@ -84,3 +82,7 @@ html_theme_options = {
 
 html_static_path = ["_static"]
 html_css_files = []
+
+
+# Include both the class and __init__ docstrings when describing the class
+autoclass_content = "both"
