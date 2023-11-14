@@ -21,7 +21,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
-import momadm_benchmarks  # noqa: E402
+import momaland  # noqa: E402
 
 
 project = "MOMAland"
@@ -29,7 +29,7 @@ copyright = "2023 Farama Foundation"
 author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
-release = momadm_benchmarks.__version__
+release = momaland.__version__
 
 
 # -- General configuration ---------------------------------------------------

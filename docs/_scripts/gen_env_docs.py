@@ -1,5 +1,5 @@
 """
-This script reads documentation from /momadm_benchmarks and puts it into md files inside the docs/ directory
+This script reads documentation from /momaland and puts it into md files inside the docs/ directory
 """
 
 import os
@@ -9,7 +9,7 @@ from functools import reduce
 
 from tqdm import tqdm
 
-from momadm_benchmarks.utils.all_modules import all_environments
+from momaland.utils.all_modules import all_environments
 
 
 def trim(docstring):
