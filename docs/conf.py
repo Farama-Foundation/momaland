@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.abspath(".."))
 import momadm_benchmarks  # noqa: E402
 
 
-project = "MOMADM-Benchmarks"
+project = "MOMAland"
 copyright = "2023 Farama Foundation"
 author = "Farama Foundation"
 
@@ -80,16 +80,16 @@ intersphinx_disabled_reftypes = ["*"]
 # a list of builtin themes.
 #
 html_theme = "furo"
-html_title = "PettingZoo Documentation"
-html_baseurl = "https://pettingzoo.farama.org"
+html_title = "MOMAland Documentation"
+html_baseurl = "https://momaland.farama.org"
 html_copy_source = False
 html_favicon = "_static/img/favicon.png"
 html_theme_options = {
-    "light_logo": "img/PettingZoo.svg",
-    "dark_logo": "img/PettingZoo_White.svg",
-    "gtag": "G-Q4EGMJ3R24",
+    # "light_logo": "img/PettingZoo.svg",
+    # "dark_logo": "img/PettingZoo_White.svg",
+    # "gtag": "G-Q4EGMJ3R24",
     "versioning": True,
-    "source_repository": "https://github.com/Farama-Foundation/PettingZoo/",
+    "source_repository": "https://github.com/rradules/momaland",
     "source_branch": "master",
     "source_directory": "docs/",
 }

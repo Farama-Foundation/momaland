@@ -1,6 +1,6 @@
 cython
 gymnasium
-momadm_benchmarks[all]
+git+https://github.com/rradules/momaland
 sphinx
 myst-parser
 tqdm

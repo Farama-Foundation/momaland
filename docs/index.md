@@ -23,9 +23,9 @@ environments/crazyrl
 :hidden:
 :caption: Development
 
-Github <https://github.com/Farama-Foundation/PettingZoo>
+Github <https://github.com/rradules/momaland>
 release_notes/index
-Contribute to the Docs <https://github.com/Farama-Foundation/PettingZoo/tree/master/docs/>
+Contribute to the Docs <https://github.com/rradules/momaland/tree/master/docs/>
 ```
 
 ```{project-logo} _static/img/pettingzoo-text.png
@@ -42,7 +42,7 @@ An API standard for multi-objective multi-agent reinforcement learning.
 ```
 
 ```{project-heading}
-TODO is a standardized API and a suite of environments for multi-objective multi-agent reinforcement learning (MOMARL)
+MOMAland is a standardized API and a suite of environments for multi-objective multi-agent reinforcement learning (MOMARL)
 ```
 
 ```{include} ../README.md
