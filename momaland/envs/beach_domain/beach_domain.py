@@ -14,8 +14,8 @@ from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
 from pettingzoo.utils import wrappers
 
-from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
-from momadm_benchmarks.utils.env import MOParallelEnv
+from momaland.utils.conversions import mo_parallel_to_aec
+from momaland.utils.env import MOParallelEnv
 
 
 LEFT = -1

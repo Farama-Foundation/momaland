@@ -45,8 +45,8 @@ from OpenGL.GL import (
 from OpenGL.raw.GLU import gluLookAt, gluPerspective
 from pygame import DOUBLEBUF, OPENGL
 
-from momadm_benchmarks.envs.crazyrl.gl_utils import axes, field, point, target_point
-from momadm_benchmarks.utils.env import MOParallelEnv
+from momaland.envs.crazyrl.gl_utils import axes, field, point, target_point
+from momaland.utils.env import MOParallelEnv
 
 
 def _distance_to_target(agent_location: npt.NDArray[np.float32], target_location: npt.NDArray[np.float32]) -> float:
