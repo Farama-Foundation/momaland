@@ -70,7 +70,6 @@ napoleon_custom_sections = [("Returns", "params_style")]
 #
 html_theme = "furo"
 html_title = "MOMAland Documentation"
-# html_baseurl = "https://momaland.farama.org"
 html_copy_source = False
 # html_favicon = "_static/img/favicon.png"
 html_theme_options = {
