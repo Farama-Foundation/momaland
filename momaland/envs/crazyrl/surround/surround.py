@@ -4,8 +4,8 @@ from typing_extensions import override
 import numpy as np
 from pettingzoo.utils.wrappers import AssertOutOfBoundsWrapper
 
-from momadm_benchmarks.envs.crazyrl.crazyRL_base import FPS, CrazyRLBaseParallelEnv
-from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
+from momaland.envs.crazyrl.crazyRL_base import FPS, CrazyRLBaseParallelEnv
+from momaland.utils.conversions import mo_parallel_to_aec
 
 
 def env(*args, **kwargs):

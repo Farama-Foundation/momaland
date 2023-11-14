@@ -11,9 +11,9 @@ from pettingzoo.sisl.multiwalker.multiwalker import FPS
 from pettingzoo.sisl.multiwalker.multiwalker import raw_env as pz_multiwalker
 from pettingzoo.utils import wrappers
 
-from momadm_benchmarks.envs.multiwalker.multiwalker_base import MOMultiWalkerEnv as _env
-from momadm_benchmarks.utils.conversions import mo_aec_to_parallel
-from momadm_benchmarks.utils.env import MOAECEnv
+from momaland.envs.multiwalker.multiwalker_base import MOMultiWalkerEnv as _env
+from momaland.utils.conversions import mo_aec_to_parallel
+from momaland.utils.env import MOAECEnv
 
 
 def env(**kwargs):

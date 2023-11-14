@@ -4,8 +4,8 @@ import pickle
 import pytest
 from pettingzoo.test import parallel_api_test, seed_test
 
-from momadm_benchmarks.test.api_test import api_test
-from momadm_benchmarks.utils.all_modules import all_environments
+from momaland.test.api_test import api_test
+from momaland.utils.all_modules import all_environments
 
 
 @pytest.mark.parametrize(("name", "env_module"), list(all_environments.items()))
