@@ -205,19 +205,21 @@
           </label>
         </div>
         <article role="main">
-          <div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<figure class="align-default" id="pettingzoo-environments">
-<a class="reference internal image-reference" href="_static/img/environments-demo.gif"><img alt="_static/img/environments-demo.gif" src="_static/img/environments-demo.gif" style="width: 480px;" /></a>
+          <section id="momaland-a-collection-of-multi-objective-multi-agent-reinforcement-learning-environments">
+<h1>MOMAland: A collection of multi-objective multi-agent reinforcement learning environments.<a class="headerlink" href="#momaland-a-collection-of-multi-objective-multi-agent-reinforcement-learning-environments" title="Link to this heading">#</a></h1>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/surround.gif"><img alt="Multiple agents collaborating to surround a target" src="_images/surround.gif" style="width: 500px;" /></a>
 </figure>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
 <p>MOMAland is an open source Python library for developing and comparing multi-objective multi-agent reinforcement learning algorithms by providing a standard API to communicate between learning algorithms and environments, as well as a standard set of environments compliant with that API. Essentially, the environments follow the standard <a class="reference external" href="https://github.com/Farama-Foundation/PettingZoo">PettingZoo APIs</a>, but return vectorized rewards as numpy arrays instead of scalar values.</p>
 <p>The documentation website is at TODO, and we have a public discord server (which we also use to coordinate development work) that you can join here: https://discord.gg/bnJ6kubTg6.</p>
 <section id="api">
-<h1>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h1>
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h2>
 <p>As for PettingZoo, the MOMAland API models environments as simple Python <code class="docutils literal notranslate"><span class="pre">env</span></code> classes. Creating environment instances and interacting with them is very simple - here’s an example using the “mosurround_v0” environment:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">momaland</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -238,7 +240,7 @@
 <p>You can also check more examples in this colab notebook! TODO</p>
 </section>
 <section id="install">
-<h1>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h1>
+<h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
 <p>To install MOMAland, use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>momaland
 </pre></div>
@@ -246,11 +248,12 @@
 <p>This does not include dependencies for all families of environments (some can be problematic to install on certain systems). You can install these dependencies for one family like <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland&quot;</span></code> or use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[all]&quot;</span></code> to install all dependencies.</p>
 </section>
 <section id="citing">
-<h1>Citing<a class="headerlink" href="#citing" title="Link to this heading">#</a></h1>
+<h2>Citing<a class="headerlink" href="#citing" title="Link to this heading">#</a></h2>
 <p>If you use this repository in your research, please cite:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">TODO</span><span class="p">}</span>
 </pre></div>
 </div>
+</section>
 </section>
 
         </article>
