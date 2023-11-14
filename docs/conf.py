@@ -25,8 +25,8 @@ import momaland  # noqa: E402
 
 
 project = "MOMAland"
-copyright = "2023 Farama Foundation"
-author = "Farama Foundation"
+copyright = "2023"
+author = ""
 
 # The full version, including alpha/beta/rc tags
 release = momaland.__version__
@@ -62,17 +62,6 @@ napoleon_use_admonition_for_references = True
 # See https://github.com/sphinx-doc/sphinx/issues/9119
 napoleon_custom_sections = [("Returns", "params_style")]
 
-# -- Options for Autodoc -------------------------------------------------
-
-autoclass_content = "both"
-autodoc_preserve_defaults = True
-
-# -- Options for Intersphinx -----------------------------------------------
-
-intersphinx_mapping = {
-    "shimmy": ("https://shimmy.farama.org/", None),
-}
-intersphinx_disabled_reftypes = ["*"]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -83,12 +72,12 @@ html_theme = "furo"
 html_title = "MOMAland Documentation"
 html_baseurl = "https://momaland.farama.org"
 html_copy_source = False
-html_favicon = "_static/img/favicon.png"
+# html_favicon = "_static/img/favicon.png"
 html_theme_options = {
     # "light_logo": "img/PettingZoo.svg",
     # "dark_logo": "img/PettingZoo_White.svg",
     # "gtag": "G-Q4EGMJ3R24",
-    "versioning": True,
+    "versioning": False,
     "source_repository": "https://github.com/rradules/momaland/",
     "source_branch": "main",
     "source_directory": "docs/",
@@ -96,11 +85,3 @@ html_theme_options = {
 
 html_static_path = ["_static"]
 html_css_files = []
-
-# -- Options for MyST parser -------------------------------------------------
-
-myst_heading_anchors = 3
-
-# -- Generate Changelog -------------------------------------------------
-
-sphinx_github_changelog_token = os.environ.get("SPHINX_GITHUB_CHANGELOG_TOKEN")
