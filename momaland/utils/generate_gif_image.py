@@ -7,7 +7,7 @@ import sys
 
 from PIL import Image
 
-from momadm_benchmarks.utils.all_modules import all_environments
+from momaland.utils.all_modules import all_environments
 
 
 def generate_gif(nameline, module):

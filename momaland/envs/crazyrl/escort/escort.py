@@ -1,12 +1,12 @@
-"""Catch environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point trying to escape."""
+"""Escort environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point moving to one point to another."""
 
 from typing_extensions import override
 
 import numpy as np
 from pettingzoo.utils.wrappers import AssertOutOfBoundsWrapper
 
-from momadm_benchmarks.envs.crazyrl.crazyRL_base import FPS, CrazyRLBaseParallelEnv
-from momadm_benchmarks.utils.conversions import mo_parallel_to_aec
+from momaland.envs.crazyrl.crazyRL_base import FPS, CrazyRLBaseParallelEnv
+from momaland.utils.conversions import mo_parallel_to_aec
 
 
 def env(*args, **kwargs):
@@ -41,22 +41,21 @@ def raw_env(*args, **kwargs):
     """Returns the environment in `Parallel` format.
 
     Args:
-        **kwargs: keyword args to forward to create the `Catch` environment.
+        **kwargs: keyword args to forward to create the `MOMultiwalker` environment.
 
     Returns:
         A raw env.
     """
-    return Catch(*args, **kwargs)
+    return Escort(*args, **kwargs)
 
 
-class Catch(CrazyRLBaseParallelEnv):
-    """A Parallel Environment where drone learn how to surround a moving target trying to escape."""
+class Escort(CrazyRLBaseParallelEnv):
+    """A Parallel Environment where drone learn how to surround a moving target, going straight to one point to another."""
 
-    metadata = {"render_modes": ["human"], "name": "mocatch_v0", "is_parallelizable": True, "render_fps": FPS}
+    metadata = {"render_modes": ["human"], "name": "moescort_v0", "is_parallelizable": True, "render_fps": FPS}
 
-    @override
-    def __init__(self, *args, target_speed=0.1, **kwargs):
-        """Catch environment in CrazyRL.
+    def __init__(self, *args, num_intermediate_points: int = 50, final_target_location=np.array([-2, -2, 3]), **kwargs):
+        """Escort environment in CrazyRL.
 
         Args:
             render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
@@ -64,49 +63,40 @@ class Catch(CrazyRLBaseParallelEnv):
             num_drones: amount of drones
             init_flying_pos: 2d array containing the coordinates of the agents
                 is a (3)-shaped array containing the initial XYZ position of the drones.
-            init_target_location: Array of the initial position of the moving target
-            target_speed: Distance traveled by the target at each timestep
+            init_target_location: A (3)-shaped array for the XYZ position of the target.
+            final_target_location: Array of the final position of the moving target
+            num_intermediate_points: Number of intermediate points in the target trajectory
         """
+        self.final_target_location = final_target_location
 
         super().__init__(*args, **kwargs)
-        self.target_speed = target_speed
 
-    def _move_target(self):
-        # mean of the agent's positions
-        mean = np.array([0, 0, 0])
-        for agent in self.agents:
-            mean = mean + self.agent_location[agent]
+        # There are two more ref points than intermediate points, one for the initial and final target locations
+        self.num_ref_points = num_intermediate_points + 2
+        # Ref is a 2d arrays for the target
+        # it contains the reference points (xyz) for the target at each timestep
+        self.ref: np.ndarray = np.array([self.init_target_location])
 
-        mean = mean / self.num_drones
-
-        dist = np.linalg.norm(mean - self.target_location)
-        self.target_location = self.target_location.copy()
-
-        # go to the opposite direction of the mean of the agents
-        if dist > 0.2:
-            self.target_location += (self.target_location - mean) / dist * self.target_speed
-
-        # if the mean of the agents is too close to the target, move the target in a random direction, slowly because
-        # it hesitates
-        else:
-            self.target_location += np.random.random_sample(3) * self.target_speed * 0.1
-
-        # if the target is out of the map, put it back in the map
-        np.clip(
-            self.target_location,
-            [-self.size, -self.size, 0.2],
-            [self.size, self.size, 3],
-            out=self.target_location,
-        )
+        for t in range(1, self.num_ref_points):
+            self.ref = np.append(
+                self.ref,
+                [
+                    self.init_target_location
+                    + (self.final_target_location - self.init_target_location) * t / self.num_ref_points
+                ],
+                axis=0,
+            )
 
     @override
     def _transition_state(self, actions):
         target_point_action = dict()
         state = self.agent_location
-
         # new targets
         self.previous_target = self.target_location.copy()
-        self._move_target()
+        if self.timestep < self.num_ref_points:
+            self.target_location = self.ref[self.timestep]
+        else:  # the target has stopped
+            self.target_location = self.ref[-1]
 
         for agent in self.agents:
             # Actions are clipped to stay in the map and scaled to do max 20cm in one step
@@ -118,7 +108,7 @@ class Catch(CrazyRLBaseParallelEnv):
 
 
 if __name__ == "__main__":
-    prll_env = Catch(render_mode="human")
+    prll_env = Escort(render_mode="human")
 
     observations, infos = prll_env.reset()
 
