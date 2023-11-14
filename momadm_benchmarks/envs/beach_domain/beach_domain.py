@@ -26,8 +26,8 @@ NUM_OBJECTIVES = 2
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the beach domain."""
-    return MOBeachDomain(**kwargs)
+    """Parallel env factory function for the beach problem domain."""
+    return raw_env(**kwargs)
 
 
 def env(**kwargs):
@@ -39,17 +39,17 @@ def env(**kwargs):
     Returns:
         A fully wrapped env
     """
-    env = raw_env(**kwargs)
+    env = parallel_env(**kwargs)
+    env = mo_parallel_to_aec(env)
+
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
     return env
 
 
 def raw_env(**kwargs):
-    """To support the AEC API, the raw_env function just uses the from_parallel function to convert from a ParallelEnv to an AEC env."""
-    env = parallel_env(**kwargs)
-    env = mo_parallel_to_aec(env)
-    return env
+    """Env factory function for the beach problem domain."""
+    return MOBeachDomain(**kwargs)
 
 
 class MOBeachDomain(MOParallelEnv):
@@ -251,7 +251,7 @@ class MOBeachDomain(MOParallelEnv):
         # Obs: agent type, section id, section capacity, section consumption, % of agents of current type
         observations = {agent: None for agent in self.agents}
         # Note that agents only receive the reward after the last timestep
-        rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for _ in range(self.num_agents)}
+        rewards = {self.agents[i]: np.array([0, 0], dtype=np.float32) for i in range(self.num_agents)}
 
         for i, agent in enumerate(self.agents):
             observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
