@@ -89,8 +89,8 @@ html_theme_options = {
     # "dark_logo": "img/PettingZoo_White.svg",
     # "gtag": "G-Q4EGMJ3R24",
     "versioning": True,
-    "source_repository": "https://github.com/rradules/momaland",
-    "source_branch": "master",
+    "source_repository": "https://github.com/rradules/momaland/",
+    "source_branch": "main",
     "source_directory": "docs/",
 }
 
