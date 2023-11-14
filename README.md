@@ -44,7 +44,7 @@ env = momaland.envs.crazyrl.surround.surround_v0.parallel_env()
 obs, info = env.reset()
 # but vector_reward is a numpy array!
 actions = {agent: env.action_spaces[agent].sample() for agent in env.agents}
-next_obs, vector_reward, terminated, truncated, info = env.step(actions)
+next_obs, vector_rewards, terminated, truncated, info = env.step(actions)
 
 # Optionally, you can scalarize the reward function with the LinearReward wrapper to fall back to the original PZ API
 env = momaland.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
