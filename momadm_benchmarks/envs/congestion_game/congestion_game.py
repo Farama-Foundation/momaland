@@ -158,10 +158,6 @@ class MOCongestionGame(MOParallelEnv):
             warn("You are calling render method without specifying any render mode.")
             return
 
-    def close(self):
-        """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
-        pass
-
     @override
     def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
