@@ -78,10 +78,8 @@ class MOCongestionGame(MOParallelEnv):
             num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
         """
-        # the maximum length of a route in the chosen problem
-        self._max_route_length = 0
         # Read in the problem from the corresponding .json file in the networks directory
-        self.graph, self.od, self.routes = self._read_problem(problem_name)
+        self.graph, self.od, self.routes, self._max_route_length = self._read_problem(problem_name)
         # Keep track of the current flow on each link the network
         self.flows = {f"{edge[0]}-{edge[1]}": 0 for edge in self.graph.edges}
 
@@ -266,6 +264,7 @@ class MOCongestionGame(MOParallelEnv):
             - graph: a NetworkX representation of the network
             - od: the possible origin/destination pairs in this problem
             - routes: the possible routes that can be used to travel from the origins to the destinations
+            - max_route_length: the length of the longest route in the network
         """
         # if problem file already contains '.json' extension, ignore, else add extension to problem name
         if not problem_name.endswith(".json"):
@@ -282,10 +281,14 @@ class MOCongestionGame(MOParallelEnv):
             # - Possible routes for OD pairs -#
             routes = data["routes"]
             # compute max route length
-            for route in routes:
-                self.max_route_length = max(self._max_route_length, len(route))
+            max_route_length = 0
+            # routes is a dict with OD pairs as keys and lists of corresponding roads as values
+            for od_key in routes:
+                # routes contains a list of routes for each OD pair
+                for route in routes[od_key]:
+                    max_route_length = max(max_route_length, len(route.split(",")))
 
-            return graph, od, routes
+            return graph, od, routes, max_route_length
 
     def _create_latency_and_cost_function(self, edges_latency_attributes, num_agents):
         """Creates latency and cost functions for each edge of the network.
