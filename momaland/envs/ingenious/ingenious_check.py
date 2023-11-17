@@ -25,5 +25,5 @@ if __name__ == "__main__":
     ig_env = MOIngenious(num_players=2, init_draw=6, num_colors=6, board_size=8)
 
     # print(ig_env.reset())
-
+    print("precommit")
     train()
