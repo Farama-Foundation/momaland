@@ -5,7 +5,7 @@ from breakthrough import MOBreakthrough
 
 def check_env():
     """Check the environment."""
-    environment = MOBreakthrough(board_width=6, board_height=6, num_objectives=2)
+    environment = MOBreakthrough(board_width=6, board_height=6, num_objectives=4)
     environment.reset(seed=42)
 
     for agent in environment.agent_iter():

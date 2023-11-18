@@ -129,7 +129,7 @@ class MOBreakthrough(MOAECEnv):
     metadata = {
         "render_modes": ["human"],
         "name": "mobreakthrough_v0",
-        "is_parallelizable": False,
+        "is_parallelizable": False,  # TODO ?
     }
 
     def __init__(self, board_width: int = 8, board_height: int = 8, num_objectives=4, render_mode=None):
@@ -281,37 +281,40 @@ class MOBreakthrough(MOAECEnv):
         #     print(self._int_to_move(action))
         x, y, direction = self._int_to_move(action)
         # print("move: ", x, "/", y, " ", direction)
-        cur_player = self.possible_agents.index(self.agent_selection)
-        cur_piece = cur_player + 1
-        move_direction = 1 if cur_piece == 1 else -1
+        agent = self.agent_selection
+        agent_index = self.possible_agents.index(agent)
+        next_agent = self.possible_agents[(agent_index + 1) % 2]
+        agent_piece = agent_index + 1
+        move_direction = 1 if agent_piece == 1 else -1
         self.board[x][y] = 0
         capture = False
         if self.board[x + ANGLES.index(direction) - 1][y + move_direction] != 0:
             capture = True
-        self.board[x + ANGLES.index(direction) - 1][y + move_direction] = cur_piece
+        self.board[x + ANGLES.index(direction) - 1][y + move_direction] = agent_piece
         # human_print(self.board)
         self.move_count += 1
 
-        next_agent = self._agent_selector.next()
+        # next_agent = self._agent_selector.next()
         winner = self.check_for_winner()
 
         self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
-        # self._cumulative_rewards = {i: np.array([0]*NUM_OBJECTIVES, dtype=np.float32) for i in self.agents}
+        self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
         # TODO unclear how to handle rewards, test keeps complaining!
         if capture:
             if self.num_objectives > 2:
-                self.rewards[self.agent_selection][2] = 1 / (self.board_width * 2)
+                self.rewards[agent][2] = 1 / (self.board_width * 2)
             if self.num_objectives > 3:
                 self.rewards[next_agent][3] = -1 / (self.board_width * 2)
         # check if there is a winner
         if winner:
-            self.rewards[self.agent_selection][0] = 1
+            self.rewards[agent][0] = 1
             self.rewards[next_agent][0] = -1
-            self.rewards[self.agent_selection][1] = 1 - (self.move_count / self.max_turns)
+            self.rewards[agent][1] = 1 - (self.move_count / self.max_turns)
             self.rewards[next_agent][1] = -(1 - (self.move_count / self.max_turns))
             self.terminations = {i: True for i in self.agents}
 
-        self.agent_selection = next_agent
+        # selects the next agent.
+        self.agent_selection = self._agent_selector.next()
         self._accumulate_rewards()  # TODO unclear how to handle rewards, test keeps complaining!
         self.legal_moves = self._legal_moves()
 

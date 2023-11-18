@@ -1,6 +1,6 @@
 """MO Connect4 check."""
 
-from connect4 import MOConnect4
+from moconnect4 import MOConnect4
 
 
 def main():
@@ -9,6 +9,7 @@ def main():
     environment.reset(seed=42)
 
     for agent in environment.agent_iter():
+        action = environment.action_space(agent).seed(42)
         observation, reward, termination, truncation, info = environment.last()
 
         print("rewards", environment.rewards)
@@ -19,7 +20,7 @@ def main():
                 mask = observation["action_mask"]
                 # this is where you would insert your policy
                 action = environment.action_space(agent).sample(mask)
-                # print("observation: ", observation)
+                print("observation: ", observation)
                 # print("cumulative rewards", environment._cumulative_rewards)
                 # print("action: ", action)
 

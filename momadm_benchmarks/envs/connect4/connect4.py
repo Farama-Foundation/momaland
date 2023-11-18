@@ -67,10 +67,9 @@ import numpy as np
 import pygame
 from gymnasium import spaces
 from gymnasium.utils import EzPickle
-from pettingzoo.utils import agent_selector, wrappers
-
 from momadm_benchmarks.utils.conversions import mo_aec_to_parallel
 from momadm_benchmarks.utils.env import MOAECEnv
+from pettingzoo.utils import agent_selector, wrappers
 
 
 def get_image(path):
@@ -136,7 +135,7 @@ class MOConnect4(MOAECEnv, EzPickle):
     metadata = {
         "render_modes": ["human", "rgb_array"],
         "name": "moconnect4_v0",
-        "is_parallelizable": False,
+        "is_parallelizable": False,  # TODO ?
         "render_fps": 2,
     }
 
