@@ -63,10 +63,9 @@ from typing_extensions import override
 import numpy as np
 from gymnasium import spaces
 from gymnasium.logger import warn
-from pettingzoo.utils import agent_selector, wrappers
-
 from momadm_benchmarks.utils import mo_aec_to_parallel
 from momadm_benchmarks.utils.env import MOAECEnv
+from pettingzoo.utils import agent_selector, wrappers
 
 
 OFF_BOARD = -1
