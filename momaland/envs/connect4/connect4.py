@@ -125,8 +125,7 @@ def raw_env(**kwargs):
     Returns:
         A raw env.
     """
-    env = MOConnect4(**kwargs)
-    return env
+    return MOConnect4(**kwargs)
 
 
 class MOConnect4(MOAECEnv, EzPickle):
@@ -135,7 +134,7 @@ class MOConnect4(MOAECEnv, EzPickle):
     metadata = {
         "render_modes": ["human", "rgb_array"],
         "name": "moconnect4_v0",
-        "is_parallelizable": False,  # TODO ?
+        "is_parallelizable": True,  # TODO ?
         "render_fps": 2,
     }
 

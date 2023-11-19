@@ -128,7 +128,7 @@ class MOBreakthrough(MOAECEnv):
     metadata = {
         "render_modes": ["human"],
         "name": "mobreakthrough_v0",
-        "is_parallelizable": False,  # TODO ?
+        "is_parallelizable": True,  # TODO ?
     }
 
     def __init__(self, board_width: int = 8, board_height: int = 8, num_objectives=4, render_mode=None):
@@ -296,8 +296,8 @@ class MOBreakthrough(MOAECEnv):
         # next_agent = self._agent_selector.next()
         winner = self.check_for_winner()
 
-        self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
-        self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
+        # self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
+        # self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
         # TODO unclear how to handle rewards, test keeps complaining!
         if capture:
             if self.num_objectives > 2:
@@ -311,10 +311,10 @@ class MOBreakthrough(MOAECEnv):
             self.rewards[agent][1] = 1 - (self.move_count / self.max_turns)
             self.rewards[next_agent][1] = -(1 - (self.move_count / self.max_turns))
             self.terminations = {i: True for i in self.agents}
+        self._accumulate_rewards()  # TODO unclear how to handle rewards, test keeps complaining!
 
         # selects the next agent.
         self.agent_selection = self._agent_selector.next()
-        self._accumulate_rewards()  # TODO unclear how to handle rewards, test keeps complaining!
         self.legal_moves = self._legal_moves()
 
         if self.render_mode == "human":
