@@ -67,9 +67,10 @@ import numpy as np
 import pygame
 from gymnasium import spaces
 from gymnasium.utils import EzPickle
-from momadm_benchmarks.utils.conversions import mo_aec_to_parallel
-from momadm_benchmarks.utils.env import MOAECEnv
 from pettingzoo.utils import agent_selector, wrappers
+
+from momaland.utils.conversions import mo_aec_to_parallel
+from momaland.utils.env import MOAECEnv
 
 
 def get_image(path):
