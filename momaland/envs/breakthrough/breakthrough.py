@@ -141,6 +141,8 @@ class MOBreakthrough(MOAECEnv):
             num_objectives: The number of objectives.
             render_mode: The render mode.
         """
+        self.env = super().__init__()
+
         if not (3 <= board_width <= 20):
             raise ValueError("Config parameter board_width must be between 3 and 20.")
 
@@ -246,9 +248,6 @@ class MOBreakthrough(MOAECEnv):
             if value == cur_piece:
                 if self._get_square(x, y + move_direction) == 0:  # move straight ahead possible
                     legal_moves.add(self._move_to_int(x, y, "STRAIGHT"))
-                    # print("legal: straight from ", x, ",", y)
-                    # print("to move: ", self._move_to_int(x, y, "STRAIGHT"))
-                    # print("back to coordinates: ", self._int_to_move(self._move_to_int(x, y, "STRAIGHT")))
                 if x < self.board_width - 1:
                     if (
                         self._get_square(x + 1, y + move_direction) == 0
@@ -275,6 +274,10 @@ class MOBreakthrough(MOAECEnv):
             return self._was_dead_step(action)  # TODO is this needed?
 
         # assert valid move
+        # human_print(self.board)
+        # print("legal moves: ", self.legal_moves)
+        # print("about to play: ", action)
+
         assert action in self.legal_moves, "played illegal move."
 
         x, y, direction = self._int_to_move(action)
@@ -319,6 +322,7 @@ class MOBreakthrough(MOAECEnv):
     @override
     def reset(self, seed=None, options=None):
         # reset environment
+        # print("reset")
         if seed is not None:
             np.random.seed(seed)
         self.agents = self.possible_agents[:]
@@ -327,8 +331,8 @@ class MOBreakthrough(MOAECEnv):
         self.terminations = {i: False for i in self.agents}
         self.truncations = {i: False for i in self.agents}
         self.infos = {i: {} for i in self.agents}
-        self._agent_selector = agent_selector(self.agents)
-        self.agent_selection = self._agent_selector.reset()
+        # self._agent_selector = agent_selector(self.agents)
+        # self.agent_selection = self._agent_selector.reset()
         self.move_count = 0
         self._initialize_board(self.board_height, self.board_width)
         self.legal_moves = self._legal_moves()
@@ -357,6 +361,7 @@ class MOBreakthrough(MOAECEnv):
 
     def _initialize_board(self, board_height, board_width):
         """Initialize the board."""
+        # print("board init")
         self.board = np.zeros((board_width, board_height))
         self._agent_selector = agent_selector(self.agents)
         self.agent_selection = self._agent_selector.reset()
