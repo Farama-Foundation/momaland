@@ -277,10 +277,7 @@ class MOBreakthrough(MOAECEnv):
         # assert valid move
         assert action in self.legal_moves, "played illegal move."
 
-        # for action in self.legal_moves:
-        #     print(self._int_to_move(action))
         x, y, direction = self._int_to_move(action)
-        # print("move: ", x, "/", y, " ", direction)
         agent = self.agent_selection
         agent_index = self.possible_agents.index(agent)
         next_agent = self.possible_agents[(agent_index + 1) % 2]
@@ -291,15 +288,11 @@ class MOBreakthrough(MOAECEnv):
         if self.board[x + ANGLES.index(direction) - 1][y + move_direction] != 0:
             capture = True
         self.board[x + ANGLES.index(direction) - 1][y + move_direction] = agent_piece
-        # human_print(self.board)
         self.move_count += 1
-
-        # next_agent = self._agent_selector.next()
         winner = self.check_for_winner()
 
         # self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
         # self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
-        # TODO unclear how to handle rewards, test keeps complaining!
         if capture:
             if self.num_objectives > 2:
                 self.rewards[agent][2] = 1 / (self.board_width * 2)
@@ -312,7 +305,9 @@ class MOBreakthrough(MOAECEnv):
             self.rewards[agent][1] = 1 - (self.move_count / self.max_turns)
             self.rewards[next_agent][1] = -(1 - (self.move_count / self.max_turns))
             self.terminations = {i: True for i in self.agents}
-        self._accumulate_rewards()  # TODO unclear how to handle rewards, test keeps complaining!
+
+        self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
+        self._accumulate_rewards()
 
         # selects the next agent.
         self.agent_selection = self._agent_selector.next()
@@ -332,7 +327,7 @@ class MOBreakthrough(MOAECEnv):
         self.terminations = {i: False for i in self.agents}
         self.truncations = {i: False for i in self.agents}
         self.infos = {i: {} for i in self.agents}
-        # self._agent_selector = agent_selector(self.agents)
+        self._agent_selector = agent_selector(self.agents)
         self.agent_selection = self._agent_selector.reset()
         self.move_count = 0
         self._initialize_board(self.board_height, self.board_width)
