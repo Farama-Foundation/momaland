@@ -157,7 +157,7 @@ class MOConnect4(MOAECEnv, EzPickle):
             column_objectives: Whether to use column objectives or not.
         """
         EzPickle.__init__(self, render_mode, screen_scaling)
-        super().__init__()
+        self.env = super().__init__()
 
         if not (4 <= board_width <= 20):
             raise ValueError("Config parameter board_width must be between 4 and 20.")
