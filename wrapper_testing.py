@@ -30,12 +30,16 @@ def parallel_test():
 def aec_test():
     """Full AECEnv lifecycle for testing wrappers."""
     env = _env.env(shared_reward=False)
-    env = AECWrappers.LinearizeReward(env, np.array([0.3, 0.3, 0.4]))
+    env = AECWrappers.LinearizeReward(env, np.array([0.33, 0.33, 0.33]))
+    env = AECWrappers.NormalizeReward(env, env.possible_agents[0], [0])
+    env = AECWrappers.NormalizeReward(env, env.possible_agents[1], [0])
+    env = AECWrappers.NormalizeReward(env, env.possible_agents[2], [0])
+
     env.reset(seed=42)
 
     for agent in env.agent_iter():
         _, reward, termination, truncation, _ = env.last()
-        print(reward)
+        print(agent, reward)
         if termination or truncation:
             action = None
         else:
@@ -46,5 +50,5 @@ def aec_test():
 
 
 if __name__ == "__main__":
-    # aec_test()
-    parallel_test()
+    aec_test()
+    # parallel_test()

@@ -33,13 +33,13 @@ class LinearizeReward(Wrapper):
 
     def step(self, actions):
         """Returns a reward scalar from the reward vector."""
-        observations, rewards, terminations, truncation, infos = self._env.step(actions)
+        observations, rewards, terminations, truncations, infos = self._env.step(actions)
         _rewards = np.array([np.dot(rewards[agent], self.weights) for agent in rewards.keys()])
         i = 0
         for key, _ in rewards.items():
             rewards[key] = np.array([_rewards[i]])
             i += 1
-        return observations, rewards, terminations, truncation, infos
+        return observations, rewards, terminations, truncations, infos
 
 
 class RunningMeanStd:
@@ -122,15 +122,15 @@ class NormalizeReward(Wrapper):
 
     def step(self, actions):
         """Steps through the environment, normalizing the rewards returned."""
-        observations, rewards, terminateds, truncateds, infos = self._env.step(actions)
+        observations, rewards, terminations, truncations, infos = self._env.step(actions)
         reward = np.array(rewards[self.agent])
-        self.returns = self.returns * self.gamma * (1 - terminateds[self.agent]) + reward
+        self.returns = self.returns * self.gamma * (1 - terminations[self.agent]) + reward
 
         for i in self.indices:
             reward[i] = self.normalize(reward[i], i)
 
         rewards[self.agent] = reward
-        return observations, rewards, terminateds, truncateds, infos
+        return observations, rewards, terminations, truncations, infos
 
     def normalize(self, rews, i):
         """Normalizes the rewards with the running mean rewards and their variance."""
