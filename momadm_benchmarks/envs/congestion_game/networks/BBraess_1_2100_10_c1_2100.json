@@ -33,7 +33,7 @@
             {
                 "name": "w0-w1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.00238095238095,
@@ -46,7 +46,7 @@
             {
                 "name": "w1-v1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -59,7 +59,7 @@
             {
                 "name": "w1-t2",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -72,7 +72,7 @@
             {
                 "name": "v1-t1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -85,7 +85,7 @@
             {
                 "name": "s2-w0",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -98,7 +98,7 @@
             {
                 "name": "s1-w0",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -111,7 +111,7 @@
             {
                 "name": "s1-a",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -124,7 +124,7 @@
             {
                 "name": "a-w1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,

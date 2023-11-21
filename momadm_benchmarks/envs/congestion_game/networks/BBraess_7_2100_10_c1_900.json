@@ -69,7 +69,7 @@
             {
                 "name": "w0-w1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.00333333333333,
@@ -82,7 +82,7 @@
             {
                 "name": "w1-w2",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -95,7 +95,7 @@
             {
                 "name": "w1-v1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -108,7 +108,7 @@
             {
                 "name": "w2-w3",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.00666666666667,
@@ -121,7 +121,7 @@
             {
                 "name": "w3-w4",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -134,7 +134,7 @@
             {
                 "name": "w3-v3",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -147,7 +147,7 @@
             {
                 "name": "w4-w5",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.01666666666667,
@@ -160,7 +160,7 @@
             {
                 "name": "w5-w6",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -173,7 +173,7 @@
             {
                 "name": "w5-v5",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -186,7 +186,7 @@
             {
                 "name": "w6-w7",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.04333333333333,
@@ -199,7 +199,7 @@
             {
                 "name": "w7-v7",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -212,7 +212,7 @@
             {
                 "name": "w7-t2",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -225,7 +225,7 @@
             {
                 "name": "v1-v2",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.00333333333333,
@@ -238,7 +238,7 @@
             {
                 "name": "v2-w2",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -251,7 +251,7 @@
             {
                 "name": "v2-v3",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -264,7 +264,7 @@
             {
                 "name": "v3-v4",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.01,
@@ -277,7 +277,7 @@
             {
                 "name": "v4-w4",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -290,7 +290,7 @@
             {
                 "name": "v4-v5",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -303,7 +303,7 @@
             {
                 "name": "v5-v6",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.02666666666667,
@@ -316,7 +316,7 @@
             {
                 "name": "v6-w6",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -329,7 +329,7 @@
             {
                 "name": "v6-v7",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -342,7 +342,7 @@
             {
                 "name": "v7-t1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -355,7 +355,7 @@
             {
                 "name": "s2-w0",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -368,7 +368,7 @@
             {
                 "name": "s2-v1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -381,7 +381,7 @@
             {
                 "name": "s2-v3",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -394,7 +394,7 @@
             {
                 "name": "s2-v5",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -407,7 +407,7 @@
             {
                 "name": "s1-w0",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -420,7 +420,7 @@
             {
                 "name": "s1-a",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -433,7 +433,7 @@
             {
                 "name": "a-w1",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -446,7 +446,7 @@
             {
                 "name": "a-w2",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -459,7 +459,7 @@
             {
                 "name": "a-w4",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -472,7 +472,7 @@
             {
                 "name": "a-w6",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,

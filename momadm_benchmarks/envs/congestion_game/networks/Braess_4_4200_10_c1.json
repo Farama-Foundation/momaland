@@ -39,7 +39,7 @@
             {
                 "name": "1-2",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.03809523809524,
@@ -52,7 +52,7 @@
             {
                 "name": "1-3",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.02857142857143,
@@ -65,7 +65,7 @@
             {
                 "name": "1-4",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.01904761904762,
@@ -78,7 +78,7 @@
             {
                 "name": "1-5",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.00952380952381,
@@ -91,7 +91,7 @@
             {
                 "name": "1-9",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -104,7 +104,7 @@
             {
                 "name": "2-6",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -117,7 +117,7 @@
             {
                 "name": "2-10",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -130,7 +130,7 @@
             {
                 "name": "3-6",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -143,7 +143,7 @@
             {
                 "name": "3-7",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -156,7 +156,7 @@
             {
                 "name": "4-7",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -169,7 +169,7 @@
             {
                 "name": "4-8",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -182,7 +182,7 @@
             {
                 "name": "5-8",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -195,7 +195,7 @@
             {
                 "name": "5-9",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.0,
@@ -208,7 +208,7 @@
             {
                 "name": "6-10",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.00952380952381,
@@ -221,7 +221,7 @@
             {
                 "name": "7-10",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.01904761904762,
@@ -234,7 +234,7 @@
             {
                 "name": "8-10",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.02857142857143,
@@ -247,7 +247,7 @@
             {
                 "name": "9-10",
                 "latency_function": {
-                    "expr": "m*f+n+f-f",
+                    "expr": "m*f+n",
                     "param": "f",
                     "constants": {
                         "m": 0.03809523809524,
