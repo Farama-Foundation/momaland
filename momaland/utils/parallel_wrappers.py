@@ -1,20 +1,19 @@
-"""Various wrappers for Parallel MO environments
-"""
+"""Various wrappers for Parallel MO environments."""
 
 import numpy as np
-from typing import NamedTuple
+
 
 class Wrapper:
-    """Base class for wrappers.
-    """
+    """Base class for wrappers."""
 
     def __init__(self, env):
+        """Base wrapper initialization to save the base env."""
         self._env = env
 
     def __getattr__(self, name):
-        """Provide proxy access to regular attributes of wrapped objects.
-        """
+        """Provide proxy access to regular attributes of wrapped objects."""
         return getattr(self._env, name)
+
 
 class LinearizeReward(Wrapper):
     """Convert MO reward vector into scalar SO reward value.
@@ -22,16 +21,26 @@ class LinearizeReward(Wrapper):
     `weights` represents the weights of each objective in the reward vector space.
     """
 
-    def __init__(self, env, weights:np.ndarray):
+    def __init__(self, env, weights: np.ndarray):
+        """Reward linearization class initializer.
+
+        Args:
+            env: base env to add the wrapper on.
+            weights: a ndarray the size of the reward vector representing the weights of the rewards.
+        """
         self.weights = weights
         super().__init__(env)
 
     def step(self, actions):
-        """Returns a reward scalar from the reward vector.
-        """
-        obs, rew, term, trun, info = self._env.step(actions)
-        rew = np.array([np.dot(rew[agent], self.weights) for agent in rew.keys()])
-        return obs, rew, term, trun, info
+        """Returns a reward scalar from the reward vector."""
+        observations, rewards, terminations, truncation, infos = self._env.step(actions)
+        _rewards = np.array([np.dot(rewards[agent], self.weights) for agent in rewards.keys()])
+        i = 0
+        for key, _ in rewards.items():
+            rewards[key] = np.array([_rewards[i]])
+            i += 1
+        return observations, rewards, terminations, truncation, infos
+
 
 class RunningMeanStd:
     """Tracks the mean, variance and count of values."""
@@ -56,9 +65,8 @@ class RunningMeanStd:
             self.mean, self.var, self.count, batch_mean, batch_var, batch_count
         )
 
-def update_mean_var_count_from_moments(
-    mean, var, count, batch_mean, batch_var, batch_count
-):
+
+def update_mean_var_count_from_moments(mean, var, count, batch_mean, batch_var, batch_count):
     """Updates the mean, var and count using the previous mean, var, count and batch values."""
     delta = batch_mean - mean
     tot_count = count + batch_count
@@ -66,14 +74,15 @@ def update_mean_var_count_from_moments(
     new_mean = mean + delta * batch_count / tot_count
     m_a = var * count
     m_b = batch_var * batch_count
-    M2 = m_a + m_b + np.square(delta) * count * batch_count / tot_count
-    new_var = M2 / tot_count
+    m2 = m_a + m_b + np.square(delta) * count * batch_count / tot_count
+    new_var = m2 / tot_count
     new_count = tot_count
 
     return new_mean, new_var, new_count
-    
+
+
 class NormalizeReward(Wrapper):
-    """This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
+    r"""This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
 
     The exponential moving average will have variance :math:`(1 - \gamma)^2`.
 
@@ -93,17 +102,20 @@ class NormalizeReward(Wrapper):
         """This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
 
         Args:
-            env (env): The environment to apply the wrapper
-            indices (ndarray): The indices for the values in the reward vector that should be normalized.
-            epsilon (float): A stability parameter
-            gamma (float): The discount factor that is used in the exponential moving average.
+            env: The environment to apply the wrapper
+            agent: the name of the agent in string whose reward(s) will be normalized.
+            indices: a ndarray with the indices for the values in the reward vector that should be normalized.
+            epsilon: A stability parameter
+            gamma: The discount factor that is used in the exponential moving average.
         """
         super().__init__(env)
         self._env = env
         self.agent = agent
         self.indices = indices
         self.num_rewards = self._env.reward_spaces[agent].shape[0]
-        self.return_rms = np.array([RunningMeanStd(shape=()) for _ in range(self.num_rewards)]) # separate runningmeanstd for each obj
+        self.return_rms = np.array(
+            [RunningMeanStd(shape=()) for _ in range(self.num_rewards)]
+        )  # separate runningmeanstd for each obj
         self.returns = 0
         self.gamma = gamma
         self.epsilon = epsilon
@@ -111,9 +123,9 @@ class NormalizeReward(Wrapper):
     def step(self, actions):
         """Steps through the environment, normalizing the rewards returned."""
         observations, rewards, terminateds, truncateds, infos = self._env.step(actions)
-        reward = np.array(list(rewards[self.agent]))
+        reward = np.array(rewards[self.agent])
         self.returns = self.returns * self.gamma * (1 - terminateds[self.agent]) + reward
-       
+
         for i in self.indices:
             reward[i] = self.normalize(reward[i], i)
 
