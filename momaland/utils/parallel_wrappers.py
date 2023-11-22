@@ -1,6 +1,7 @@
 """Various wrappers for Parallel MO environments."""
 
 import numpy as np
+from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
 
 
 class Wrapper:
@@ -15,7 +16,7 @@ class Wrapper:
         return getattr(self._env, name)
 
 
-class LinearizeReward(Wrapper):
+class LinearizeReward(BaseParallelWrapper):
     """Convert MO reward vector into scalar SO reward value.
 
     `weights` represents the weights of each objective in the reward vector space.
@@ -33,7 +34,7 @@ class LinearizeReward(Wrapper):
 
     def step(self, actions):
         """Returns a reward scalar from the reward vector."""
-        observations, rewards, terminations, truncations, infos = self._env.step(actions)
+        observations, rewards, terminations, truncations, infos = super().step(actions)
         for key in rewards.keys():
             if key not in list(self.weights.keys()):
                 continue
