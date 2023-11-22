@@ -1,40 +1,42 @@
 """Various wrappers for AEC MO environments."""
 
 import numpy as np
+from pettingzoo.utils.wrappers.base import BaseWrapper
 
 
-class Wrapper:
-    """Base class for wrappers."""
+# class Wrapper:
+#     """Base class for wrappers."""
 
-    def __init__(self, env):
-        """Base wrapper initialization to save the base env."""
-        self._env = env
+#     def __init__(self, env):
+#         """Base wrapper initialization to save the base env."""
+#         self._env = env
 
-    def __getattr__(self, name):
-        """Provide proxy access to regular attributes of wrapped objects."""
-        return getattr(self._env, name)
+#     def __getattr__(self, name):
+#         """Provide proxy access to regular attributes of wrapped objects."""
+#         return getattr(self._env, name)
 
 
-class LinearizeReward(Wrapper):
+class LinearizeReward(BaseWrapper):
     """Convert MO reward vector into scalar SO reward value.
 
     `weights` represents the weights of each objective in the reward vector space.
     """
 
-    def __init__(self, env, weights: np.ndarray):
+    def __init__(self, env, weights: dict):
         """Reward linearization class initializer.
 
         Args:
             env: base env to add the wrapper on.
-            weights: a ndarray the size of the reward vector representing the weights of the rewards.
+            weights: a dict where keys are agents and values are vectors representing the weights of their rewards.
         """
         self.weights = weights
         super().__init__(env)
 
-    def last(self):
+    def last(self, observe: bool = True):
         """Returns a reward scalar from the reward vector."""
-        observation, rewards, termination, truncation, info = self._env.last()
-        rewards = np.array([np.dot(rewards, self.weights)])
+        observation, rewards, termination, truncation, info = self.env.last(observe=observe)
+        if self.env.agent_selection in list(self.weights.keys()):
+            rewards = np.array([np.dot(rewards, self.weights[self.env.agent_selection])])
         return observation, rewards, termination, truncation, info
 
 
@@ -77,7 +79,7 @@ def update_mean_var_count_from_moments(mean, var, count, batch_mean, batch_var, 
     return new_mean, new_var, new_count
 
 
-class NormalizeReward(Wrapper):
+class NormalizeReward(BaseWrapper):
     r"""This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.
 
     The exponential moving average will have variance :math:`(1 - \gamma)^2`.
@@ -116,9 +118,9 @@ class NormalizeReward(Wrapper):
         self.gamma = gamma
         self.epsilon = epsilon
 
-    def last(self):
+    def last(self, observe: bool = True):
         """Returns the last obs, rew, term, trunc, info; normalizing the rewards returned."""
-        observation, reward, termination, truncation, info = self._env.last()
+        observation, reward, termination, truncation, info = self.env.last(observe=observe)
         self.returns = self.returns * self.gamma * (1 - termination) + reward
         for i in self.indices:
             reward[i] = self.normalize(reward[i], i)

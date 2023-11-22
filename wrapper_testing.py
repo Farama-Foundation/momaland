@@ -1,6 +1,4 @@
 """Testing file for the wrappers."""
-import numpy as np
-
 import momaland.utils.aec_wrappers as AECWrappers
 import momaland.utils.parallel_wrappers as ParallelWrappers
 from momaland.envs.multiwalker import momultiwalker_v0 as _env
@@ -9,10 +7,12 @@ from momaland.envs.multiwalker import momultiwalker_v0 as _env
 def parallel_test():
     """Full ParallelEnv lifecycle for testing wrappers."""
     env = _env.parallel_env(shared_reward=False)
-    env = ParallelWrappers.LinearizeReward(env, np.array([0.8, 0.15, 0.15]))
-    env = ParallelWrappers.NormalizeReward(env, env.possible_agents[0], [0])
-    env = ParallelWrappers.NormalizeReward(env, env.possible_agents[1], [0])
-    env = ParallelWrappers.NormalizeReward(env, env.possible_agents[2], [0])
+    weights = {env.possible_agents[0]: [0.2, 0.6, 0.2], env.possible_agents[2]: [0.1, 0.3, 0.6]}
+
+    env = ParallelWrappers.LinearizeReward(env, weights)
+    # env = ParallelWrappers.NormalizeReward(env, env.possible_agents[0], [0])
+    # env = ParallelWrappers.NormalizeReward(env, env.possible_agents[1], [0])
+    # env = ParallelWrappers.NormalizeReward(env, env.possible_agents[2], [0])
 
     _, _ = env.reset(seed=42)
 
@@ -30,10 +30,11 @@ def parallel_test():
 def aec_test():
     """Full AECEnv lifecycle for testing wrappers."""
     env = _env.env(shared_reward=False)
-    env = AECWrappers.LinearizeReward(env, np.array([0.33, 0.33, 0.33]))
-    env = AECWrappers.NormalizeReward(env, env.possible_agents[0], [0])
-    env = AECWrappers.NormalizeReward(env, env.possible_agents[1], [0])
-    env = AECWrappers.NormalizeReward(env, env.possible_agents[2], [0])
+    weights = {env.possible_agents[0]: [0.2, 0.6, 0.2], env.possible_agents[2]: [0.1, 0.3, 0.6]}
+    env = AECWrappers.LinearizeReward(env, weights)
+    # env = AECWrappers.NormalizeReward(env, env.possible_agents[0], [0])
+    # env = AECWrappers.NormalizeReward(env, env.possible_agents[1], [0])
+    # env = AECWrappers.NormalizeReward(env, env.possible_agents[2], [0])
 
     env.reset(seed=42)
 

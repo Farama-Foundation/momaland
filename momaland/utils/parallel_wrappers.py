@@ -21,12 +21,12 @@ class LinearizeReward(Wrapper):
     `weights` represents the weights of each objective in the reward vector space.
     """
 
-    def __init__(self, env, weights: np.ndarray):
+    def __init__(self, env, weights: dict):
         """Reward linearization class initializer.
 
         Args:
             env: base env to add the wrapper on.
-            weights: a ndarray the size of the reward vector representing the weights of the rewards.
+            weights: a dict where keys are agents and values are vectors representing the weights of their rewards.
         """
         self.weights = weights
         super().__init__(env)
@@ -34,11 +34,11 @@ class LinearizeReward(Wrapper):
     def step(self, actions):
         """Returns a reward scalar from the reward vector."""
         observations, rewards, terminations, truncations, infos = self._env.step(actions)
-        _rewards = np.array([np.dot(rewards[agent], self.weights) for agent in rewards.keys()])
-        i = 0
-        for key, _ in rewards.items():
-            rewards[key] = np.array([_rewards[i]])
-            i += 1
+        for key in rewards.keys():
+            if key not in list(self.weights.keys()):
+                continue
+            rewards[key] = np.array([np.dot(rewards[key], self.weights[key])])
+
         return observations, rewards, terminations, truncations, infos
 
 
@@ -109,10 +109,9 @@ class NormalizeReward(Wrapper):
             gamma: The discount factor that is used in the exponential moving average.
         """
         super().__init__(env)
-        self._env = env
         self.agent = agent
         self.indices = indices
-        self.num_rewards = self._env.reward_spaces[agent].shape[0]
+        self.num_rewards = self.env.reward_spaces[agent].shape[0]
         self.return_rms = np.array(
             [RunningMeanStd(shape=()) for _ in range(self.num_rewards)]
         )  # separate runningmeanstd for each obj
@@ -122,7 +121,7 @@ class NormalizeReward(Wrapper):
 
     def step(self, actions):
         """Steps through the environment, normalizing the rewards returned."""
-        observations, rewards, terminations, truncations, infos = self._env.step(actions)
+        observations, rewards, terminations, truncations, infos = self.env.step(actions)
         reward = np.array(rewards[self.agent])
         self.returns = self.returns * self.gamma * (1 - terminations[self.agent]) + reward
 
