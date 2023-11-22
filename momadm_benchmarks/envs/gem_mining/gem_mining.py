@@ -29,12 +29,12 @@ from momadm_benchmarks.utils.env import MOParallelEnv
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the congestion game."""
+    """Env factory function for the MO Gem Mining problem."""
     return raw_env(**kwargs)
 
 
 def env(**kwargs):
-    """Auto-wrapper for the congestion game.
+    """Auto-wrapper for the MO Gem Mining problem.
 
     Args:
         **kwargs: keyword args to forward to the parallel_env function.
@@ -52,12 +52,12 @@ def env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """Env factory function for the congestion game."""
+    """Env factory function for the MO Gem Mining problem."""
     return MOGemMining(**kwargs)
 
 
 class MOGemMining(MOParallelEnv):
-    """Environment for MO Congestion Game problem.
+    """Environment for MO Gem Mining problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -68,8 +68,14 @@ class MOGemMining(MOParallelEnv):
 
     def __init__(
         self,
-        problem_name="Braess_1_4200_10_c1",
-        num_agents=4200,
+        problem_name="Gem_Mining",
+        num_agents=20,
+        num_objectives=2,
+        min_connectivity=2,
+        max_connectivity=4,
+        min_workers=1,
+        max_workers=5,
+        correlated_objectives=True,
         toll_mode="mct",
         random_toll_percentage=0.1,
         num_timesteps=1,
@@ -79,33 +85,35 @@ class MOGemMining(MOParallelEnv):
 
         Args:
             problem_name: the name of the network that will be used
-            num_agents: number of agents in the network
+            num_agents: number of agents (i.e., villages) in the Gem Mining instance
+            num_objectives: number of objectives (i.e., gem types), each mine has a probability of generating gems of any type at any timesteps
+            min_connectivity: the minimum number of mines each agent is connected to. Should be greater or equal to 2
+            max_connectivity: the maximum number of mines each agent is connected to. Should be greater or equal to min_connectivity
+            min_workers: the minimum number of workers per village (agent). Should be greater or equal to 1.
+            max_workers: the maximum number of workers per village (agent). Should be greater or equal to min_workers.
+            correlated_objectives: if true, the probability of mining a given type of gem at a mine is negatively correlated to finding a gem of another type, and the expectation of finding any gem is at most 1 per mine per timestep.
             toll_mode: the tolling mode that is used, tolls are either placed randomly "random" or using marginal cost tolling "mct"
             random_toll_percentage: in the case of random tolling the percentage of roads that will be taxed
             num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
         """
-        # Read in the problem from the corresponding .json file in the networks directory
-        self.graph, self.od, self.routes = self._read_problem(problem_name)
-        # Keep track of the current flow on each link the network
-        self.flows = {f"{edge[0]}-{edge[1]}": 0 for edge in self.graph.edges}
-
-        # Episodes/Timesteps
+        # Standard included: TODO CHECK
         self.num_timesteps = num_timesteps
         self.episode_num = 0
-
         self.render_mode = render_mode
-        self.possible_agents = ["agent_" + str(i) for i in range(num_agents)]
-        self.agents = self.possible_agents[:]
-        # each driver gets assigned a random origin-destination (OD) pair by _init_state()
-        self.drivers_od = self._init_state()
-        self.terminations = {agent: False for agent in self.agents}
-        self.truncations = {agent: False for agent in self.agents}
 
-        # compute the possible routes each agent can take based on its OD pair
-        route_choices_per_agent = [Discrete(len(self.routes[od])) for od in self.drivers_od]
-        # action space can be different for agents when there are multiple OD pairs with different numbers of routes
-        self.action_spaces = dict(zip(self.agents, route_choices_per_agent))
+        self.possible_agents = [i for i in range(num_agents)]
+        self.agents = self.possible_agents[:]
+        self.num_mines = num_agents + max_connectivity - 1
+
+        # determine the number of workers per village (agent):
+        self.workers = random.sample(range(min_workers, max_workers), self.num_mines)
+
+        # action spaces are numbers (IDs) of the mines where each agent can go
+        self.action_spaces = dict()
+        for i in range(num_agents):
+            connect = random.randint(min_connectivity, max_connectivity)
+            self.action_spaces[i] = Discrete(connect, start=i)
         # stateless setting, agents receive a constant '0' as an observation in each timestep
         self.observation_spaces = dict(
             zip(
