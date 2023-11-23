@@ -116,7 +116,9 @@ class NormalizeReward(BaseParallelWrapper):
     def step(self, actions):
         """Steps through the environment, normalizing the rewards returned."""
         observations, rewards, terminations, truncations, infos = super().step(actions)
-        self.returns = len(list(rewards[list(rewards.keys())[0]]))  # dont ask
+        self.returns = len(
+            list(rewards[list(rewards.keys())[0]])
+        )  # getting the max amount of obj amongst all agents that need to be normalized
         for key, value in self.indices.items():
             if key not in rewards.keys():
                 continue
