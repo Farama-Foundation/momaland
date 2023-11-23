@@ -8,15 +8,15 @@ def parallel_test():
     """Full ParallelEnv lifecycle for testing wrappers."""
     env = _env.parallel_env(shared_reward=False)
     weights = {env.possible_agents[0]: [0.2, 0.6, 0.2], env.possible_agents[2]: [0.1, 0.3, 0.6]}
-
+    indices = {env.possible_agents[0]: [0], env.possible_agents[1]: [0, 1], env.possible_agents[2]: [0]}
     env = ParallelWrappers.LinearizeReward(env, weights)
-    # env = ParallelWrappers.NormalizeReward(env, env.possible_agents[0], [0])
+    env = ParallelWrappers.NormalizeReward(env, indices)
     # env = ParallelWrappers.NormalizeReward(env, env.possible_agents[1], [0])
     # env = ParallelWrappers.NormalizeReward(env, env.possible_agents[2], [0])
 
     _, _ = env.reset(seed=42)
-
     while env.agents:
+        # print(env.agents)
         # this is where you would insert your policy
         actions = {agent: env.action_space(agent).sample() for agent in env.agents}
 
@@ -51,5 +51,5 @@ def aec_test():
 
 
 if __name__ == "__main__":
-    aec_test()
-    # parallel_test()
+    # aec_test()
+    parallel_test()
