@@ -1,6 +1,7 @@
 """Various wrappers for Parallel MO environments."""
 
 import numpy as np
+from gymnasium.wrappers.normalize import RunningMeanStd
 from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
 
 
@@ -43,38 +44,6 @@ class LinearizeReward(BaseParallelWrapper):
             rewards[key] = np.array([np.dot(rewards[key], self.weights[key])])
 
         return observations, rewards, terminations, truncations, infos
-
-
-class RunningMeanStd:
-    """Tracks the mean, variance and count of values."""
-
-    # https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Parallel_algorithm
-    def __init__(self, epsilon=1e-4, shape=()):
-        """Tracks the mean, variance and count of values."""
-        self.mean = np.zeros(shape, "float64")
-        self.var = np.ones(shape, "float64")
-        self.count = epsilon
-
-    def update(self, x):
-        """Updates the mean, var and count from a batch of samples."""
-        batch_mean = np.mean(x, axis=0)
-        batch_var = np.var(x, axis=0)
-        batch_count = x.shape[0]
-        self.mean, self.var, self.count = self.update_mean_var_count_from_moments(batch_mean, batch_var, batch_count)
-
-    def update_mean_var_count_from_moments(self, batch_mean, batch_var, batch_count):
-        """Updates the mean, var and count using the previous mean, var, count and batch values."""
-        delta = batch_mean - self.mean
-        tot_count = self.count + batch_count
-
-        new_mean = self.mean + delta * batch_count / tot_count
-        m_a = self.var * self.count
-        m_b = batch_var * batch_count
-        m2 = m_a + m_b + np.square(delta) * self.count * batch_count / tot_count
-        new_var = m2 / tot_count
-        new_count = tot_count
-
-        return new_mean, new_var, new_count
 
 
 class NormalizeReward(BaseParallelWrapper):
