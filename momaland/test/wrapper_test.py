@@ -6,6 +6,7 @@ import momaland.utils.parallel_wrappers as ParallelWrappers
 
 
 def aec_linearization_test(env_module):
+    """Test to see if rewards have been scalarized for the given agents."""
     env = env_module.env()
     weights = {
         env.possible_agents[0]: np.random.dirichlet(np.ones(env.reward_space(env.possible_agents[0]).shape[0]), size=1)[0],
@@ -28,7 +29,10 @@ def aec_linearization_test(env_module):
 def aec_normalization_test(env_module):
     """Soft test unit. No assertions.
 
-    This test unit is used to check if the API breaks when the wrapper is applied, and is also used as an example on how to use the wrapper.
+    This test unit is used to check if the API breaks when the wrapper is
+    applied, and is also used as an example on how to use the wrapper.
+
+    This code can be taken as example on how to build the `weights` dict.
     """
     env = env_module.env()
     weights = {
@@ -48,6 +52,7 @@ def aec_normalization_test(env_module):
 
 
 def parallel_linearization_test(env_module):
+    """Test to see if rewards have been scalarized for the given agents."""
     env = env_module.parallel_env()
     weights = {
         env.possible_agents[0]: np.random.dirichlet(np.ones(env.reward_space(env.possible_agents[0]).shape[0]), size=1)[0],
@@ -67,7 +72,10 @@ def parallel_linearization_test(env_module):
 def parallel_normalization_test(env_module):
     """Soft test unit. No assertions.
 
-    This test unit is used to check if the API breaks when the wrapper is applied, and is also used as an example on how to use the wrapper.
+    This test unit is used to check if the API breaks when the wrapper is
+    applied, and is also used as an example on how to use the wrapper.
+
+    This code can be taken as example on how to build the `weights` dict.
     """
     env = env_module.parallel_env()
     weights = {
