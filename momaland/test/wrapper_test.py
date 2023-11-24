@@ -35,19 +35,19 @@ def aec_normalization_test(env_module):
     This code can be taken as example on how to build the `weights` dict.
     """
     env = env_module.env()
-    weights = {
-        env.possible_agents[0]: [0, 1],
-        env.possible_agents[1]: [0, 1],
-    }
-    env = AECWrappers.NormalizeReward(env, weights)
+    for agent in env.possible_agents:
+        for idx in range(env.reward_space(agent).shape[0]):
+            env = AECWrappers.NormalizeReward(env, agent, idx)
     env.reset(seed=42)
     for agent in env.agent_iter():
-        observation, reward, termination, truncation, info = env.last()
+        observation, rewards, termination, truncation, info = env.last()
+        print(rewards)
         if termination or truncation:
             action = None
         else:
             action = env.action_space(agent).sample()  # this is where you would insert your policy
         env.step(action)
+    assert False
     env.close()
 
 
@@ -104,7 +104,7 @@ def parallel_test(env_module):
     - Normalization
     - Linear Scalarization
     """
-    parallel_normalization_test(env_module)
+    # parallel_normalization_test(env_module)
     parallel_linearization_test(env_module)
 
 

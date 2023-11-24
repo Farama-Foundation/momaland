@@ -42,7 +42,8 @@ class NormalizeReward(BaseWrapper):
     def __init__(
         self,
         env,
-        indices,
+        agent,
+        idx,
         gamma: float = 0.99,
         epsilon: float = 1e-8,
     ):
@@ -50,15 +51,16 @@ class NormalizeReward(BaseWrapper):
 
         Args:
             env: The environment to apply the wrapper
-            indices: a dict with the agent names in the keys and the indices for the the rewards that should be normalized in the values.
+            agent: the agent whose reward will be normalized
+            idx: the index of the rewards that will be normalized.
             epsilon: A stability parameter
             gamma: The discount factor that is used in the exponential moving average.
         """
         super().__init__(env)
-        self.indices = indices
-        # TODO move self.returns definition up here using `reward_space` once the BaseParallelWrapper attribute shadowing issue is solved
+        self.agent = agent
+        self.idx = idx
         self.return_rms = RunningMeanStd(shape=())
-        self.returns = 0
+        self.returns = env.observation_space(agent).shape[0]
         self.gamma = gamma
         self.epsilon = epsilon
 
@@ -66,15 +68,16 @@ class NormalizeReward(BaseWrapper):
         """Steps through the environment, normalizing the rewards returned."""
         observation, rewards, termination, truncation, info = self.env.last(observe)
         agent = self.env.agent_selection
-        if agent in list(self.indices.keys()):
-            reward = np.array(rewards).copy()
-            self.returns = self.returns * self.gamma * (1 - termination) + reward
-            for i in self.indices[agent]:  # rewards that should be normalized
-                reward[i] = self.normalize(reward[i], i)
-            rewards = reward
+        if agent != self.env.agent_selection:
+            return observation, rewards, termination, truncation, info
+
+        to_normalize = rewards[self.idx]
+        self.returns = self.returns * self.gamma * (1 - termination) + to_normalize
+        to_normalize = self.normalize(to_normalize)
+        rewards = to_normalize
         return observation, rewards, termination, truncation, info
 
-    def normalize(self, rews, i):
+    def normalize(self, to_normalize):
         """Normalizes the rewards with the running mean rewards and their variance."""
         self.return_rms.update(self.returns)
-        return rews / np.sqrt(self.return_rms.var + self.epsilon)
+        return to_normalize / np.sqrt(self.return_rms.var + self.epsilon)
