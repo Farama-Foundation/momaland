@@ -54,7 +54,7 @@ class MOIngenious(MOAECEnv):
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0"}
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=4, board_size=8):
+    def __init__(self, num_players=2, init_draw=6, num_colors=4, board_size=8, render_mode=None):
         """Initializes the ingenious game.
 
         Args:
@@ -62,6 +62,7 @@ class MOIngenious(MOAECEnv):
             init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
             num_colors (int): The number of colors in the game. Default: 4
             board_size (int): The size of the board. Default: 8
+            render_mode (str): The rendering mode. Default: None
         """
         self.board_size = board_size
         self.num_colors = num_colors
@@ -79,6 +80,7 @@ class MOIngenious(MOAECEnv):
         self.infos = {agent: {} for agent in self.agents}
         self.agent_selection = self.agents[self.game.agent_selector]
         self._cumulative_rewards = {agent: np.zeros(self.num_colors) for agent in self.agents}
+        self.render_mode = render_mode
 
         # Observation space is a dict of 2 elements: actions mask and game state (board, agent own tile bag,
         # agent score)
