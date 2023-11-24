@@ -1,0 +1,7 @@
+cython
+gymnasium
+git+https://github.com/rradules/momaland
+tqdm
+sphinx
+furo
+myst-parser
