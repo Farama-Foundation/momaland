@@ -1,6 +1,5 @@
 """Adapted from the Pistonball environment in PettingZoo."""
 
-
 from typing_extensions import override
 
 import numpy as np
@@ -91,8 +90,24 @@ class MOPistonball(MOAECEnv, PistonballEnv):
             render_mode=render_mode,
         )
         self.reward_dim = 3  # [global, local, time]
+        # A piston only gets a local reward if it is below the ball and the ball covers at most "max_covers" pistons. As
+        # such, the local reward can only be "max_covers" times the width of the piston scaled by 0.5.
+        max_covers = 1 + np.ceil(2 * self.ball_radius / self.piston_width)
+        max_local_reward = max_covers * self.piston_width * 0.5
+        # The global reward is computed by dividing its change in position by the total distance it needs to travel (at
+        # least 1) and multiplying this by 100. The best case scenario is to travel the entire distance in one go
+        # cancelling all terms and resulting in a reward of 100. The worst case is starting with a distance of 1 and
+        # traveling to the wrong side of the screen. Note that a better lower bound can be obtained once the starting
+        # position of the ball is known.
+        max_global_reward = 100
+        min_global_reward = (100 / 1) * (1 - self.screen_width)
         self.reward_spaces = {
-            f"piston_{i}": Box(low=-np.inf, high=np.inf, shape=(self.reward_dim,), dtype=np.float32)
+            f"piston_{i}": Box(
+                low=np.array([min_global_reward, -max_local_reward, self.time_penalty]),
+                high=np.array([max_global_reward, max_local_reward, 0]),
+                shape=(self.reward_dim,),
+                dtype=np.float32,
+            )
             for i in range(self.num_agents)
         }
 
