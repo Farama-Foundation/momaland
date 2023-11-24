@@ -155,7 +155,7 @@ class MOIngenious(MOAECEnv):
         Args:
             action: action of the active agent
         """
-        if not self.game.end_flag:
+        if not self.game.end_flag and self.game.return_action_list()[action] == 1:
             self.game.set_action_index(action)
             self.agent_selection = self.agents[self.game.agent_selector]
 
@@ -166,7 +166,7 @@ class MOIngenious(MOAECEnv):
         else:
             self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
         # print('before accumulate',self.game.end_flag, self.rewards)
-        self._accumulate_rewards()
+        # self._accumulate_rewards()
         # print('after accumulate')
 
     @override
@@ -175,19 +175,14 @@ class MOIngenious(MOAECEnv):
         assert agent
 
         observation = self.observe(agent) if observe else None
-        return (
-            observation,
-            self.rewards[agent],
-            self.terminations[agent],
-            self.truncations[agent],
-            self.infos[agent],
-        )
+        return (observation, self.rewards, self.terminations, self.truncations, self.infos)
 
     @override
     def observe(self, agent):
         board_vals = self.game.board_array
         p_tiles = np.array(self.game.p_tiles[agent])
         p_score = np.array(list(self.game.score[agent].values()))
+        # print(p_score)
         # p_index = self.agents[self.game.agent_selector]
 
         observation = {"board": board_vals, "tiles": p_tiles, "scores": p_score}

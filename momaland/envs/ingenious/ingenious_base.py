@@ -115,6 +115,8 @@ class IngeniousBase:
         """
         assert 2 <= num_players <= 5, "Number of players must be between 2 and 5."
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
+        assert 2 <= init_draw <= 6, "Number of tiles in hand must be between 2 and 6."
+        assert 3 <= board_size <= 10, "Board size must be between 3 and 10."
 
         self.board_size = board_size
         self.num_player = num_players
@@ -132,7 +134,8 @@ class IngeniousBase:
         self.action_size = 0
         self.masked_action = []
         self.legal_move = set()
-        self.score = {agent: {color: 0 for color in ALL_COLORS} for agent in self.agents}
+        self.score = {agent: {ALL_COLORS[i]: 0 for i in range(0, self.colors)} for agent in self.agents}
+
         self.tiles_bag = {}
         self.p_tiles = {agent: [] for agent in self.agents}
         self.first_round = True
@@ -150,7 +153,7 @@ class IngeniousBase:
         print("Show score")
         print(self.score)
 
-    def reset_game(self):
+    def reset_game(self, seed=None):
         """Reset the board, racks, score, and tiles bag."""
         self.end_flag = False
         self.first_round = True
@@ -181,7 +184,7 @@ class IngeniousBase:
         # initial tile draw for each agent
         self.p_tiles = {a: self.draw_tiles_fill() for a in self.agents}
         self.agent_selector = 0
-        self.score = {agent: {color: 0 for color in ALL_COLORS} for agent in self.agents}
+        self.score = {agent: {ALL_COLORS[i]: 0 for i in range(0, self.colors)} for agent in self.agents}
 
     def draw_tiles_fill(self):
         """Draw tiles for single player with amount(self.init_draw) of tiles."""
@@ -208,10 +211,10 @@ class IngeniousBase:
                 hx1 = hex_neighbor(a, k)
                 for j in range(0, 6):
                     hx2 = hex_neighbor(hx1, j)
-                    print(hx1, hx2, "2132")
+                    # print(hx1, hx2, "2132")
                     if (hx2 not in self.board_hex) or (hx1 not in self.board_hex) or (hx2 == a):
                         continue
-                    print(hx1, hx2, "21320000")
+                    # print(hx1, hx2, "21320000")
                     for card in range(0, self.init_draw):
                         c1 = self.action_map[(hx1, hx2, card)]
                         c2 = self.action_map[(hx2, hx1, card)]
@@ -229,12 +232,14 @@ class IngeniousBase:
         """Apply the corresponding action for the given index on the board."""
         # if selected actions is not a legal move, return False
         if self.masked_action[index] == 0:
+            print("llegal move:choose a masked action")
             return False
         h1, h2, card = self.action_index_map[index]
         agent_i = self.agent_selector
         agent = self.agents[agent_i]
+        print(agent, self.p_tiles[agent])
         if card >= len(self.p_tiles[agent]):
-            print("illegal move")
+            print("illegal move: choosing tile out of hand(happening after ingenious)")
             return False
         c1, c2 = self.p_tiles[agent][card]
         x1, y1 = Hex2ArrayLocation(h1, self.board_size)
@@ -299,11 +304,17 @@ class IngeniousBase:
                     break
                 h2n = hex_neighbor(h2n, i)
         self.score[agent][c2] += point
+
         if self.score[agent][c2] > self.limitation_score:
             skip_flag = True
             self.score[agent][c2] = 0
         if len(self.legal_move) == 0:
             self.end_flag = True
+
+        """all tiles in hand has been played"""
+        if len(self.p_tiles[agent]) == 0:
+            skip_flag = False
+
         if not skip_flag:
             self.get_tile(agent)
             self.next_turn()
