@@ -60,22 +60,24 @@ class NormalizeReward(BaseWrapper):
         self.agent = agent
         self.idx = idx
         self.return_rms = RunningMeanStd(shape=())
-        self.returns = env.observation_space(agent).shape[0]
+        self.returns = np.array([0.0])
         self.gamma = gamma
         self.epsilon = epsilon
 
     def last(self, observe: bool = True):
         """Steps through the environment, normalizing the rewards returned."""
-        observation, rewards, termination, truncation, info = self.env.last(observe)
-        agent = self.env.agent_selection
-        if agent != self.env.agent_selection:
-            return observation, rewards, termination, truncation, info
-
-        to_normalize = rewards[self.idx]
-        self.returns = self.returns * self.gamma * (1 - termination) + to_normalize
+        obs, rews, terminated, truncated, infos = self.env.last()
+        # Extracts the objective value to normalize
+        to_normalize = rews[self.idx]
+        to_normalize = np.array([to_normalize])
+        self.returns = self.returns * self.gamma + to_normalize
+        # Defer normalization to gym implementation
         to_normalize = self.normalize(to_normalize)
-        rewards = to_normalize
-        return observation, rewards, termination, truncation, info
+        self.returns[terminated] = 0.0
+        to_normalize = to_normalize[0]
+        # Injecting the normalized objective value back into the reward vector
+        rews[self.idx] = to_normalize
+        return obs, rews, terminated, truncated, infos
 
     def normalize(self, to_normalize):
         """Normalizes the rewards with the running mean rewards and their variance."""

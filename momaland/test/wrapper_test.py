@@ -41,13 +41,11 @@ def aec_normalization_test(env_module):
     env.reset(seed=42)
     for agent in env.agent_iter():
         observation, rewards, termination, truncation, info = env.last()
-        print(rewards)
         if termination or truncation:
             action = None
         else:
             action = env.action_space(agent).sample()  # this is where you would insert your policy
         env.step(action)
-    assert False
     env.close()
 
 
@@ -112,3 +110,4 @@ def wrapper_test(env_module):
     """Wrapper testing for AEC and Parallel environments."""
     aec_test(env_module)
     parallel_test(env_module)
+    print("Passed wrapper test")
