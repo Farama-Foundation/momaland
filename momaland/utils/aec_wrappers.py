@@ -67,6 +67,8 @@ class NormalizeReward(BaseWrapper):
     def last(self, observe: bool = True):
         """Steps through the environment, normalizing the rewards returned."""
         obs, rews, terminated, truncated, infos = self.env.last()
+        if self.agent != self.env.agent_selection:
+            return obs, rews, terminated, truncated, infos
         # Extracts the objective value to normalize
         to_normalize = rews[self.idx]
         to_normalize = np.array([to_normalize])
