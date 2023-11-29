@@ -75,7 +75,7 @@ class NormalizeReward(BaseWrapper):
             return observation, rewards, terminations, truncation, infos
 
         # Extracts the objective value to normalize
-        to_normalize = rewards[self.idx] if isinstance(rewards, list) else rewards  # array vs float
+        to_normalize = rewards[self.idx] if isinstance(rewards, np.ndarray) else rewards  # array vs float
 
         self.returns = self.returns * self.gamma * (1 - terminations) + to_normalize
 
@@ -84,7 +84,7 @@ class NormalizeReward(BaseWrapper):
 
         # Injecting the normalized objective value back into the reward vector
         # array vs float
-        if isinstance(rewards, list):
+        if isinstance(rewards, np.ndarray):
             rewards[self.idx] = to_normalize
         else:
             rewards = to_normalize
