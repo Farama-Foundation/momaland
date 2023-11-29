@@ -27,9 +27,7 @@ class LinearizeReward(BaseParallelWrapper):
 
     def step(self, actions):
         """Returns a reward scalar from the reward vector."""
-        observations, rewards, terminations, truncations, infos = super().step(
-            actions
-        )  # super.step is called to have env.agents reachable, otherwise main loop never ends
+        observations, rewards, terminations, truncations, infos = self.env.step(actions)
         for key in rewards:
             if key not in list(self.weights):
                 continue
@@ -80,7 +78,7 @@ class NormalizeReward(BaseParallelWrapper):
 
     def step(self, actions):
         """Steps through the environment, normalizing the rewards returned."""
-        observations, rewards, terminations, truncations, infos = super().step(actions)
+        observations, rewards, terminations, truncations, infos = self.env.step(actions)
 
         # Extracts the objective value to normalize
         to_normalize = (
