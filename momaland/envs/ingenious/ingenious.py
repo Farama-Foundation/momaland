@@ -16,7 +16,7 @@ from gymnasium.logger import warn
 from gymnasium.spaces import Box, Dict, Discrete
 from pettingzoo.utils import wrappers
 
-from momaland.envs.ingenious.ingenious_base import IngeniousBase
+from momaland.envs.ingenious.ingenious_base import ALL_COLORS, IngeniousBase
 from momaland.utils.conversions import mo_aec_to_parallel
 from momaland.utils.env import MOAECEnv
 
@@ -54,7 +54,7 @@ class MOIngenious(MOAECEnv):
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0"}
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=4, board_size=8, render_mode=None):
+    def __init__(self, num_players=3, init_draw=6, num_colors=6, board_size=8, render_mode=None):
         """Initializes the ingenious game.
 
         Args:
@@ -84,14 +84,16 @@ class MOIngenious(MOAECEnv):
 
         # Observation space is a dict of 2 elements: actions mask and game state (board, agent own tile bag,
         # agent score)
-        self.observation_space = {
+        self.observation_spaces = {
             i: Dict(
                 {
                     "observation": Dict(
                         {
-                            "board": Box(0, self.num_colors, shape=(self.board_size, self.board_size)),
-                            "tiles": Box(0, self.num_colors, shape=(self.init_draw, 2)),
-                            "scores": Box(0, self.game.limitation_score, shape=(self.num_colors,)),
+                            "board": Box(
+                                0, len(ALL_COLORS), shape=(2 * self.board_size - 1, 2 * self.board_size - 1), dtype=np.float32
+                            ),
+                            "tiles": Box(0, self.num_colors, shape=(self.init_draw, 2), dtype=np.int32),
+                            "scores": Box(0, self.game.limitation_score, shape=(self.num_colors,), dtype=np.int32),
                         }
                     ),
                     "action_mask": Box(low=0, high=1, shape=(len(self.game.masked_action),), dtype=np.int8),
@@ -149,6 +151,16 @@ class MOIngenious(MOAECEnv):
             np.random.seed(seed)
             random.seed(seed)
         self.game.reset_game()
+        # self.observation_spaces = {agent: self.observe(agent) for agent in self.agents}
+        obs = {agent: self.observe(agent) for agent in self.agents}
+        self.terminations = {agent: False for agent in self.agents}
+        self.truncations = {agent: False for agent in self.agents}
+        self.infos = {agent: {} for agent in self.agents}
+        self.agent_selection = self.agents[self.game.agent_selector]
+        self._cumulative_rewards = {agent: np.zeros(self.num_colors) for agent in self.agents}
+        self.agent_selection = self.agents[self.game.agent_selector]
+        self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+        return obs, self.infos
 
     @override
     def step(self, action):
@@ -167,28 +179,35 @@ class MOIngenious(MOAECEnv):
             self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
         else:
             self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+
         # print('before accumulate',self.game.end_flag, self.rewards)
-        # self._accumulate_rewards()
+        self._accumulate_rewards()
         # print('after accumulate')
 
     @override
     def last(self, observe=True):
         agent = self.agents[self.game.agent_selector]
         assert agent
+        if self.game.end_flag:
+            self.terminations = {agent: True for agent in self.agents}
+            self.truncations = {agent: True for agent in self.agents}
+            self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
+        else:
+            self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
 
         observation = self.observe(agent) if observe else None
-        return (observation, self.rewards, self.terminations, self.truncations, self.infos)
+        return (observation, self.rewards[agent], self.terminations[agent], self.truncations[agent], self.infos[agent])
 
     @override
     def observe(self, agent):
-        board_vals = self.game.board_array
-        p_tiles = np.array(self.game.p_tiles[agent])
-        p_score = np.array(list(self.game.score[agent].values()))
+        board_vals = np.array(self.game.board_array, dtype=np.float32)
+        p_tiles = np.array(self.game.p_tiles[agent], dtype=np.int32)
+        p_score = np.array(list(self.game.score[agent].values()), dtype=np.int32)
         # print(p_score)
         # p_index = self.agents[self.game.agent_selector]
 
         observation = {"board": board_vals, "tiles": p_tiles, "scores": p_score}
-        action_mask = self.game.return_action_list()
+        action_mask = np.array(self.game.return_action_list(), dtype=np.int8)
 
         # print(observation)
         return {"observation": observation, "action_mask": action_mask}

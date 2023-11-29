@@ -146,17 +146,22 @@ class IngeniousBase:
 
     def render_all(self):
         """Draft render function."""
-        print("Show the board:")
+        # print("Show the board:")
 
-        print("Show player's tile:")
-        print(self.p_tiles)
-        print("Show score")
-        print(self.score)
+        # print("Show player's tile:")
+        # print(self.p_tiles)
+        # print("Show score")
+        # print(self.score)
+        pass
 
     def reset_game(self, seed=None):
         """Reset the board, racks, score, and tiles bag."""
+        if seed is not None:
+            np.random.seed(seed)
+            random.seed(seed)
         self.end_flag = False
         self.first_round = True
+        self.first_round_pos.clear()
         self.board_array = np.zeros([2 * self.board_size - 1, 2 * self.board_size - 1])
         # generate hex board
         self.board_hex = generate_board(self.board_size)
@@ -232,22 +237,25 @@ class IngeniousBase:
         """Apply the corresponding action for the given index on the board."""
         # if selected actions is not a legal move, return False
         if self.masked_action[index] == 0:
-            print("llegal move:choose a masked action")
+            # print("llegal move:choose a masked action")
+            return False
+        if (index not in self.first_round_pos) and self.first_round:
+            # print("llegal move:")
             return False
         h1, h2, card = self.action_index_map[index]
         agent_i = self.agent_selector
         agent = self.agents[agent_i]
-        print(agent, self.p_tiles[agent])
+        # print(agent, self.p_tiles[agent],index)
         if card >= len(self.p_tiles[agent]):
-            print("illegal move: choosing tile out of hand(happening after ingenious)")
+            # print("illegal move: choosing tile out of hand(happening after ingenious)")
             return False
         c1, c2 = self.p_tiles[agent][card]
         x1, y1 = Hex2ArrayLocation(h1, self.board_size)
         x2, y2 = Hex2ArrayLocation(h2, self.board_size)
-        print(agent_i, agent, h1, h2, c1, c2, (x1, y1), (x2, y2), self.board_array[x1][y1], self.board_array[x2][y2])
+        # print(agent_i, agent, index ,self.p_tiles[agent], h1, h2, c1, c2, (x1, y1), (x2, y2), self.board_array[x1][y1], self.board_array[x2][y2])
         flag = False
         for item in self.p_tiles[agent]:
-            print(item)
+            # print(item)
             if (c1, c2) == item:
                 self.p_tiles[agent].remove(item)
                 flag = True
@@ -258,8 +266,10 @@ class IngeniousBase:
                 break
 
         if not flag:
-            print("illegal move")
+            warnings("illegal move")
             return False
+
+        # print('after remove',agent_i,self.p_tiles[agent])
 
         self.legal_move.remove(index)
         self.board_array[x1][y1] = c1
@@ -318,9 +328,10 @@ class IngeniousBase:
         if not skip_flag:
             self.get_tile(agent)
             self.next_turn()
-        else:
-            print(self.log())
-            print("ingenious!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        # else:
+        # print(self.log())
+        # print("ingenious!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        # print('after draw', agent_i, self.p_tiles[agent])
         return True
 
     def exclude_action(self, hx):
