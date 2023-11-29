@@ -17,7 +17,7 @@ def aec_linearization_test(env_module):
     for agent in env.agent_iter():
         observation, reward, termination, truncation, info = env.last()
         if agent is env.possible_agents[0] or agent is env.possible_agents[1]:
-            assert len(reward) == 1, "Returned reward should be a scalar value."
+            assert isinstance(reward, np.float64), "Returned reward should be a scalar value of np.float64 type."
         if termination or truncation:
             action = None
         else:
