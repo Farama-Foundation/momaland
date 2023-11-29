@@ -102,8 +102,8 @@ def parallel_test(env_module):
     - Normalization
     - Linear Scalarization
     """
-    # parallel_normalization_test(env_module)
-    # parallel_linearization_test(env_module)
+    parallel_normalization_test(env_module)
+    parallel_linearization_test(env_module)
     print("Passed Parallel wrapper test")
 
 

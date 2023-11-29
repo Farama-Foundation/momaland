@@ -8,7 +8,11 @@ from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
 class LinearizeReward(BaseParallelWrapper):
     """Convert MO reward vector into scalar SO reward value.
 
-    `weights` represents the weights of each objective in the reward vector space.
+    `weights` represents the weights of each objective in the reward vector space for each agent.
+
+    Example:
+    >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8]}
+    >>> env = LinearizeReward(env, weights)
     """
 
     def __init__(self, env, weights: dict):
@@ -26,10 +30,10 @@ class LinearizeReward(BaseParallelWrapper):
         observations, rewards, terminations, truncations, infos = super().step(
             actions
         )  # super.step is called to have env.agents reachable, otherwise main loop never ends
-        for key in rewards.keys():
-            if key not in list(self.weights.keys()):
+        for key in rewards:
+            if key not in list(self.weights):
                 continue
-            rewards[key] = np.array([np.dot(rewards[key], self.weights[key])])
+            rewards[key] = np.dot(rewards[key], self.weights[key])
 
         return observations, rewards, terminations, truncations, infos
 
@@ -42,6 +46,11 @@ class NormalizeReward(BaseParallelWrapper):
     Note:
         The scaling depends on past trajectories and rewards will not be scaled correctly if the wrapper was newly
         instantiated or the policy was changed recently.
+
+    Example:
+    >>> for agent in env.possible_agents:
+    >>>     for idx in range(env.reward_space(agent).shape[0]):
+    >>>         env = AECWrappers.NormalizeReward(env, agent, idx)
     """
 
     def __init__(
@@ -72,16 +81,24 @@ class NormalizeReward(BaseParallelWrapper):
     def step(self, actions):
         """Steps through the environment, normalizing the rewards returned."""
         observations, rewards, terminations, truncations, infos = super().step(actions)
+
         # Extracts the objective value to normalize
-        to_normalize = rewards[self.agent][self.idx]
-        to_normalize = np.array([to_normalize])
-        self.returns = self.returns * self.gamma + to_normalize
+        to_normalize = (
+            rewards[self.agent][self.idx] if isinstance(rewards[self.agent], np.ndarray) else rewards[self.agent]
+        )  # array vs float
+
+        self.returns = self.returns * self.gamma * (1 - terminations[self.agent]) + to_normalize
+
         # Defer normalization to gym implementation
         to_normalize = self.normalize(to_normalize)
-        self.returns[terminations[self.agent]] = 0.0
-        to_normalize = to_normalize[0]
+
         # Injecting the normalized objective value back into the reward vector
-        rewards[self.agent][self.idx] = to_normalize
+        # array vs float
+        if isinstance(rewards[self.agent], np.ndarray):
+            rewards[self.agent][self.idx] = to_normalize
+        else:
+            rewards[self.agent] = to_normalize
+
         return observations, rewards, terminations, truncations, infos
 
     def normalize(self, rews):
