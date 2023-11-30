@@ -1,10 +1,11 @@
 """MO Connect4 check."""
 
-from moconnect4 import MOConnect4
+import numpy as np
+from connect4 import MOConnect4
 
 
 def main():
-    """Check the environment."""
+    """Checks the environment."""
     environment = MOConnect4(board_width=7, board_height=6, column_objectives=False)
     environment.reset(seed=42)
 
@@ -34,5 +35,15 @@ def main():
     environment.close()
 
 
+def random_test():
+    """Checks restoring rng state."""
+    rng = np.random.default_rng()
+    st0 = rng.__getstate__()
+    print(rng.integers(low=0, high=10, size=5))
+    print(rng.integers(low=0, high=10, size=10))
+    rng.__setstate__(st0)
+    print(rng.integers(low=0, high=10, size=5))
+
+
 if __name__ == "__main__":
-    main()
+    random_test()

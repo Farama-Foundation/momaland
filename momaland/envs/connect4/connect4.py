@@ -9,49 +9,50 @@
 | Action Values      | Discrete(board_width=7)                          |
 | Observation Shape  | (board_height=6, board_width=7, 2)               |
 | Observation Values | [0,1]                                            |
-| Reward Shape       | (2 + board_width,)                               |
+| Reward Shape       | (2,) or (2+board_width,)                         |
 
-Connect Four is a 2-player turn based game, where players must connect four of their tokens vertically, horizontally
-or diagonally. The players drop their respective token in a column of a standing grid, where each token will fall
-until it reaches the bottom of the column or reaches an existing token. Players cannot place a token in a full
-column, and the game ends when either a player has made a sequence of 4 tokens, or when all board_width columns have
-been filled.
+Connect Four is a 2-player turn based game, where players can win by connecting four of their tokens vertically,
+horizontally or diagonally. The players drop their respective token in a column of a standing grid, where each token
+will fall until it reaches the bottom of the column or lands on top of an existing token. Players cannot place a token
+in a full column, and the game ends when either a player has made a sequence of 4 tokens, or when all board_width
+columns have been filled.
 
 
 ### Observation Space
 
 The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
-below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section.
+below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
 
-The main observation space is 2 planes of a board_heightxboard_width grid. Each plane represents a specific agent's
-tokens, and each location in the grid represents the placement of the corresponding agent's token. 1 indicates that
-the agent has a token placed in that cell, and 0 indicates they do not have a token in that cell. A 0 means that
-either the cell is empty, or the other agent has a token in that cell.
+The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
+Each plane represents a specific agent's tokens, and each location in the grid represents the placement of the
+corresponding agent's token. 1 indicates that the agent has a token placed in the given location, and 0 indicates they
+do not have a token in that location (meaning that either the cell is empty, or the other agent has a token in that
+ location).
 
 
 #### Legal Actions Mask
 
 The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
-The `action_mask` is a binary vector where each index of the vector represents whether the action is legal or not.
-The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal move ends the
+The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
+or not; the action encoding is described in the Action Space section below.
+The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
 game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
 
 
 ### Action Space
 
-The action space is the set of integers from 0 to board_width-1 (inclusive), where the action represents which column
+The action space is the set of integers from 0 to board_width (exclusive), where the number represents which column
 a token should be dropped in.
 
 
 ### Rewards
 
 Dimension 0: If an agent successfully connects four of their tokens, they will be rewarded 1 point. At the same time,
-the opponent agent will be awarded -1 point. If the game ends in a draw, both players are rewarded 0. Dimension 1: If
-an agent wins, they get a reward of 1-(move_count/board_size) to incentivize faster wins. The losing opponent gets
-the negated reward. In case of a draw, both agents get 0. Dimension 2 to board_width+1 (default 8): (optional) If at
-game end, an agent has more tokens than their opponent in column X, they will be rewarded 1 point in reward dimension
-2+X. The opponent agent will be rewarded -1 point. If the column has an equal number of tokens from both players,
-both players are rewarded 0.
+the opponent agent will be awarded -1 point. If the game ends in a draw, both players are rewarded 0.
+Dimension 1: If an agent wins, they get a reward of 1-(move_count/board_size) to incentivize faster wins. The losing opponent gets the negated reward. In case of a draw, both agents get 0.
+Dimension 2 to board_width+1 (default 8): (optional) If at game end, an agent has more tokens than their opponent in
+column X, they will be rewarded 1 point in reward dimension 2+X. The opponent agent will be rewarded -1 point. If the
+column has an equal number of tokens from both players, both players are rewarded 0.
 
 
 ### Version History
@@ -69,7 +70,6 @@ from gymnasium import spaces
 from gymnasium.utils import EzPickle
 from pettingzoo.utils import agent_selector, wrappers
 
-from momaland.utils.conversions import mo_aec_to_parallel
 from momaland.utils.env import MOAECEnv
 
 
@@ -103,20 +103,6 @@ def env(**kwargs):
     return env
 
 
-def parallel_env(**kwargs):
-    """Returns the wrapped MOConnect4 environment in `parallel` format.
-
-    Args:
-        **kwargs: keyword args to forward to the raw_env function.
-
-    Returns:
-        A fully wrapped parallel env.
-    """
-    env = raw_env(**kwargs)
-    env = mo_aec_to_parallel(env)
-    return env
-
-
 def raw_env(**kwargs):
     """Returns the MOConnect4 environment in `AEC` format.
 
@@ -135,7 +121,7 @@ class MOConnect4(MOAECEnv, EzPickle):
     metadata = {
         "render_modes": ["human", "rgb_array"],
         "name": "moconnect4_v0",
-        "is_parallelizable": True,  # TODO ?
+        "is_parallelizable": False,
         "render_fps": 2,
     }
 
@@ -147,14 +133,14 @@ class MOConnect4(MOAECEnv, EzPickle):
         board_height: int = 6,
         column_objectives=True,
     ):
-        """Initialize a new MOConnect4 environment.
+        """Initializes a new MOConnect4 environment.
 
         Args:
             render_mode: The mode to render with. Can be 'human' or 'rgb_array'.
             screen_scaling: The factor by which to scale the screen.
-            board_width: The width of the board.
-            board_height: The height of the board.
-            column_objectives: Whether to use column objectives or not.
+            board_width: The width of the board (from 4 to 20)
+            board_height: The height of the board (from 4 to 20)
+            column_objectives: Whether to use column objectives or not (without them, there are 2 objectives. With them, there are 2+board_width objectives)
         """
         EzPickle.__init__(self, render_mode, screen_scaling)
         self.env = super().__init__()
@@ -199,20 +185,6 @@ class MOConnect4(MOAECEnv, EzPickle):
         if self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-    # Key
-    # ----
-    # blank space = 0
-    # agent 0 = 1
-    # agent 1 = 2
-    # An observation is list of lists, where each list represents a row
-    # E.g.
-    # array([[0, 1, 1, 2, 0, 1, 0],
-    #        [1, 0, 1, 2, 2, 2, 1],
-    #        [0, 1, 0, 0, 1, 2, 1],
-    #        [1, 0, 2, 0, 1, 1, 0],
-    #        [2, 0, 0, 0, 1, 1, 0],
-    #        [1, 1, 2, 1, 0, 1, 0]], dtype=int8)
-
     @override
     def observe(self, agent):
         board_vals = np.array(self.board).reshape(self.board_height, self.board_width)
@@ -246,39 +218,39 @@ class MOConnect4(MOAECEnv, EzPickle):
     @override
     def step(self, action):
         if self.truncations[self.agent_selection] or self.terminations[self.agent_selection]:
-            return self._was_dead_step(action)  # TODO is this needed?
+            return self._was_dead_step(action)
 
         # assert valid move
         assert self.board[0 : self.board_width][action] == 0, "played illegal move."
 
-        piece = self.agents.index(self.agent_selection) + 1
+        # make the move
+        agent = self.agent_selection
+        piece = self.agents.index(agent) + 1
         for i in list(filter(lambda x: x % self.board_width == action, list(range(self.board_size - 1, -1, -1)))):
             if self.board[i] == 0:
                 self.board[i] = piece
                 self.move_count += 1
                 break
 
+        # handle the rewards
         next_agent = self._agent_selector.next()
         winner = self.check_for_winner()
-
-        # check if there is a winner
+        self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
         if winner:
-            self.rewards[self.agent_selection][0] = 1
+            self.rewards[agent][0] = 1
             self.rewards[next_agent][0] = -1
-            self.rewards[self.agent_selection][1] = 1 - (self.move_count / self.board_size)
+            self.rewards[agent][1] = 1 - (self.move_count / self.board_size)
             self.rewards[next_agent][1] = -(1 - (self.move_count / self.board_size))
-            if self.column_objectives:
-                self._assign_column_rewards(self.agent_selection, next_agent)
-            self.terminations = {i: True for i in self.agents}
         # check if there is a tie
-        elif all(x in [1, 2] for x in self.board):
-            # once either play wins or there is a draw, game over, both players are done
+        if winner or all(x in [1, 2] for x in self.board):
             if self.column_objectives:
-                self._assign_column_rewards(self.agent_selection, next_agent)
+                self._assign_column_rewards(agent, next_agent)
             self.terminations = {i: True for i in self.agents}
-
-        self.agent_selection = next_agent
+        self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
         self._accumulate_rewards()
+
+        # select the next agent
+        self.agent_selection = next_agent
         if self.render_mode == "human":
             self.render()
 
@@ -387,7 +359,7 @@ class MOConnect4(MOAECEnv, EzPickle):
         return None
 
     def check_for_winner(self):
-        """Returns True if the current agent has won, False otherwise."""
+        """Returns True if the current agent has won the game, False otherwise."""
         board = np.array(self.board).reshape(self.board_height, self.board_width)
         piece = self.agents.index(self.agent_selection) + 1
 

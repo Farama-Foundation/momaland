@@ -5,30 +5,36 @@ from breakthrough import MOBreakthrough
 
 def check_env():
     """Check the environment."""
-    environment = MOBreakthrough(board_width=6, board_height=6, num_objectives=4)
+    environment = MOBreakthrough(board_width=6, board_height=6, num_objectives=4, render_mode="human")
     environment.reset(seed=42)
 
     for agent in environment.agent_iter():
         observation, reward, termination, truncation, info = environment.last()
 
-        print("rewards", environment.rewards)
+        print("rewards from the last timestep", reward)
+        print("cumulative rewards before action", environment._cumulative_rewards)
         if termination or truncation:
             action = None
         else:
             if observation:
+                print("environment before action:")
+                environment.render()
+                # print("observation:")
+                # print(observation)
                 mask = observation["action_mask"]
                 # this is where you would insert your policy
                 action = environment.action_space(agent).sample(mask)
-                # print("observation: ", observation)
-                print("cumulative rewards", environment._cumulative_rewards)
                 print("action: ", action)
 
         environment.step(action)
+        print("environment after action:")
+        environment.render()
+        print("cumulative rewards after action", environment._cumulative_rewards)
 
     # print("observation: ", observation)
     # print("reward: ", reward)
-    print("rewards", environment.rewards)
-    print("cumulative rewards", environment._cumulative_rewards)
+    print("game end: rewards", environment.rewards)
+    print("game end: cumulative rewards", environment._cumulative_rewards)
     # name = input("Press key to end\n")
     environment.close()
 

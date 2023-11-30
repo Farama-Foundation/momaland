@@ -9,48 +9,53 @@
 | Action Values      | Discrete(board_width=8 * board_height=8 * 3)     |
 | Observation Shape  | (board_height=8, board_width=8, 2)               |
 | Observation Values | [0,1]                                            |
-| Reward Shape       | (3,)                                             |
+| Reward Shape       | (num_objectives=4,)                              |
 
-Breakthrough is a 2-player turn based game, where players must try to reach the opponent's home row with any of their
+Breakthrough is a 2-player turn based game, where players try to reach the opponent's home row with any of their
 pieces. The first player to move a piece there wins. Players move alternatingly, and each piece can move one square
 straight forward or diagonally forward. Opponent pieces can also be captured, but only by moving diagonally forward,
 not straight.
+MO-Breakthrough can give additional rewards for ending the game more quickly, capturing opponent pieces, and avoiding
+the capture of the agent's own pieces.
 
 
 ### Observation Space
 
 The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
-below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section.
+below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
 
-The main observation space is 2 planes of a board_heightxboard_width grid. Each plane represents a specific agent's
-tokens, and each location in the grid represents the placement of the corresponding agent's token. 1 indicates that
-the agent has a token placed in that cell, and 0 indicates they do not have a token in that cell. A 0 means that
-either the cell is empty, or the other agent has a token in that cell.
+The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
+Each plane represents a specific agent's pieces, and each location in the grid represents the placement of the
+corresponding agent's piece. 1 indicates that the agent has a piece placed in the given location, and 0 indicates they
+do not have a piece in that location (meaning that either the cell is empty, or the other agent has a piece in that
+location).
 
 
 #### Legal Actions Mask
 
 The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
-The `action_mask` is a binary vector where each index of the vector represents whether the action is legal or not.
-The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal move ends the
+The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
+or not; the action encoding is described in the Action Space section below.
+The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
 game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
 
 
 ### Action Space
 
-The action space is the set of integers from 0 to board_width*board_height*3 (exclusive). If a piece at coordinates (
-x,y) is moved, this is encoded as the integer x*y+z where z == 0 for left diagonal, 1 for straight, and 2 for right
-diagonal move.
+The action space is the set of integers from 0 to board_width*board_height*3 (exclusive). If a piece at coordinates
+(x,y) is moved, this is encoded as the integer x * 3 * board_height + y * 3 + z where z == 0 for left diagonal, 1 for
+straight, and 2 for right diagonal move.
 
 
 ### Rewards
 
 Dimension 0: If an agent moves one of their pieces to the opponent's home row, they will be rewarded 1 point. At the
-same time, the opponent agent will be awarded -1 point. There are no draws in Breakthrough. Dimension 1: If an agent
-wins, they get a reward of 1-(move_count/max_moves) to incentivize faster wins. The losing opponent gets the negated
-reward. In case of a draw, both agents get 0. Dimension 2: (optional) The number of opponent pieces (divided by the
-max number of pieces) an agent has captured. Dimension 3: (optional) The negative number of pieces (divided by the
-max number of pieces) an agent has lost to the opponent.
+same time, the opponent agent will be awarded -1 point. There are no draws in Breakthrough.
+Dimension 1: If an agent wins, they get a reward of 1-(move_count/max_moves) to incentivize faster wins. The losing
+opponent gets the negated reward. In case of a draw, both agents get 0.
+Dimension 2: (optional) The number of opponent pieces (divided by the max number of pieces) an agent has captured.
+Dimension 3: (optional) The negative number of pieces (divided by the max number of pieces)
+ an agent has lost to the opponent.
 
 
 ### Version History
@@ -65,12 +70,7 @@ from gymnasium import spaces
 from gymnasium.logger import warn
 from pettingzoo.utils import agent_selector, wrappers
 
-from momaland.utils import mo_aec_to_parallel
 from momaland.utils.env import MOAECEnv
-
-
-OFF_BOARD = -1
-ANGLES = ["LEFT", "STRAIGHT", "RIGHT"]
 
 
 def env(**kwargs):
@@ -92,20 +92,6 @@ def env(**kwargs):
     return env
 
 
-def parallel_env(**kwargs):
-    """Returns the wrapped MOBreakthrough environment in `parallel` format.
-
-    Args:
-        **kwargs: keyword args to forward to the raw_env function.
-
-    Returns:
-        A fully wrapped parallel env.
-    """
-    env = raw_env(**kwargs)
-    env = mo_aec_to_parallel(env)
-    return env
-
-
 def raw_env(**kwargs):
     """Returns the MOBreakthrough environment in `AEC` format.
 
@@ -118,27 +104,25 @@ def raw_env(**kwargs):
     return MOBreakthrough(**kwargs)
 
 
-def human_print(array):
-    """Prints the board in a human-readable format."""
-    print(np.rot90(array))
-
-
 class MOBreakthrough(MOAECEnv):
-    """Breakthrough environment with multiple objectives."""
+    """Multi-objective Breakthrough."""
 
     metadata = {
         "render_modes": ["human"],
         "name": "mobreakthrough_v0",
-        "is_parallelizable": True,  # TODO ?
+        "is_parallelizable": False,
     }
 
+    OFF_BOARD = -1
+    ANGLES = ["LEFT", "STRAIGHT", "RIGHT"]
+
     def __init__(self, board_width: int = 8, board_height: int = 8, num_objectives=4, render_mode=None):
-        """Initialize the MOBreakthrough environment.
+        """Initializes a new MOBreakthrough environment.
 
         Args:
-            board_width: The width of the board.
-            board_height: The height of the board.
-            num_objectives: The number of objectives.
+            board_width: The width of the board (from 3 to 20)
+            board_height: The height of the board (from 5 to 20)
+            num_objectives: The number of objectives (from 1 to 4)
             render_mode: The render mode.
         """
         self.env = super().__init__()
@@ -149,8 +133,8 @@ class MOBreakthrough(MOAECEnv):
         elif not (5 <= board_height <= 20):
             raise ValueError("Config parameter board_height must be between 5 and 20.")
 
-        elif not (2 <= num_objectives <= 4):
-            raise ValueError("Config parameter num_objectives must be between 2 and 4.")
+        elif not (1 <= num_objectives <= 4):
+            raise ValueError("Config parameter num_objectives must be between 1 and 4.")
 
         self.board_width = board_width
         self.board_height = board_height
@@ -164,7 +148,6 @@ class MOBreakthrough(MOAECEnv):
         self.max_turns = 4 * board_width * (board_height - 3) + 1
         self.max_move = board_height * board_width * 3
         self._cumulative_rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
-
         self._initialize_board(board_height, board_width)
         self.legal_moves = self._legal_moves()
         self.render_mode = render_mode
@@ -196,22 +179,11 @@ class MOBreakthrough(MOAECEnv):
             warn("You are calling render method without specifying any render mode.")
             return
 
-    # Key
-    # ----
-    # blank space = 0
-    # agent 0 = 1
-    # agent 1 = 2
-    # An observation is list of lists, where each list represents a row
-    # E.g.
-    # array([[0, 1, 1, 2, 0, 1, 0],
-    #        [1, 0, 1, 2, 2, 2, 1],
-    #        [0, 1, 0, 0, 1, 2, 1],
-    #        [1, 0, 2, 0, 1, 1, 0],
-    #        [2, 0, 0, 0, 1, 1, 0],
-    #        [1, 1, 2, 1, 0, 1, 0]], dtype=int8)
+        if self.render_mode == "human":
+            self.print_board()
 
     @override
-    def observe(self, agent):
+    def observe(self, agent):  # currently using a fixed layer for the current player, instead of fixed layers by color
         cur_player = self.possible_agents.index(agent)
         opp_player = (cur_player + 1) % 2
         cur_p_board = np.equal(self.board, cur_player + 1)
@@ -263,23 +235,20 @@ class MOBreakthrough(MOAECEnv):
         return legal_moves
 
     def _get_square(self, x, y):
-        """Returns the piece at the given coordinates, provided the coordinates are legal."""
+        """Returns the piece at the given coordinates, provided the coordinates are legal. Otherwise returns MOBreakthrough.OFF_BOARD."""
         if x < 0 or x > self.board_width - 1 or y < 0 or y > self.board_height - 1:
-            return OFF_BOARD
+            return MOBreakthrough.OFF_BOARD
         return self.board[x][y]
 
     @override
     def step(self, action):
         if self.truncations[self.agent_selection] or self.terminations[self.agent_selection]:
-            return self._was_dead_step(action)  # TODO is this needed?
+            return self._was_dead_step(action)
 
         # assert valid move
-        # human_print(self.board)
-        # print("legal moves: ", self.legal_moves)
-        # print("about to play: ", action)
-
         assert action in self.legal_moves, "played illegal move."
 
+        # make the move
         x, y, direction = self._int_to_move(action)
         agent = self.agent_selection
         agent_index = self.possible_agents.index(agent)
@@ -288,41 +257,36 @@ class MOBreakthrough(MOAECEnv):
         move_direction = 1 if agent_piece == 1 else -1
         self.board[x][y] = 0
         capture = False
-        if self.board[x + ANGLES.index(direction) - 1][y + move_direction] != 0:
+        if self.board[x + MOBreakthrough.ANGLES.index(direction) - 1][y + move_direction] != 0:
             capture = True
-        self.board[x + ANGLES.index(direction) - 1][y + move_direction] = agent_piece
+        self.board[x + MOBreakthrough.ANGLES.index(direction) - 1][y + move_direction] = agent_piece
         self.move_count += 1
-        winner = self.check_for_winner()
 
-        # self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
-        # self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
+        # handle the rewards
+        self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
         if capture:
             if self.num_objectives > 2:
                 self.rewards[agent][2] = 1 / (self.board_width * 2)
             if self.num_objectives > 3:
                 self.rewards[next_agent][3] = -1 / (self.board_width * 2)
-        # check if there is a winner
-        if winner:
+        if self.check_for_winner():
             self.rewards[agent][0] = 1
             self.rewards[next_agent][0] = -1
-            self.rewards[agent][1] = 1 - (self.move_count / self.max_turns)
-            self.rewards[next_agent][1] = -(1 - (self.move_count / self.max_turns))
+            if self.num_objectives > 1:
+                self.rewards[agent][1] = 1 - (self.move_count / self.max_turns)
+                self.rewards[next_agent][1] = -(1 - (self.move_count / self.max_turns))
             self.terminations = {i: True for i in self.agents}
-
         self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
         self._accumulate_rewards()
 
-        # selects the next agent.
+        # select the next agent
         self.agent_selection = self._agent_selector.next()
         self.legal_moves = self._legal_moves()
-
         if self.render_mode == "human":
             self.render()
 
     @override
     def reset(self, seed=None, options=None):
-        # reset environment
-        # print("reset")
         if seed is not None:
             np.random.seed(seed)
         self.agents = self.possible_agents[:]
@@ -331,8 +295,6 @@ class MOBreakthrough(MOAECEnv):
         self.terminations = {i: False for i in self.agents}
         self.truncations = {i: False for i in self.agents}
         self.infos = {i: {} for i in self.agents}
-        # self._agent_selector = agent_selector(self.agents)
-        # self.agent_selection = self._agent_selector.reset()
         self.move_count = 0
         self._initialize_board(self.board_height, self.board_width)
         self.legal_moves = self._legal_moves()
@@ -344,7 +306,7 @@ class MOBreakthrough(MOAECEnv):
         pass
 
     def check_for_winner(self):
-        """Check if there is a winner."""
+        """Checks if there is a winner and the game is over."""
         cur_player = self.possible_agents.index(self.agent_selection)
         opp_player = (cur_player + 1) % 2
         cur_piece = cur_player + 1
@@ -360,8 +322,7 @@ class MOBreakthrough(MOAECEnv):
         return False
 
     def _initialize_board(self, board_height, board_width):
-        """Initialize the board."""
-        # print("board init")
+        """Initializes the board."""
         self.board = np.zeros((board_width, board_height))
         self._agent_selector = agent_selector(self.agents)
         self.agent_selection = self._agent_selector.reset()
@@ -371,10 +332,22 @@ class MOBreakthrough(MOAECEnv):
         self.board[:, :2] = piece
         self.board[:, -2:] = opp_piece
 
+    def print_board(self):
+        """Prints the board in a human-readable format."""
+        rotated_board = self.board
+        for row in range(self.board_height):
+            for col in range(self.board_width):
+                if rotated_board[col][row] == 0:
+                    print(".  ", end="")
+                else:
+                    print(int(rotated_board[col][row]), " ", end="")
+            print()
+        print()
+
     def _move_to_int(self, x, y, direction):
-        """Convert move coordinates and direction to integer move encoding."""
-        return x * 3 * self.board_height + y * 3 + ANGLES.index(direction)
+        """Converts move coordinates and direction to integer move encoding."""
+        return x * 3 * self.board_height + y * 3 + MOBreakthrough.ANGLES.index(direction)
 
     def _int_to_move(self, move):
-        """Convert integer move encoding to move coordinates and direction."""
-        return (move // 3) // self.board_height, (move // 3) % self.board_height, ANGLES[move % 3]
+        """Converts integer move encoding to move coordinates and direction."""
+        return (move // 3) // self.board_height, (move // 3) % self.board_height, MOBreakthrough.ANGLES[move % 3]

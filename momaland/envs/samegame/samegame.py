@@ -139,8 +139,8 @@ class MOSameGame(MOAECEnv):
         color_rewards=True,
         render_mode=None,
         seed=None,
-    ):  # TODO get rid of gameinfo, use normal instance variables!
-        """Initialize the MOSameGame environment.
+    ):  # TODO get rid of gameinfo, use normal instance variables?
+        """Initializes the MOSameGame environment.
 
         Args:
             board_width: The width of the board (between 3 and 30)
@@ -200,7 +200,7 @@ class MOSameGame(MOAECEnv):
         )
 
     @override
-    def render(self):  # TODO should this be the prettyprint method in human mode?
+    def render(self):
         """Renders the environment.
 
         In human mode, it can print to terminal, open
@@ -209,6 +209,9 @@ class MOSameGame(MOAECEnv):
         if self.render_mode is None:
             warn("You are calling render method without specifying any render mode.")
             return
+
+        if self.render_mode == "human":
+            self.print_board()
 
     @override
     def observe(self, agent):
@@ -467,9 +470,7 @@ class MOSameGame(MOAECEnv):
         return ((x, y),)
 
     def _remove_group(self, group):
-        """Removes a group of tiles of same color and computes the new board status."""
-        """A copy of the current status is made, and the copy is updated and saved."""
-
+        """Removes a group of tiles of same color and computes the new board status. A copy of the current status is made, and the copy is updated and saved."""
         # if the group is a single cell, do nothing
         if len(group) == 1:
             return
