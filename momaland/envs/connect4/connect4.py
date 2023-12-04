@@ -1,4 +1,4 @@
-"""Connect Four.
+"""MO-Connect Four.
 
 |--------------------|--------------------------------------------------|
 | Actions            | Discrete                                         |
@@ -11,11 +11,14 @@
 | Observation Values | [0,1]                                            |
 | Reward Shape       | (2,) or (2+board_width,)                         |
 
-Connect Four is a 2-player turn based game, where players can win by connecting four of their tokens vertically,
-horizontally or diagonally. The players drop their respective token in a column of a standing grid, where each token
-will fall until it reaches the bottom of the column or lands on top of an existing token. Players cannot place a token
-in a full column, and the game ends when either a player has made a sequence of 4 tokens, or when all board_width
-columns have been filled.
+MO-Connect4 is a multi-objective variant of the two-player, single-objective turn-based board game Connect 4.
+In Connect 4, players can win by connecting four of their tokens vertically, horizontally or diagonally. The players
+drop their respective token in a column of a standing board (of width and height from 4 to 20 squares, default is
+6 * 7), where each token will fall until it reaches the bottom of the column or lands on top of an existing token.
+Players cannot place a token in a full column, and the game ends when either a player has made a sequence of 4 tokens,
+or when all columns have been filled (draw).
+MO-Connect4 extends this game with a second objective that incentivizes faster wins, and optionally the additional
+(conflicting) objectives of having more tokens than the opponent in every column.
 
 
 ### Observation Space

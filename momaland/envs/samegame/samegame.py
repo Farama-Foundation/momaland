@@ -1,4 +1,4 @@
-"""SameGame.
+"""MO-SameGame.
 
 |--------------------|----------------------------------------------------|
 | Actions            | Discrete                                           |
@@ -15,14 +15,14 @@ MO-SameGame is a multi-objective, multi-agent variant of the single-player, sing
 called SameGame.
 1 to 5 agents can play (default is 1), on a rectangular board with width and height from 3 to 30 squares (defaults are
 15), which are initially filled with randomly colored tiles in 2 to 10 different colors (default is 5).
-Players move alternatingly by selecting (any tile in) a group of at least 2 vertically and/or horizontally connected
+Players move alternatingly by selecting any tile in a group of at least 2 vertically and/or horizontally connected
 tiles of the same color. This group then disappears from the board. Tiles that were above the removed group "fall down"
 to close any vertical gaps; when entire columns of tiles become empty, all columns to the right move left to close the
 horizontal gap.
 Single-player, single-objective SameGame rewards the player with n^2 points for removing any group of n tiles.
-MO-SameGame can extend this in two ways. If team_rewards = False, every agent only gets points for its own actions; with
-team_rewards = True, all rewards are shared. If color_rewards = True, points for every color are accumulated as separate
-objectives; with color_rewards = False, points for all colors are accumulated as a single objective.
+MO-SameGame can extend this in two ways. Agents can either only get points for their own actions, or all rewards can be
+shared. Additionally, points for every color can be counted as separate objectives, or they can be accumulated in a
+single objective like in the default game variant.
 
 
 ### Observation Space

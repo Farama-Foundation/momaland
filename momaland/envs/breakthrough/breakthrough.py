@@ -1,4 +1,4 @@
-"""Breakthrough.
+"""MO-Breakthrough.
 
 |--------------------|--------------------------------------------------|
 | Actions            | Discrete                                         |
@@ -11,12 +11,13 @@
 | Observation Values | [0,1]                                            |
 | Reward Shape       | (num_objectives=4,)                              |
 
-Breakthrough is a 2-player turn based game, where players try to reach the opponent's home row with any of their
-pieces. The first player to move a piece there wins. Players move alternatingly, and each piece can move one square
-straight forward or diagonally forward. Opponent pieces can also be captured, but only by moving diagonally forward,
-not straight.
-MO-Breakthrough can give additional rewards for ending the game more quickly, capturing opponent pieces, and avoiding
-the capture of the agent's own pieces.
+MO-Breakthrough is a multi-objective variant of the two-player, single-objective turn-based board game Breakthrough.
+In Breakthrough, players start with two rows of identical pieces in front of them, and try to reach the opponent's home
+row with any piece. The first player to move a piece on their opponent's home row wins. Players move alternatingly,
+and each piece can move one square straight forward or diagonally forward. Opponent pieces can also be captured, but
+only by moving diagonally forward, not straight.
+MO-Breakthrough extends this game with up to three additional objectives: a second objective that incentivizes faster
+wins, a third one for capturing opponent pieces, and a fourth one for avoiding the capture of the agent's own pieces.
 
 
 ### Observation Space
