@@ -36,6 +36,7 @@ dependencies = [
     "PyOpenGL ==3.1.6",
     "PyOpenGL-accelerate >=3.1.1",
     "pillow >=8.3.1",
+    "jax >= 0.4.20",
 ]
 dynamic = ["version"]
 
