@@ -42,9 +42,9 @@ dynamic = ["version"]
 [project.optional-dependencies]
 # Update dependencies in `all` if any are added or removed
 learning = [
-    "jax >=0.4",
+    "jax >=0.4.21",
     "chex >=0.1",
-    "distrax@git+https://github.com/google-deepmind/distrax",
+    "distrax >= 0.15",
     "flax >=0.6",
     "optax >=0.1",
     "orbax-checkpoint >=0.3",
