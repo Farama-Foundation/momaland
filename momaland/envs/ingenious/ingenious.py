@@ -112,6 +112,7 @@ class MOIngenious(MOAECEnv):
 
         self.action_spaces = dict(zip(self.agents, [Discrete(len(self.game.masked_action))] * num_players))
 
+        # The reward after one move is the difference between the previous and current score.
         self.reward_spaces = dict(
             zip(self.agents, [Box(0, self.game.limitation_score, shape=(self.num_colors,))] * num_players)
         )
