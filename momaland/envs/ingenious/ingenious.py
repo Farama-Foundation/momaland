@@ -54,7 +54,7 @@ class MOIngenious(MOAECEnv):
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0"}
 
-    def __init__(self, num_players=3, init_draw=6, num_colors=6, board_size=8, render_mode=None):
+    def __init__(self, num_players=3, init_draw=6, num_colors=6, board_size=8, limitation_score=20, render_mode=None):
         """Initializes the ingenious game.
 
         Args:
@@ -62,14 +62,22 @@ class MOIngenious(MOAECEnv):
             init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
             num_colors (int): The number of colors in the game. Default: 4
             board_size (int): The size of the board. Default: 8
+            limitation_score(int): Limitation to refresh the score board for any color. Default: 20
             render_mode (str): The rendering mode. Default: None
         """
         self.board_size = board_size
         self.num_colors = num_colors
         self.init_draw = init_draw
         self.num_players = num_players
+        self.limitation_score = limitation_score
 
-        self.game = IngeniousBase(num_players=num_players, init_draw=init_draw, num_colors=num_colors, board_size=board_size)
+        self.game = IngeniousBase(
+            num_players=num_players,
+            init_draw=init_draw,
+            num_colors=num_colors,
+            board_size=board_size,
+            limitation_score=limitation_score,
+        )
 
         self.possible_agents = ["agent_" + str(r) for r in range(num_players)]
         # init list of agent
@@ -150,7 +158,8 @@ class MOIngenious(MOAECEnv):
         if seed is not None:
             np.random.seed(seed)
             random.seed(seed)
-        self.game.reset_game()
+        self.game.reset_game(seed)
+        self.agents = self.possible_agents[:]
         # self.observation_spaces = {agent: self.observe(agent) for agent in self.agents}
         obs = {agent: self.observe(agent) for agent in self.agents}
         self.terminations = {agent: False for agent in self.agents}
@@ -160,6 +169,8 @@ class MOIngenious(MOAECEnv):
         self._cumulative_rewards = {agent: np.zeros(self.num_colors) for agent in self.agents}
         self.agent_selection = self.agents[self.game.agent_selector]
         self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+        self._cumulative_rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+        self.refresh_cummulative_reward = True
         return obs, self.infos
 
     @override
@@ -169,34 +180,38 @@ class MOIngenious(MOAECEnv):
         Args:
             action: action of the active agent
         """
+
+        prev_agent = self.agent_selection
+
+        if self.terminations[prev_agent] or self.truncations[prev_agent]:
+            return self._was_dead_step(action)
+        self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+        if self.refresh_cummulative_reward:
+            self._cumulative_rewards[self.agent_selection] = np.zeros(self.num_colors, dtype="float64")
         if not self.game.end_flag and self.game.return_action_list()[action] == 1:
+            prev_rewards = np.array(list(self.game.score[self.agent_selection].values()))
             self.game.set_action_index(action)
-            self.agent_selection = self.agents[self.game.agent_selector]
+            current_rewards = np.array(list(self.game.score[self.agent_selection].values()))
+            self.rewards[prev_agent] = current_rewards - prev_rewards
 
         if self.game.end_flag:
             self.terminations = {agent: True for agent in self.agents}
             self.truncations = {agent: True for agent in self.agents}
-            self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
-        else:
-            self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+            # self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
 
         # print('before accumulate',self.game.end_flag, self.rewards)
+        # update accumulate_rewards
         self._accumulate_rewards()
-        # print('after accumulate')
 
-    @override
-    def last(self, observe=True):
-        agent = self.agents[self.game.agent_selector]
-        assert agent
-        if self.game.end_flag:
-            self.terminations = {agent: True for agent in self.agents}
-            self.truncations = {agent: True for agent in self.agents}
-            self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
+        # update agent
+        self.agent_selection = self.agents[self.game.agent_selector]
+
+        if self.agent_selection != prev_agent:
+            self.refresh_cummulative_reward = True
         else:
-            self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+            self.refresh_cummulative_reward = False
 
-        observation = self.observe(agent) if observe else None
-        return (observation, self.rewards[agent], self.terminations[agent], self.truncations[agent], self.infos[agent])
+        # print('after accumulate')
 
     @override
     def observe(self, agent):
@@ -211,3 +226,20 @@ class MOIngenious(MOAECEnv):
 
         # print(observation)
         return {"observation": observation, "action_mask": action_mask}
+
+
+"""    @override
+    def last(self, observe=True):
+        self.agent_selection = self.agents[self.game.agent_selector]
+
+        assert  self.agent_selection
+        if self.game.end_flag:
+            self.terminations = {agent: True for agent in self.agents}
+            self.truncations = {agent: True for agent in self.agents}
+            self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
+        #else:
+            #self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
+
+        observation = self.observe( self.agent_selection ) if observe else None
+        return (observation, self._cumulative_rewards[ self.agent_selection ], self.terminations[ self.agent_selection ], self.truncations[ self.agent_selection ], self.infos[ self.agent_selection ])
+"""

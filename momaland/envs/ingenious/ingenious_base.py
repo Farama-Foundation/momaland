@@ -104,7 +104,7 @@ def generate_board(board_size):
 class IngeniousBase:
     """Base class for Ingenious environment."""
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=20):
         """Initialize the Ingenious environment.
 
         Args:
@@ -112,6 +112,7 @@ class IngeniousBase:
             init_draw (int): Number of tiles to draw at the beginning of the game.
             num_colors (int): Number of colors in the game.
             board_size (int): Size of the board.
+            limitation_score(int): Limitation to refresh the score board for any color. Default: 20
         """
         assert 2 <= num_players <= 5, "Number of players must be between 2 and 5."
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
@@ -123,12 +124,12 @@ class IngeniousBase:
         # self.agents = [r for r in range(num_players)]
         self.agents = [f"agent_{i}" for i in range(self.num_player)]
         self.agent_selector = 0
-        self.limitation_score = 10
+        self.limitation_score = limitation_score
         self.colors = num_colors
         self.corner_color = ALL_COLORS
         self.init_draw = init_draw
         self.board_array = np.zeros([2 * self.board_size - 1, 2 * self.board_size - 1])
-        self.board_hex = set()  # original full board
+        self.board_hex = generate_board(self.board_size)  # original full board
         self.action_map = {}
         self.action_index_map = {}
         self.action_size = 0
@@ -142,7 +143,19 @@ class IngeniousBase:
         self.first_round_pos = set()
         self.end_flag = False
 
-        self.reset_game()
+        for loc in self.board_hex:
+            for direct in range(0, len(hex_directions)):
+                neighbour = hex_neighbor(loc, direct)
+                if neighbour not in self.board_hex:
+                    continue
+                for i in range(0, self.init_draw):
+                    if (loc, neighbour, i) not in self.action_map:
+                        self.action_map[(loc, neighbour, i)] = self.action_size
+                        self.action_index_map[self.action_size] = (loc, neighbour, i)
+                        self.legal_move.add(self.action_size)
+                        self.action_size += 1
+        self.masked_action = np.ones(self.action_size, "int8")
+        # self.reset_game()
 
     def render_all(self):
         """Draft render function."""
@@ -159,6 +172,7 @@ class IngeniousBase:
         if seed is not None:
             np.random.seed(seed)
             random.seed(seed)
+            print("seed", seed)
         self.end_flag = False
         self.first_round = True
         self.first_round_pos.clear()

@@ -2,6 +2,8 @@
 
 import random
 
+import gymnasium
+import numpy as np
 from ingenious import MOIngenious
 from ingenious_base import Hex2ArrayLocation
 
@@ -208,7 +210,7 @@ def test_reset():
 
 def test_ingenious_rule():
     """Ingenious rule test in a small case setting; when game end successfully, no agent should successively play 3 times."""
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
+    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8, limitation_score=10)
     ag = -1
     sum = 0
     ig_env.reset()
@@ -234,6 +236,96 @@ def test_ingenious_rule():
             if_ingenious = True
             break
     return if_ingenious and if_exeed
+
+
+def test_API():
+    """Test observe interface in ingenous.py."""
+    ig_env = MOIngenious(limitation_score=10000)
+    ag = ig_env.agent_selection
+    obs = ig_env.observe(ag)
+    masked_act_list = obs["action_mask"]
+    print(sum(masked_act_list))
+    print(sum(ig_env.game.masked_action))
+    env = ig_env
+    env.reset()
+    # observation_0
+    num_cycles = 100
+
+    env.reset()
+
+    terminated = {agent: False for agent in env.agents}
+    truncated = {agent: False for agent in env.agents}
+    live_agents = set(env.agents[:])
+    has_finished = set()
+    generated_agents = set()
+    accumulated_rewards = {
+        agent: np.zeros(env.unwrapped.reward_space(agent).shape[0], dtype=np.float32) for agent in env.agents
+    }
+    for agent in env.agent_iter(env.num_agents * num_cycles):
+        generated_agents.add(agent)
+        print(agent, has_finished, generated_agents)
+        print(env.last())
+        assert agent not in has_finished, "agents cannot resurrect! Generate a new agent with a new name."
+        assert isinstance(env.infos[agent], dict), "an environment agent's info must be a dictionary"
+        prev_observe, reward, terminated, truncated, info = env.last()
+        if terminated or truncated:
+            action = None
+        elif isinstance(prev_observe, dict) and "action_mask" in prev_observe:
+            action = random.choice(np.flatnonzero(prev_observe["action_mask"]).tolist())
+        else:
+            action = env.action_space(agent).sample()
+
+        if agent not in live_agents:
+            live_agents.add(agent)
+
+        assert live_agents.issubset(set(env.agents)), "environment must delete agents as the game continues"
+
+        if terminated or truncated:
+            live_agents.remove(agent)
+            has_finished.add(agent)
+
+        assert np.all(
+            accumulated_rewards[agent] == reward
+        ), "reward returned by last is not the accumulated rewards in its rewards dict"
+        accumulated_rewards[agent] = np.zeros_like(reward, dtype=np.float32)
+
+        env.step(action)
+
+        for a, rew in env.rewards.items():
+            accumulated_rewards[a] += rew
+
+        assert env.num_agents == len(env.agents), "env.num_agents is not equal to len(env.agents)"
+        assert set(env.rewards.keys()) == (
+            set(env.agents)
+        ), "agents should not be given a reward if they were terminated or truncated last turn"
+        assert set(env.terminations.keys()) == (
+            set(env.agents)
+        ), "agents should not be given a termination if they were terminated or truncated last turn"
+        assert set(env.truncations.keys()) == (
+            set(env.agents)
+        ), "agents should not be given a truncation if they were terminated or truncated last turn"
+        assert set(env.infos.keys()) == (
+            set(env.agents)
+        ), "agents should not be given an info if they were terminated or truncated last turn"
+        if hasattr(env, "possible_agents"):
+            assert set(env.agents).issubset(
+                set(env.possible_agents)
+            ), "possible agents should always include all agents, if it exists"
+
+        if not env.agents:
+            break
+
+        if isinstance(env.observation_space(agent), gymnasium.spaces.Box):
+            assert env.observation_space(agent).dtype == prev_observe.dtype
+        assert env.observation_space(agent).contains(prev_observe), "Out of bounds observation: " + str(prev_observe)
+
+        assert env.observation_space(agent).contains(prev_observe), "Agent's observation is outside of it's observation space"
+        # test_observation(prev_observe, observation_0)
+        if not isinstance(env.infos[env.agent_selection], dict):
+            print("The info of each agent should be a dict, use {} if you aren't using info")
+
+    if not env.agents:
+        assert has_finished == generated_agents, "not all agents finished, some were skipped over"
 
 
 if __name__ == "__main__":
@@ -263,10 +355,3 @@ if __name__ == "__main__":
         print("Accepted: move in step test")
     else:
         print("Rejected: move in step test")
-
-    ig_env = MOIngenious()
-    ag = ig_env.agent_selection
-    obs = ig_env.observe(ag)
-    masked_act_list = obs["action_mask"]
-    print(obs["observation"]["tiles"].shape)
-    print(obs["observation"]["tiles"].dtype)

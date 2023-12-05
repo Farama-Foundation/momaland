@@ -1,14 +1,21 @@
 """Temporary check file for Ingenious environment."""
 
-import random
+# import random
 
 import numpy as np
 from ingenious import MOIngenious
-from ingenious_base import Hex2ArrayLocation
 
 
+# from ingenious_base import Hex2ArrayLocation
+# from pettingzoo.classic import hanabi_v5
+
+
+# from pettingzoo.test import parallel_seed_test, seed_test
+
+
+"""
 def train(ig_env):
-    """Train a random agent on the item gathering domain."""
+    Train a random agent on the item gathering domain.
     done = False
     while not done:
         ag = ig_env.agent_selection
@@ -28,7 +35,7 @@ def train(ig_env):
 
 
 def random_index_of_one(lst):
-    """Get indices where the value is 1."""
+    Get indices where the value is 1.
     # Get indices where the value is 1
     one_indices = [i for i, value in enumerate(lst) if value == 1]
     # Check if there is at least one '1' in the list
@@ -42,7 +49,7 @@ def random_index_of_one(lst):
 
 
 def random_index_of_zero(lst):
-    """Get indices where the value is 0."""
+    Get indices where the value is 0.
     one_indices = [i for i, value in enumerate(lst) if value == 0]
     # Check if there is at least one '0' in the list
     if one_indices:
@@ -52,186 +59,7 @@ def random_index_of_zero(lst):
     else:
         # If there are no '1' values in the list, return an appropriate message or handle it as needed
         return "No '0' values in the list"
-
-
-def test_move():
-    """Test move correctly in ingenious_base.
-
-    Returns: True or False
-    """
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
-    ig_env.reset()
-    # print(ig_env.game.board_array, "nweowjrowhafhif!!!!!!!!!")
-    flag = True
-
-    # action map insist the same with index map
-    for i in ig_env.game.action_index_map:
-        h = ig_env.game.action_map.get(ig_env.game.action_index_map[i])
-        if h is None or h != i:
-            flag = False
-            break
-    # check legal move
-    index = random_index_of_one(ig_env.game.masked_action)
-    h1, h2, card = ig_env.game.action_index_map[index]
-    x1, y1 = Hex2ArrayLocation(h1, ig_env.game.board_size)
-    x2, y2 = Hex2ArrayLocation(h2, ig_env.game.board_size)
-
-    if ig_env.game.board_array[x1][y1] != 0 or ig_env.game.board_array[x2][y2] != 0:
-        print("reason1")
-        flag = False
-        return flag
-
-    ag = ig_env.agent_selection
-    c1, c2 = ig_env.game.p_tiles[ag][card]
-
-    ig_env.game.set_action_index(index)
-
-    ag = ig_env.agent_selection
-    if ig_env.game.board_array[x1][y1] != c1 or ig_env.game.board_array[x2][y2] != c2:
-        flag = False
-        print("reason2")
-        return flag
-
-    # check illegal move : put somewhere not allowed
-    index = random_index_of_zero(ig_env.game.masked_action)
-    if ig_env.game.set_action_index(index):
-        print("reason3")
-        flag = False
-        return flag
-
-    # check illegal move : put some tile out of hand
-    index = random_index_of_one(ig_env.game.masked_action)
-
-    ag = ig_env.game.agents[ig_env.game.agent_selector]
-    # h1, h2, card = ig_env.game.action_index_map[index]
-    ig_env.game.p_tiles[ag].clear()
-
-    if ig_env.game.set_action_index(index):
-        print("reason4")
-        flag = False
-        return flag
-    return flag
-
-
-def test_step():
-    """Test move correctly in ingenious_base.
-
-    Returns: True or False
-    """
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
-    ig_env.reset()
-    flag = True
-
-    # check legal step
-    ag = ig_env.agent_selection
-
-    obs = ig_env.observe(ag)
-    masked_act_list = obs["action_mask"]
-    index = random_index_of_one(masked_act_list)
-    h1, h2, card = ig_env.game.action_index_map[index]
-    x1, y1 = Hex2ArrayLocation(h1, ig_env.game.board_size)
-    x2, y2 = Hex2ArrayLocation(h2, ig_env.game.board_size)
-
-    if ig_env.game.board_array[x1][y1] != 0 or ig_env.game.board_array[x2][y2] != 0:
-        print("reason1")
-        flag = False
-        return flag
-    ag = ig_env.agent_selection
-    c1, c2 = ig_env.game.p_tiles[ag][card]
-
-    ig_env.step(index)
-
-    ag = ig_env.agent_selection
-    if ig_env.game.board_array[x1][y1] != c1 or ig_env.game.board_array[x2][y2] != c2:
-        flag = False
-        print("reason2")
-        return flag
-
-    # check illegal move : put somewhere not allowed
-    obs = ig_env.observe(ag)
-    masked_act_list = obs["action_mask"]
-    index = random_index_of_zero(masked_act_list)
-
-    remain = len(ig_env.game.tiles_bag)
-    ig_env.step(index)
-    if remain != len(ig_env.game.tiles_bag):
-        print("reason3")
-        flag = False
-        return flag
-
-    # check illegal move : put some tile out of hand
-    index = random_index_of_one(ig_env.game.masked_action)
-    ag = ig_env.agent_selection
-    ig_env.game.p_tiles[ag].clear()
-    remain = len(ig_env.game.tiles_bag)
-    ig_env.step(index)
-    if remain != len(ig_env.game.tiles_bag):
-        print("reason4")
-        flag = False
-        return flag
-
-    # check selector
-
-    return flag
-
-
-def test_reset():
-    """Use MOIngenious.reset, then check if every parameter inside ingenious_base is right.
-
-    Returns: True or False
-
-    """
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=4)
-    ig_env.reset(105)
-    train(ig_env)
-    ig_env.reset(110)
-    flag = True
-    if ig_env.game.board_array.sum() != 21:
-        flag = False
-
-    if ig_env.game.end_flag:
-        flag = False
-    if not ig_env.game.first_round:
-        flag = False
-    if ig_env.game.action_size - ig_env.game.masked_action.sum() != 6 * 3 * 2 * 2:
-        flag = False
-    if sum([sum(s) for s in [l.values() for l in ig_env.game.score.values()]]) != 0:
-        flag = False
-    if ig_env.game.agent_selector != 0:
-        flag = False
-    if len(ig_env.game.tiles_bag) < 100:
-        flag = False
-    return flag
-
-
-def test_ingenious_rule():
-    """Ingenious rule test in a small case setting; when game end successfully, no agent should successively play 3 times."""
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
-    ag = -1
-    sum = 0
-    ig_env.reset()
-    done = False
-    if_exeed = True
-    if_ingenious = False
-    while not done:
-        if ag != ig_env.agent_selection:
-            sum = 0
-        else:
-            sum += 1
-        ag = ig_env.agent_selection
-        obs = ig_env.observe(ag)
-        masked_act_list = obs["action_mask"]
-        action = random_index_of_one(masked_act_list)
-        ig_env.step(action)
-        observation, reward, truncation, termination, _ = ig_env.last()
-        done = truncation[ag] or termination[ag]
-        if sum >= 2:
-            if_exeed = False
-            break
-        if sum == 1:
-            if_ingenious = True
-            break
-    return if_ingenious and if_exeed
+"""
 
 
 def check_environment_deterministic(env1, env2, num_cycles):
@@ -273,6 +101,8 @@ def check_environment_deterministic(env1, env2, num_cycles):
         mask2 = obs2.get("action_mask") if isinstance(obs2, dict) else None
         assert data_equivalence(mask1, mask2), f"Incorrect action mask: {mask1} {mask2}"
         print("here 2")
+        env1.action_space.seed(0)
+        env2.action_space.seed(3)
         action1 = env1.action_space(agent1).sample(mask1)
         action2 = env2.action_space(agent2).sample(mask2)
 
@@ -335,17 +165,42 @@ def data_equivalence(data_1, data_2) -> bool:
 
 
 if __name__ == "__main__":
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
+    ig_env = MOIngenious(num_players=4, init_draw=4, num_colors=4, board_size=8)
 
-    """
-    ig_env2 = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
-
-    ig_env.reset()
-    ig_env2.reset()
+    ig_env2 = MOIngenious(num_players=4, init_draw=4, num_colors=4, board_size=8)
 
     env1 = ig_env
     env2 = ig_env2
+    env1.reset(seed=40)
+    env2.reset(seed=40)
+    # env1.
 
-    check_environment_deterministic(env1, env2, 100)
+    env1.game.log()
+    env2.game.log()
 
+    prev_observe1, reward1, terminated1, truncated1, info1 = env1.last()
+    prev_observe2, reward2, terminated2, truncated2, info2 = env1.last()
+    # action = random.choice(np.flatnonzero(prev_observe["action_mask"]).tolist())
+    agent1 = env1.agent_selection
+    agent2 = env1.agent_selection
+
+    print(agent1, agent2)
+    """
+    print(type(env1.action_space(agent1)))
+    print(sum(prev_observe1["action_mask"]))
+    print(sum(prev_observe2["action_mask"]))
+    action1 = env1.action_space(agent1).sample(prev_observe1["action_mask"])
+    action2 = env2.action_space(agent2).sample(prev_observe2["action_mask"])
+    print(action1, action2)
+    print(prev_observe1["action_mask"][action1], prev_observe2["action_mask"][action2])
+    # check_environment_deterministic(env1, env2, 100)
+
+    env3 = hanabi_v5.env()
+    env3.reset(seed=30)
+    env4 = hanabi_v5.env()
+    env4.reset(seed=30)
+    agent = env3.agent_selection
+    action1 = env3.action_space(agent).sample()
+    action2 = env4.action_space(agent).sample()
+    print(action1, action2)
     """
