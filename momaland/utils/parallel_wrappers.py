@@ -11,7 +11,7 @@ class LinearizeReward(BaseParallelWrapper):
     `weights` represents the weights of each objective in the reward vector space for each agent.
 
     Example:
-    >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8]}
+    >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8])}
     >>> env = LinearizeReward(env, weights)
     """
 
