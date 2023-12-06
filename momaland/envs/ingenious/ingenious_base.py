@@ -142,6 +142,7 @@ class IngeniousBase:
         self.first_round = True
         self.first_round_pos = set()
         self.end_flag = False
+        self.random = random.Random()
 
         for loc in self.board_hex:
             for direct in range(0, len(hex_directions)):
@@ -172,6 +173,7 @@ class IngeniousBase:
         if seed is not None:
             np.random.seed(seed)
             random.seed(seed)
+            self.random.seed(seed)
             print("seed", seed)
         self.end_flag = False
         self.first_round = True
@@ -207,7 +209,7 @@ class IngeniousBase:
 
     def draw_tiles_fill(self):
         """Draw tiles for single player with amount(self.init_draw) of tiles."""
-        return [self.tiles_bag.pop(random.randrange(len(self.tiles_bag))) for _ in range(self.init_draw)]
+        return [self.tiles_bag.pop(self.random.randrange(len(self.tiles_bag))) for _ in range(self.init_draw)]
 
     def get_tile(self, a):
         """Draw tiles for a specific player."""
@@ -215,7 +217,7 @@ class IngeniousBase:
         if len(self.p_tiles[a]) >= self.init_draw:
             warnings.warn(f"Warning: {a} cannot hold more than {self.init_draw} tiles.")
         while len(self.p_tiles[a]) < self.init_draw:
-            self.p_tiles[a].append(self.tiles_bag.pop(random.randrange(len(self.tiles_bag))))
+            self.p_tiles[a].append(self.tiles_bag.pop(self.random.randrange(len(self.tiles_bag))))
         return
 
     def initial_corner(self):
@@ -244,7 +246,7 @@ class IngeniousBase:
         """Generate and shuffle the tiles bag."""
         basic_tiles = list(itertools.combinations_with_replacement(ALL_COLORS[: self.colors], 2))
         self.tiles_bag = int(NUM_TILES / len(basic_tiles)) * basic_tiles
-        random.shuffle(self.tiles_bag)
+        self.random.shuffle(self.tiles_bag)
         return basic_tiles, self.tiles_bag
 
     def set_action_index(self, index):
