@@ -13,12 +13,13 @@
 
 MO-Connect4 is a multi-objective variant of the two-player, single-objective turn-based board game Connect 4.
 In Connect 4, players can win by connecting four of their tokens vertically, horizontally or diagonally. The players
-drop their respective token in a column of a standing board (of width and height from 4 to 20 squares, default is
-6 * 7), where each token will fall until it reaches the bottom of the column or lands on top of an existing token.
+drop their respective token in a column of a standing board (of width 7 and height 6 by default), where each token will
+fall until it reaches the bottom of the column or lands on top of an existing token.
 Players cannot place a token in a full column, and the game ends when either a player has made a sequence of 4 tokens,
 or when all columns have been filled (draw).
 MO-Connect4 extends this game with a second objective that incentivizes faster wins, and optionally the additional
-(conflicting) objectives of having more tokens than the opponent in every column.
+(conflicting) objectives of having more tokens than the opponent in every column. Additionally, width and height of the
+board can be set to values from 4 to 20.
 
 
 ### Observation Space
