@@ -17,15 +17,7 @@ from gymnasium.spaces import Box, Dict, Discrete
 from pettingzoo.utils import wrappers
 
 from momaland.envs.ingenious.ingenious_base import ALL_COLORS, IngeniousBase
-from momaland.utils.conversions import mo_aec_to_parallel
 from momaland.utils.env import MOAECEnv
-
-
-def parallel_env(**kwargs):
-    """Parallel env factory function for the ingenious environment."""
-    env = raw_env(**kwargs)
-    env = mo_aec_to_parallel(env)
-    return env(**kwargs)
 
 
 def env(**kwargs):
@@ -52,7 +44,7 @@ def raw_env(**kwargs):
 class MOIngenious(MOAECEnv):
     """Environment for the multi-objective Ingenious game."""
 
-    metadata = {"render_modes": ["human"], "name": "moingenious_v0"}
+    metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
     def __init__(self, num_players=3, init_draw=6, num_colors=6, board_size=8, limitation_score=20, render_mode=None):
         """Initializes the ingenious game.
