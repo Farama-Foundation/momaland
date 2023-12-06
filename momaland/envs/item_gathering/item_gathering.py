@@ -78,7 +78,12 @@ class MOItemGathering(MOParallelEnv):
     These attributes should not be changed after initialization.
     """
 
-    metadata = {"render_modes": ["human", "rgb_array"], "name": "moitemgathering_v0", "render_fps": 50}
+    metadata = {
+        "render_modes": ["human", "rgb_array"],
+        "name": "moitemgathering_v0",
+        "is_parallelizable": True,
+        "render_fps": 50,
+    }
 
     def __init__(
         self,
