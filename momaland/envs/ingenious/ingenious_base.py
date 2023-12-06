@@ -31,13 +31,13 @@ NUM_TILES = 120
 
 # Point = collections.namedtuple("Point", ["x", "y"])
 
-_hex = collections.namedtuple("Hex", ["q", "r", "s"])
+Hex = collections.namedtuple("Hex", ["q", "r", "s"])
 
 
 def hex_coord(q, r, s):
     """Create a cube-based coordinates."""
     assert not (round(q + r + s) != 0), "q + r + s must be 0"
-    return _hex(q, r, s)
+    return Hex(q, r, s)
 
 
 def hex_add(a, b):
