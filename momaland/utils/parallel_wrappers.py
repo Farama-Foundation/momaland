@@ -1,8 +1,11 @@
 """Various wrappers for Parallel MO environments."""
 
 import numpy as np
+from gymnasium.spaces import Dict
 from gymnasium.wrappers.normalize import RunningMeanStd
 from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
+
+from momaland.utils.env import MOParallelEnv
 
 
 class LinearizeReward(BaseParallelWrapper):
@@ -103,3 +106,41 @@ class NormalizeReward(BaseParallelWrapper):
         """Normalizes the rewards with the running mean rewards and their variance."""
         self.return_rms.update(self.returns)
         return rews / np.sqrt(self.return_rms.var + self.epsilon)
+
+
+class CentraliseAgent(MOParallelEnv):
+    """This wrapper will create a central agent that observes the full state of the environment.
+
+    The central agent will receive the concatenation of all agents' observations as its own observation, and a
+    multi-objective reward vector (representing the component-wise mean of the individual agent rewards) as its own
+    reward. The central agent is expected to return a vector of actions, one for each agent in the original environment.
+    """
+
+    def __init__(self, env: MOParallelEnv):
+        """Central agent wrapper class initializer.
+
+        Args:
+            env: The parallel environment to apply the wrapper
+        """
+        self.env = env
+        self.possible_agents = env.possible_agents
+        self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
+        self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+        self.reward_space = self.env.reward_space(self.possible_agents[0])
+
+    def step(self, actions):
+        """Steps through the environment, joining the returned values for the central agent."""
+        observations, rewards, terminations, truncations, infos = self.env.step(actions)
+        joint_reward = np.mean(list(rewards.values()), axis=0)
+        return (
+            observations,
+            joint_reward,
+            np.any(list(terminations.values())),
+            np.any(list(truncations.values())),
+            list(infos.values()),
+        )
+
+    def reset(self, seed=None):
+        """Resets the environment, joining the returned values for the central agent."""
+        observations, infos = self.env.reset(seed)
+        return observations, list(infos.values())
