@@ -1,0 +1,398 @@
+{
+    "graph": {
+        "directed": true,
+        "multigraph": false,
+        "graph": {},
+        "nodes": [
+            {
+                "id": "1"
+            },
+            {
+                "id": "2"
+            },
+            {
+                "id": "3"
+            },
+            {
+                "id": "4"
+            },
+            {
+                "id": "5"
+            },
+            {
+                "id": "6"
+            },
+            {
+                "id": "7"
+            },
+            {
+                "id": "8"
+            },
+            {
+                "id": "9"
+            },
+            {
+                "id": "10"
+            },
+            {
+                "id": "11"
+            },
+            {
+                "id": "12"
+            },
+            {
+                "id": "13"
+            },
+            {
+                "id": "14"
+            }
+        ],
+        "links": [
+            {
+                "name": "1-2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.08571428571429,
+                        "n": 0.0
+                    }
+                },
+                "source": "1",
+                "target": "2"
+            },
+            {
+                "name": "1-3",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.07142857142857,
+                        "n": 0.0
+                    }
+                },
+                "source": "1",
+                "target": "3"
+            },
+            {
+                "name": "1-4",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.05714285714286,
+                        "n": 0.0
+                    }
+                },
+                "source": "1",
+                "target": "4"
+            },
+            {
+                "name": "1-5",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.04285714285714,
+                        "n": 0.0
+                    }
+                },
+                "source": "1",
+                "target": "5"
+            },
+            {
+                "name": "1-6",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.02857142857143,
+                        "n": 0.0
+                    }
+                },
+                "source": "1",
+                "target": "6"
+            },
+            {
+                "name": "1-7",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.01428571428571,
+                        "n": 0.0
+                    }
+                },
+                "source": "1",
+                "target": "7"
+            },
+            {
+                "name": "1-13",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "1",
+                "target": "13"
+            },
+            {
+                "name": "2-8",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "2",
+                "target": "8"
+            },
+            {
+                "name": "2-14",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "2",
+                "target": "14"
+            },
+            {
+                "name": "3-8",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "3",
+                "target": "8"
+            },
+            {
+                "name": "3-9",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "3",
+                "target": "9"
+            },
+            {
+                "name": "4-9",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "4",
+                "target": "9"
+            },
+            {
+                "name": "4-10",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "4",
+                "target": "10"
+            },
+            {
+                "name": "5-10",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "5",
+                "target": "10"
+            },
+            {
+                "name": "5-11",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "5",
+                "target": "11"
+            },
+            {
+                "name": "6-11",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "6",
+                "target": "11"
+            },
+            {
+                "name": "6-12",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "6",
+                "target": "12"
+            },
+            {
+                "name": "7-12",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "7",
+                "target": "12"
+            },
+            {
+                "name": "7-13",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "7",
+                "target": "13"
+            },
+            {
+                "name": "8-14",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.01428571428571,
+                        "n": 0.0
+                    }
+                },
+                "source": "8",
+                "target": "14"
+            },
+            {
+                "name": "9-14",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.02857142857143,
+                        "n": 0.0
+                    }
+                },
+                "source": "9",
+                "target": "14"
+            },
+            {
+                "name": "10-14",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.04285714285714,
+                        "n": 0.0
+                    }
+                },
+                "source": "10",
+                "target": "14"
+            },
+            {
+                "name": "11-14",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.05714285714286,
+                        "n": 0.0
+                    }
+                },
+                "source": "11",
+                "target": "14"
+            },
+            {
+                "name": "12-14",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.07142857142857,
+                        "n": 0.0
+                    }
+                },
+                "source": "12",
+                "target": "14"
+            },
+            {
+                "name": "13-14",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.08571428571429,
+                        "n": 0.0
+                    }
+                },
+                "source": "13",
+                "target": "14"
+            }
+        ]
+    },
+    "od": [
+        "1|14"
+    ],
+    "routes": {
+        "1|14": [
+            "1-6,6-12,12-14",
+            "1-3,3-9,9-14",
+            "1-7,7-13,13-14",
+            "1-5,5-11,11-14",
+            "1-4,4-10,10-14",
+            "1-2,2-8,8-14",
+            "1-5,5-10,10-14",
+            "1-3,3-8,8-14",
+            "1-7,7-12,12-14",
+            "1-6,6-11,11-14",
+            "1-4,4-9,9-14",
+            "1-13,13-14",
+            "1-2,2-14"
+        ]
+    }
+}
