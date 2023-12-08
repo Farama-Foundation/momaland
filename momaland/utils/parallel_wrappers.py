@@ -122,6 +122,7 @@ class CentraliseAgent(MOParallelEnv):
         Args:
             env: The parallel environment to apply the wrapper
         """
+        super().__init__()
         self.env = env
         self.possible_agents = env.possible_agents
         self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
