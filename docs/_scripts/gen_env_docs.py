@@ -38,6 +38,26 @@ def trim(docstring):
     return "\n".join(trimmed)
 
 
+def check_homogeneous_agents(agent_lst):
+    """Check if all agents share the same naming scheme."""
+    agent_names = [name.split("_")[0] for name in agent_lst]
+    first_name = agent_names[0]
+    if all(name == first_name for name in agent_names[1:]):
+        return True
+
+
+def str_format_representative_agent(agent_lst):
+    """Format a string for a list of agents."""
+    agent_name = agent_lst[0].split("_")[0]
+    agent_str = f"{agent_name}_i for i in [0, {len(agent_lst) - 1}]"
+    return agent_str
+
+
+def check_homogeneous_spaces(spaces):
+    """Check if all spaces are homogeneous."""
+    return all(space == spaces[0] for space in spaces[1:])
+
+
 pattern = re.compile(r"(?<!^)(?=[A-Z])")
 
 
@@ -129,13 +149,30 @@ title: {title_env_name}
             + "Please read that page first for general information."
         )
         env_table = "|   |   |\n|---|---|\n"
-        action_space_str = [f"{agent}: {env.action_space(agent)}" for agent in env.possible_agents]
-        obs_space_str = [f"{agent}: {env.observation_space(agent)}" for agent in env.possible_agents]
-        rew_space_str = [f"{agent}: {env.reward_space(agent)}" for agent in env.possible_agents]
-        env_table += f"| Agents names | {env.possible_agents} |\n"
+        action_spaces = [env.action_space(agent) for agent in env.possible_agents]
+        obs_spaces = [env.observation_space(agent) for agent in env.possible_agents]
+        rew_spaces = [env.reward_space(agent) for agent in env.possible_agents]
+        if check_homogeneous_agents(env.possible_agents):
+            env_str = str_format_representative_agent(env.possible_agents)
+        else:
+            env_str = env.possible_agents
+        env_table += f"| Agents names | `{env_str}` |\n"
+        if check_homogeneous_spaces(action_spaces):
+            action_space_str = action_spaces[0]
+        else:
+            action_space_str = [f"{agent}: {space}" for agent, space in enumerate(action_spaces)]
         env_table += f"| Action Space | {action_space_str} |\n"
+        if check_homogeneous_spaces(obs_spaces):
+            obs_space_str = obs_spaces[0]
+        else:
+            obs_space_str = [f"{agent}: {space}" for agent, space in enumerate(obs_spaces)]
         env_table += f"| Observation Space | {obs_space_str} |\n"
+        if check_homogeneous_spaces(rew_spaces):
+            rew_space_str = rew_spaces[0]
+        else:
+            rew_space_str = [f"{agent}: {space}" for agent, space in enumerate(rew_spaces)]
         env_table += f"| Reward Space | {rew_space_str} |\n"
+
         env_table += f"| Import | `momaland.envs.{env_spec.id}` | \n"
 
         if docstring is None:
