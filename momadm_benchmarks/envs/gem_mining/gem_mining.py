@@ -24,7 +24,7 @@ from momadm_benchmarks.utils.env import MOParallelEnv
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the MO Gem Mining problem."""
+    """Parallel env factory function for the gem mining domain."""
     return raw_env(**kwargs)
 
 
@@ -32,27 +32,25 @@ def env(**kwargs):
     """Auto-wrapper for the MO Gem Mining problem.
 
     Args:
-        **kwargs: keyword args to forward to the parallel_env function.
+        **kwargs: keyword args to forward to the parallel_env function
 
     Returns:
         A fully wrapped AEC env
     """
     env = parallel_env(**kwargs)
-    # convert parallel version of the env to an AEC version
     env = mo_parallel_to_aec(env)
-
     # this wrapper helps error handling for discrete action spaces
     env = wrappers.AssertOutOfBoundsWrapper(env)
     return env
 
 
 def raw_env(**kwargs):
-    """Env factory function for the MO Gem Mining problem."""
+    """Env factory function for the gem mining domain."""
     return MOGemMining(**kwargs)
 
 
 class MOGemMining(MOParallelEnv):
-    """Environment for MO Gem Mining problem.
+    """Environment for MO gem mining domain.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -60,6 +58,10 @@ class MOGemMining(MOParallelEnv):
     - observation_spaces
     These attributes should not be changed after initialization.
     """
+
+    metadata = {"render_modes": ["human"], "name": "mogem_v0"}
+
+    # TODO does this environment require max_cycle?
 
     def __init__(
         self,
