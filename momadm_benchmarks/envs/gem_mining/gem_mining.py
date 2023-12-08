@@ -61,8 +61,6 @@ class MOGemMining(MOParallelEnv):
 
     metadata = {"render_modes": ["human"], "name": "mogem_v0"}
 
-    # TODO does this environment require max_cycle?
-
     def __init__(
         self,
         problem_name="Gem_Mining",
@@ -77,8 +75,6 @@ class MOGemMining(MOParallelEnv):
         trunc_probability=0.9,
         w_bonus=1.03,
         correlated_objectives=True,
-        toll_mode="mct",
-        random_toll_percentage=0.1,
         num_timesteps=1,
         render_mode=None,
     ):
@@ -97,12 +93,9 @@ class MOGemMining(MOParallelEnv):
             trunc_probability: upper limit to the probability of finding a gem after adding the worker bonus
             w_bonus: worker bonus; the probability of finding a gem is multiplied by w_bonus^(w-1), where w is the number of workers at a mine
             correlated_objectives: if true, the probability of mining a given type of gem at a mine is negatively correlated to finding a gem of another type, and the (non-bonus) expectation of finding any gem is at most max_prob per mine per timestep.
-            toll_mode: the tolling mode that is used, tolls are either placed randomly "random" or using marginal cost tolling "mct"
-            random_toll_percentage: in the case of random tolling the percentage of roads that will be taxed
             num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
         """
-        # TODO: Standard included, CHECK
         self.num_timesteps = num_timesteps
         self.episode_num = 0
         self.render_mode = render_mode
@@ -159,9 +152,6 @@ class MOGemMining(MOParallelEnv):
         # set truncations to false (no agents are ever lost)
         self.truncations = {agent: False for agent in self.agents}
 
-    # TODO: CHECK
-    metadata = {"render_modes": ["human"], "name": "mocongestion_v0"}
-
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
     @functools.lru_cache(maxsize=None)
@@ -206,12 +196,6 @@ class MOGemMining(MOParallelEnv):
 
         infos = {agent: {} for agent in self.agents}
         return observations, infos
-
-    def _init_state(self):
-        """Initializes the state of the environment. This is called by reset()."""
-        # TODO: Only try and realise the truth: there is no state (this is a [non-contextual] multi-agent bandit)
-        drivers_od = [random.choice(self.od) for _ in self.agents]
-        return drivers_od
 
     def step(self, actions):
         """Steps in the environment.
