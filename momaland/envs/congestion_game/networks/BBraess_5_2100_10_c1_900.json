@@ -1,0 +1,410 @@
+{
+    "graph": {
+        "directed": true,
+        "multigraph": false,
+        "graph": {},
+        "nodes": [
+            {
+                "id": "w0"
+            },
+            {
+                "id": "w1"
+            },
+            {
+                "id": "w2"
+            },
+            {
+                "id": "w3"
+            },
+            {
+                "id": "w4"
+            },
+            {
+                "id": "w5"
+            },
+            {
+                "id": "v1"
+            },
+            {
+                "id": "v2"
+            },
+            {
+                "id": "v3"
+            },
+            {
+                "id": "v4"
+            },
+            {
+                "id": "v5"
+            },
+            {
+                "id": "s2"
+            },
+            {
+                "id": "t2"
+            },
+            {
+                "id": "s1"
+            },
+            {
+                "id": "t1"
+            },
+            {
+                "id": "a"
+            }
+        ],
+        "links": [
+            {
+                "name": "w0-w1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.00333333333333,
+                        "n": 0.0
+                    }
+                },
+                "source": "w0",
+                "target": "w1"
+            },
+            {
+                "name": "w1-w2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w1",
+                "target": "w2"
+            },
+            {
+                "name": "w1-v1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w1",
+                "target": "v1"
+            },
+            {
+                "name": "w2-w3",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.00666666666667,
+                        "n": 0.0
+                    }
+                },
+                "source": "w2",
+                "target": "w3"
+            },
+            {
+                "name": "w3-w4",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w3",
+                "target": "w4"
+            },
+            {
+                "name": "w3-v3",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w3",
+                "target": "v3"
+            },
+            {
+                "name": "w4-w5",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.01666666666667,
+                        "n": 0.0
+                    }
+                },
+                "source": "w4",
+                "target": "w5"
+            },
+            {
+                "name": "w5-v5",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w5",
+                "target": "v5"
+            },
+            {
+                "name": "w5-t2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w5",
+                "target": "t2"
+            },
+            {
+                "name": "v1-v2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.00333333333333,
+                        "n": 0.0
+                    }
+                },
+                "source": "v1",
+                "target": "v2"
+            },
+            {
+                "name": "v2-w2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "v2",
+                "target": "w2"
+            },
+            {
+                "name": "v2-v3",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "v2",
+                "target": "v3"
+            },
+            {
+                "name": "v3-v4",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.01,
+                        "n": 0.0
+                    }
+                },
+                "source": "v3",
+                "target": "v4"
+            },
+            {
+                "name": "v4-w4",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "v4",
+                "target": "w4"
+            },
+            {
+                "name": "v4-v5",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "v4",
+                "target": "v5"
+            },
+            {
+                "name": "v5-t1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "v5",
+                "target": "t1"
+            },
+            {
+                "name": "s2-w0",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "s2",
+                "target": "w0"
+            },
+            {
+                "name": "s2-v1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "s2",
+                "target": "v1"
+            },
+            {
+                "name": "s2-v3",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "s2",
+                "target": "v3"
+            },
+            {
+                "name": "s1-w0",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "s1",
+                "target": "w0"
+            },
+            {
+                "name": "s1-a",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "s1",
+                "target": "a"
+            },
+            {
+                "name": "a-w1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "a",
+                "target": "w1"
+            },
+            {
+                "name": "a-w2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "a",
+                "target": "w2"
+            },
+            {
+                "name": "a-w4",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "a",
+                "target": "w4"
+            }
+        ]
+    },
+    "od": [
+        "s2|t2",
+        "s1|t1"
+    ],
+    "routes": {
+        "s2|t2": [
+            "s2-w0,w0-w1,w1-w2,w2-w3,w3-w4,w4-w5,w5-t2",
+            "s2-v1,v1-v2,v2-w2,w2-w3,w3-w4,w4-w5,w5-t2",
+            "s2-v3,v3-v4,v4-w4,w4-w5,w5-t2",
+            "s2-w0,w0-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-w4,w4-w5,w5-t2",
+            "s2-v1,v1-v2,v2-v3,v3-v4,v4-w4,w4-w5,w5-t2",
+            "s2-w0,w0-w1,w1-v1,v1-v2,v2-v3,v3-v4,v4-w4,w4-w5,w5-t2",
+            "s2-w0,w0-w1,w1-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-t2",
+            "s2-v1,v1-v2,v2-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-t2",
+            "s2-w0,w0-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-t2"
+        ],
+        "s1|t1": [
+            "s1-w0,w0-w1,w1-v1,v1-v2,v2-v3,v3-v4,v4-v5,v5-t1",
+            "s1-w0,w0-w1,w1-w2,w2-w3,w3-v3,v3-v4,v4-v5,v5-t1",
+            "s1-w0,w0-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-v3,v3-v4,v4-v5,v5-t1",
+            "s1-w0,w0-w1,w1-w2,w2-w3,w3-w4,w4-w5,w5-v5,v5-t1",
+            "s1-w0,w0-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-w4,w4-w5,w5-v5,v5-t1",
+            "s1-w0,w0-w1,w1-v1,v1-v2,v2-v3,v3-v4,v4-w4,w4-w5,w5-v5,v5-t1",
+            "s1-w0,w0-w1,w1-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-v5,v5-t1",
+            "s1-w0,w0-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w1,w1-v1,v1-v2,v2-v3,v3-v4,v4-v5,v5-t1",
+            "s1-a,a-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w1,w1-w2,w2-w3,w3-v3,v3-v4,v4-v5,v5-t1",
+            "s1-a,a-w2,w2-w3,w3-v3,v3-v4,v4-v5,v5-t1",
+            "s1-a,a-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-v3,v3-v4,v4-v5,v5-t1",
+            "s1-a,a-w1,w1-w2,w2-w3,w3-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w2,w2-w3,w3-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w1,w1-v1,v1-v2,v2-v3,v3-v4,v4-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w1,w1-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-v5,v5-t1",
+            "s1-a,a-w1,w1-v1,v1-v2,v2-w2,w2-w3,w3-v3,v3-v4,v4-w4,w4-w5,w5-v5,v5-t1"
+        ]
+    }
+}

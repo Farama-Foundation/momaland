@@ -32,6 +32,8 @@ dependencies = [
     "gymnasium >=0.28",
     "pettingzoo[sisl,butterfly]",
     "numpy >=1.21.0",
+    "networkx >=3.1",
+    "sympy >=1.12",
     "pygame >=2.0.1",
     "PyOpenGL ==3.1.6",
     "PyOpenGL-accelerate >=3.1.1",

@@ -6,6 +6,7 @@ Used for:
 """
 
 from momaland.envs.beach_domain import mobeach_v0
+from momaland.envs.congestion_game import mocongestion_v0
 from momaland.envs.crazyrl.catch import catch_v0
 from momaland.envs.crazyrl.escort import escort_v0
 from momaland.envs.crazyrl.surround import surround_v0
@@ -22,4 +23,5 @@ all_environments = {
     "escort_v0": escort_v0,
     "moitemgathering_v0": moitemgathering_v0,
     "mopistonball_v0": mopistonball_v0,
+    "mocongestion_v0": mocongestion_v0,
 }
