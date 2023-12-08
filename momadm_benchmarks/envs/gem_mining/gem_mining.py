@@ -77,6 +77,7 @@ class MOGemMining(MOParallelEnv):
         correlated_objectives=True,
         num_timesteps=1,
         render_mode=None,
+        seed=42,
     ):
         """Initializes the congestion game.
 
@@ -95,6 +96,7 @@ class MOGemMining(MOParallelEnv):
             correlated_objectives: if true, the probability of mining a given type of gem at a mine is negatively correlated to finding a gem of another type, and the (non-bonus) expectation of finding any gem is at most max_prob per mine per timestep.
             num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
+            seed: This environment is generated randomly using the provided seed. Defaults to 42.
         """
         self.num_timesteps = num_timesteps
         self.episode_num = 0
@@ -108,10 +110,13 @@ class MOGemMining(MOParallelEnv):
         self.worker_bonus = w_bonus
         self.truncation_probability = trunc_probability
 
+        self.random = random.Random(seed)
+        self.np_random = np.random.RandomState(seed)
+
         # determine the number of workers per village (agent):
         lst = list(range(min_workers, max_workers + 1))
         print(lst)
-        self.workers = random.choices(lst, k=self.num_agents)
+        self.workers = self.random.choices(lst, k=self.num_agents)
 
         # determine the base probabilities of finding a gem per type per mine
         self.base_probabilities = dict()
@@ -120,17 +125,17 @@ class MOGemMining(MOParallelEnv):
             left = max_prob - self.num_objectives * min_prob
             for j in range(self.num_objectives):
                 if correlated_objectives:
-                    pj = random.uniform(min_prob, left)
+                    pj = self.random.uniform(min_prob, left)
                     left = left - pj
                 else:
-                    pj = random.uniform(min_prob, max_prob)
+                    pj = self.random.uniform(min_prob, max_prob)
                 self.base_probabilities[i][j] = pj
-            random.shuffle(self.base_probabilities[i])
+            self.random.shuffle(self.base_probabilities[i])
 
         # action spaces are numbers (IDs) of the mines where each agent can go
         self.action_spaces = dict()
         for i in range(num_agents):
-            connect = random.randint(min_connectivity, max_connectivity)
+            connect = self.random.randint(min_connectivity, max_connectivity)
             self.action_spaces[i] = Discrete(connect, start=i)
         # stateless setting, agents receive a constant '0' as an observation in each timestep
         self.observation_spaces = dict(
@@ -186,8 +191,9 @@ class MOGemMining(MOParallelEnv):
         Returns the observations for each agent
         """
         if seed is not None:
-            np.random.seed(seed)
-            random.seed(seed)
+            print(f"seeding with seed {seed}")
+            self.np_random.seed(seed)
+            self.random.seed(seed)
         self.agents = self.possible_agents[:]
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
@@ -235,7 +241,7 @@ class MOGemMining(MOParallelEnv):
                     prob = bonus * self.base_probabilities[i][j]
                     if prob > self.truncation_probability:
                         prob = self.truncation_probability
-                    outcome = np.random.binomial(size=1, n=1, p=prob)
+                    outcome = self.np_random.binomial(size=1, n=1, p=prob)
                     reward_vec[j] = reward_vec[j] + outcome[0]
         # every agent gets the same reward vector (fully cooperative)
         rewards = dict()
