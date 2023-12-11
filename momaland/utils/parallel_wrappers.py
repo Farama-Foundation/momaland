@@ -134,8 +134,9 @@ class CentraliseAgent(MOParallelEnv):
 
     def step(self, actions):
         """Steps through the environment, joining the returned values for the central agent."""
-        _, rewards, terminations, truncations, infos = self.env.step(actions)
-        observations = self.env.central_observation()
+        observations, rewards, terminations, truncations, infos = self.env.step(actions)
+        if self.env.metadata.get("central_observation"):
+            observations = self.env.central_observation()
         joint_reward = np.sum(list(rewards.values()), axis=0)
         return (
             observations,
