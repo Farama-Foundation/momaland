@@ -125,14 +125,18 @@ class CentraliseAgent(MOParallelEnv):
         super().__init__()
         self.env = env
         self.possible_agents = env.possible_agents
-        self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
+        if env.metadata.get("central_observation"):
+            self.observation_space = env.central_observation_space
+        else:
+            self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
         self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
         self.reward_space = self.env.reward_space(self.possible_agents[0])
 
     def step(self, actions):
         """Steps through the environment, joining the returned values for the central agent."""
-        observations, rewards, terminations, truncations, infos = self.env.step(actions)
-        joint_reward = np.mean(list(rewards.values()), axis=0)
+        _, rewards, terminations, truncations, infos = self.env.step(actions)
+        observations = self.env.central_observation()
+        joint_reward = np.sum(list(rewards.values()), axis=0)
         return (
             observations,
             joint_reward,
