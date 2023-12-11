@@ -48,7 +48,7 @@ def generate_map(rows=8, columns=8, item_distribution=(3, 3, 2), num_agents=2):
     """
     map = np.zeros((rows, columns), dtype=int)
     interior_map = map[2:-2, 2:-2]
-    item_index_start = 3
+    item_index_start = 2
     for item in item_distribution:
         for i in range(item):
             empty_locations = np.argwhere(interior_map == 0)
@@ -62,7 +62,7 @@ def generate_map(rows=8, columns=8, item_distribution=(3, 3, 2), num_agents=2):
     for i in range(num_agents):
         empty_locations = np.argwhere(map == 0)
         assert empty_locations.shape[0] > 0, "Not enough empty locations to place agents"
-        # randomly select form the available positions
+        # randomly select from the available positions
         agent_location = empty_locations[np.random.randint(0, empty_locations.shape[0])]
         map[agent_location[0], agent_location[1]] = 1
     return map
