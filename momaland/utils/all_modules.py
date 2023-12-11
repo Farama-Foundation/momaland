@@ -13,6 +13,7 @@ from momaland.envs.crazyrl.surround import surround_v0
 from momaland.envs.item_gathering import moitemgathering_v0
 from momaland.envs.multiwalker import momultiwalker_v0
 from momaland.envs.pistonball import mopistonball_v0
+from momaland.envs.gem_mining import mogemmining_v0
 
 
 all_environments = {
@@ -24,4 +25,5 @@ all_environments = {
     "moitemgathering_v0": moitemgathering_v0,
     "mopistonball_v0": mopistonball_v0,
     "mocongestion_v0": mocongestion_v0,
+    "mogemmining_v0": mogemmining_v0,
 }
