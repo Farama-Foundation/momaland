@@ -10,6 +10,11 @@ Notes:
      2 for the other agents) or items (3, 4, etc., depending on the number of items).
     - The number of agents and items is configurable, by providing an initial map.
     - If no initial map is provided, the environment uses a default map
+
+Central observation:
+    - If the central_observation flag is set to True, then the environment implements:
+        - a central observation space: self.central_observation_space
+        - a central observation function: self.central_observation()
 """
 
 import functools
@@ -23,7 +28,7 @@ from typing_extensions import override
 import numpy as np
 import pygame
 from gymnasium.logger import warn
-from gymnasium.spaces import Box, Discrete
+from gymnasium.spaces import Box, Discrete, Tuple
 from pettingzoo.utils import wrappers
 
 from momaland.envs.item_gathering.asset_utils import del_colored, get_colored
@@ -78,7 +83,12 @@ class MOItemGathering(MOParallelEnv):
     These attributes should not be changed after initialization.
     """
 
-    metadata = {"render_modes": ["human", "rgb_array"], "name": "moitemgathering_v0", "render_fps": 50}
+    metadata = {
+        "render_modes": ["human", "rgb_array"],
+        "name": "moitemgathering_v0",
+        "render_fps": 50,
+        "central_observation": True,
+    }
 
     def __init__(
         self,
@@ -100,56 +110,69 @@ class MOItemGathering(MOParallelEnv):
         self.render_mode = render_mode
         self.randomise = randomise
 
+        """
         # check is the initial map has any entries equal to 2
         assert (
             len(np.argwhere(initial_map == 2).flatten()) == 0
         ), "Initial map cannot contain any 2s. That values is reserved for other agents, in the observation space."
-
+        """
         # check if the initial map has any entries equal to 1
         assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
         self.initial_map = initial_map
 
         # self.env_map is the working copy used in each episode. self.initial_map should not be modified.
-        self.env_map = deepcopy(self.initial_map)
-
-        self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list
-        self.env_map[self.env_map == 1] = 0  # remove agent starting positions from map
+        self.agent_positions, self.env_map = self._init_map_and_positions(deepcopy(self.initial_map))
 
         self.possible_agents = ["agent_" + str(r) for r in range(len(self.agent_positions))]
         self.agents = self.possible_agents[:]
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
+        self.time_num = 0
+
+        # determine the number of item types and maximum number of each item
+        all_map_entries = np.unique(self.env_map, return_counts=True)
+        self.item_dict = {}
+        # create an item dictionary, with item value in map as key and index as value
+        for i, item in enumerate(all_map_entries[0][np.where(all_map_entries[0] > 0)]):
+            self.item_dict[item] = i
+
+        indices_of_items = np.argwhere(all_map_entries[0] > 0).flatten()
+        item_counts = np.take(all_map_entries[1], indices_of_items)
+        self.num_objectives = len(item_counts)
+
+        assert len(item_counts) > 0, "There are no resources in the map."
+
         self.action_spaces = dict(zip(self.agents, [Discrete(len(ACTIONS))] * len(self.agent_positions)))
 
-        # observation space is a 2D array, the same size as the grid
+        # observations are a tuple of agent id (in the map) and the map observation
+        # the map observation is a 2D array of integers, where each integer represents either agents or items.
         # 0 for empty, 1 for the current agent, 2 for other agents, 3 for objective 1, 4 for objective 2, ...
         self.observation_spaces = dict(
             zip(
                 self.agents,
                 [
-                    Box(
-                        low=0.0,
-                        high=np.max(self.env_map),
-                        shape=self.env_map.shape,
-                        dtype=np.int64,
+                    Tuple(
+                        (
+                            Discrete(len(self.possible_agents), start=-(len(self.possible_agents))),
+                            Box(
+                                low=-(len(self.possible_agents)),
+                                high=self.num_objectives,
+                                shape=self.env_map.shape,
+                                dtype=np.int64,
+                            ),
+                        )
                     )
                 ]
                 * len(self.agent_positions),
             )
         )
 
-        # determine the number of item types and maximum number of each item
-        all_map_entries = np.unique(self.env_map, return_counts=True)
-        self.item_dict = {}
-        for i, item in enumerate(all_map_entries[0][np.where(all_map_entries[0] > 2)]):
-            self.item_dict[item] = i
-
-        print(self.item_dict)
-        indices_of_items = np.argwhere(all_map_entries[0] > 2).flatten()
-        item_counts = np.take(all_map_entries[1], indices_of_items)
-        self.num_objectives = len(item_counts)
-
-        assert len(item_counts) > 0, "There are no resources in the map."
+        self.central_observation_space = Box(
+            low=-(len(self.possible_agents)),
+            high=self.num_objectives,
+            shape=self.env_map.shape,
+            dtype=np.int64,
+        )
 
         self.reward_spaces = dict(
             zip(self.agents, [Box(low=0, high=max(item_counts), shape=(self.num_objectives,))] * len(self.agent_positions))
@@ -184,6 +207,10 @@ class MOItemGathering(MOParallelEnv):
     @override
     def reward_space(self, agent):
         return self.reward_spaces[agent]
+
+    def central_observation_space(self):
+        """Returns the central observation space."""
+        return self.central_observation_space
 
     @override
     def render(self):
@@ -276,10 +303,12 @@ class MOItemGathering(MOParallelEnv):
             self.env_map = randomise_map(deepcopy(self.initial_map))
         else:
             self.env_map = deepcopy(self.initial_map)
-        self.agent_positions = np.argwhere(self.env_map == 1)  # store agent positions in separate list
-        self.env_map[self.env_map == 1] = 0  # remove agent starting positions from map
 
-        observations = {agent: self._create_observation(i) for i, agent in enumerate(self.agents)}
+        self.agent_positions, self.env_map = self._init_map_and_positions(self.env_map)
+
+        map_obs = self.central_observation()
+        # observations are a tuple of agent id (in the map) and the map observation
+        observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}
         self.time_num = 0
 
         infos = {agent: {} for agent in self.agents}
@@ -335,17 +364,16 @@ class MOItemGathering(MOParallelEnv):
 
         # initialise rewards and observations
         rewards = {agent: np.array(np.zeros(self.num_objectives)) for agent in self.agents}
-        observations = {agent: None for agent in self.agents}
 
         # update all reward vectors with collected items (if any), delete items from the map
         for i in range(len(self.agent_positions)):
             value_in_cell = self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]]
-            if value_in_cell > 2:
+            if value_in_cell > len(self.possible_agents):
                 rewards[self.agents[i]][self.item_dict[value_in_cell]] += 1
                 self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]] = 0
 
-        for i, agent in enumerate(self.agents):
-            observations[agent] = self._create_observation(i)
+        map_obs = self.central_observation()
+        observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}
 
         # typically there won't be any information in the infos, but there must
         # still be an entry for each agent
@@ -365,27 +393,19 @@ class MOItemGathering(MOParallelEnv):
 
         return observations, rewards, self.truncations, self.terminations, infos
 
-    def _create_observation(self, agent_id):
+    def central_observation(self):
         """Function to create the observation passed to each agent at the end of a timestep.
-
-        Args:
-            agent_id: the id of the agent
 
         Returns: a 2D Numpy array with the following items encoded:
         - 0 is empty space
-        - 1 is the position of the agent with the specified agent_id
-        - 2 is the position of any other agents
-        - 3, 4, 5 ... denote the locations of items representing different objectives
-
+        - -1, -2, -3 ... denote the positions of the agents with the specified -(agent_id+1)
+        - 1, 2, 3 ... denote the locations of items representing different objectives
         """
-        obs = deepcopy(self.env_map)
+        map_obs = deepcopy(self.env_map)
+        # encode the agent positions with the negative agent id, starting from -1
         for i in range(len(self.agent_positions)):
-            if i == agent_id:
-                marker = 1
-            else:
-                marker = 2
-            obs[self.agent_positions[i][0], self.agent_positions[i][1]] = marker
-        return obs
+            map_obs[self.agent_positions[i][0], self.agent_positions[i][1]] = -(i + 1)
+        return map_obs
 
     def _verify_collisions(self, check_set, positions):
         """Function to check for collisions between agents.
@@ -402,15 +422,16 @@ class MOItemGathering(MOParallelEnv):
         if len(check_set) == 0:
             for i in range(len(positions) - 1):
                 for j in range(i + 1, len(positions)):
-                    self._verify_positions(i, j, positions, collisions)
+                    positions, collisions = self._verify_positions(i, j, positions, collisions)
         else:
             for i in check_set:
                 for j in range(len(positions)):
                     if i != j:
-                        self._verify_positions(i, j, positions, collisions)
+                        positions, collisions = self._verify_positions(i, j, positions, collisions)
         return positions, collisions
 
     def _verify_positions(self, i, j, positions, collisions):
+        """Function to check for collisions between agents and re-assign them the old position, if needed."""
         # if agents are on the same location
         if np.array_equal(positions[i], positions[j]):
             # randomly choose between colliding agents
@@ -418,3 +439,12 @@ class MOItemGathering(MOParallelEnv):
             # and re-assign the position of the selected agent to its old position
             positions[choice] = self.agent_positions[choice]
             collisions.append(choice)
+        return positions, collisions
+
+    def _init_map_and_positions(self, env_map):
+        """Initialise the map and agent positions."""
+        agent_positions = np.argwhere(env_map == 1)  # store agent positions in separate list
+        env_map[env_map == 1] = 0  # remove agent starting positions from map
+        # shift the item indices to start from 1
+        env_map[env_map > 0] -= min(env_map[env_map > 0]) - 1
+        return agent_positions, env_map

@@ -22,8 +22,8 @@ def mo_aec_to_parallel(aec_env: AECEnv) -> ParallelEnv:
     In the case of an existing parallel environment wrapped using a `parallel_to_aec_wrapper`, this function will return the original parallel environment.
     Otherwise, it will apply the `aec_to_parallel_wrapper` to convert the environment.
     """
-    if isinstance(aec_env.env, parallel_to_aec_wrapper):
-        return aec_env.env.env
+    if isinstance(aec_env, parallel_to_aec_wrapper):
+        return aec_env.env
     else:
         par_env = mo_aec_to_parallel_wrapper(aec_env)
         return par_env
