@@ -112,7 +112,7 @@ class CentraliseAgent(MOParallelEnv):
     """This wrapper will create a central agent that observes the full state of the environment.
 
     The central agent will receive the concatenation of all agents' observations as its own observation, and a
-    multi-objective reward vector (representing the component-wise mean of the individual agent rewards) as its own
+    multi-objective reward vector (representing the component-wise sum of the individual agent rewards) as its own
     reward. The central agent is expected to return a vector of actions, one for each agent in the original environment.
     """
 
