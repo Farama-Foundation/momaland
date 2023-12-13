@@ -118,7 +118,7 @@ class MOGemMining(MOParallelEnv):
         # determine the base probabilities of finding a gem per type per mine
         self.base_probabilities = dict()
         for i in range(self.num_mines):
-            self.base_probabilities[i] = [0] * self.num_objectives
+            self.base_probabilities[i] = np.zeros(self.num_objectives, dtype=int)
             left = max_prob - self.num_objectives * min_prob
             for j in range(self.num_objectives):
                 if correlated_objectives:
