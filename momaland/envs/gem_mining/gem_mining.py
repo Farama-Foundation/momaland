@@ -63,7 +63,6 @@ class MOGemMining(MOParallelEnv):
 
     def __init__(
         self,
-        problem_name="Gem_Mining",
         num_agents=20,
         num_objectives=2,
         min_connectivity=2,
@@ -79,10 +78,9 @@ class MOGemMining(MOParallelEnv):
         render_mode=None,
         seed=42,
     ):
-        """Initializes the congestion game.
+        """Initializes the gem mining environment.
 
         Args:
-            problem_name: the name of the network that will be used
             num_agents: number of agents (i.e., villages) in the Gem Mining instance
             num_objectives: number of objectives (i.e., gem types), each mine has a probability of generating gems of any type at any timesteps
             min_connectivity: the minimum number of mines each agent is connected to. Should be greater or equal to 2
@@ -102,7 +100,7 @@ class MOGemMining(MOParallelEnv):
         self.episode_num = 0
         self.render_mode = render_mode
 
-        self.possible_agents = [i for i in range(num_agents)]
+        self.possible_agents = [f"agent_{i}" for i in range(num_agents)]
         self.agents = self.possible_agents[:]
         self.num_mines = num_agents + max_connectivity - 1
 
@@ -111,12 +109,11 @@ class MOGemMining(MOParallelEnv):
         self.truncation_probability = trunc_probability
 
         self.random = random.Random(seed)
-        self.np_random = np.random.RandomState(seed)
+        self.np_random = np.random.default_rng(seed)
 
         # determine the number of workers per village (agent):
         lst = list(range(min_workers, max_workers + 1))
-        print(lst)
-        self.workers = self.random.choices(lst, k=self.num_agents)
+        self.workers = {agent: self.random.choices(lst) for agent in self.agents}
 
         # determine the base probabilities of finding a gem per type per mine
         self.base_probabilities = dict()
@@ -136,7 +133,7 @@ class MOGemMining(MOParallelEnv):
         self.action_spaces = dict()
         for i in range(num_agents):
             connect = self.random.randint(min_connectivity, max_connectivity)
-            self.action_spaces[i] = Discrete(connect, start=i)
+            self.action_spaces[f"agent_{i}"] = Discrete(connect, start=i)
         # stateless setting, agents receive a constant '0' as an observation in each timestep
         self.observation_spaces = dict(
             zip(
@@ -180,19 +177,13 @@ class MOGemMining(MOParallelEnv):
             return
 
     @override
-    def close(self):
-        """Close should release any graphical displays, subprocesses, network connections or any other environment data which should not be kept around after the user is no longer using the environment."""
-        pass
-
-    @override
     def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(), and step() can be called without issues.
 
         Returns the observations for each agent
         """
         if seed is not None:
-            print(f"seeding with seed {seed}")
-            self.np_random.seed(seed)
+            self.np_random = np.random.default_rng(seed)
             self.random.seed(seed)
         self.agents = self.possible_agents[:]
         self.terminations = {agent: False for agent in self.agents}
@@ -228,12 +219,11 @@ class MOGemMining(MOParallelEnv):
 
         # - Rewards -#
         # First, calculate the number of workers ending up at each mine:
-        workers_at_mine = [0] * self.num_mines
+        workers_at_mine = np.zeros(self.num_mines, dtype=np.int32)
         for agent, mine in actions.items():
             workers_at_mine[mine] = workers_at_mine[mine] + self.workers[agent]
-        print(workers_at_mine)
         # The rewards are based on Bernoulli (binomial(1)) experiments per mine per objective
-        reward_vec = np.array([0] * self.num_objectives, dtype=np.float32)
+        reward_vec = np.zeros(self.num_objectives, dtype=np.float32)
         for i in range(self.num_mines):
             if workers_at_mine[i] > 0:
                 bonus = pow(self.worker_bonus, workers_at_mine[i])
@@ -244,16 +234,14 @@ class MOGemMining(MOParallelEnv):
                     outcome = self.np_random.binomial(size=1, n=1, p=prob)
                     reward_vec[j] = reward_vec[j] + outcome[0]
         # every agent gets the same reward vector (fully cooperative)
-        rewards = dict()
-        for i in range(len(self.agents)):
-            rewards[i] = reward_vec
+        rewards = {agent: reward_vec for agent in self.agents}
 
         # - Infos -#
         # typically there won't be any information in the infos, but there must still be an entry for each agent
         infos = {agent: {} for agent in self.agents}
 
         # stateless bandit setting where each episode only lasts 1 timestep
-        self.terminations = {agent: True for i, agent in enumerate(self.agents)}
+        self.terminations = {agent: True for agent in self.agents}
         self.agents = []
 
         if self.render_mode == "human":
@@ -268,7 +256,4 @@ class MOGemMining(MOParallelEnv):
         Returns:
             A valid random joint action
         """
-        result = dict()
-        for i in self.agents:
-            result[i] = self.action_spaces[i].sample()
-        return result
+        return {i: self.action_space(i).sample() for i in self.agents}
