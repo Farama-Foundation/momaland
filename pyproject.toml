@@ -51,6 +51,8 @@ learning = [
     "etils >=1.5", # not sure, wasn't in crazyrl/pyproject.toml
     "supersuit >=3.9",
     "tqdm >=4.66.1",
+    "pandas >=2.1.0",
+    "matplotlib >=3.8.0",
 ]
 all = [
     # All dependencies above except accept-rom-license
