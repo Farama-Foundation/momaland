@@ -10,10 +10,10 @@ from momaland.envs.congestion_game import mocongestion_v0
 from momaland.envs.crazyrl.catch import catch_v0
 from momaland.envs.crazyrl.escort import escort_v0
 from momaland.envs.crazyrl.surround import surround_v0
+from momaland.envs.gem_mining import mogemmining_v0
 from momaland.envs.item_gathering import moitemgathering_v0
 from momaland.envs.multiwalker import momultiwalker_v0
 from momaland.envs.pistonball import mopistonball_v0
-from momaland.envs.gem_mining import mogemmining_v0
 
 
 all_environments = {
