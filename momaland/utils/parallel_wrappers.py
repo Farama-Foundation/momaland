@@ -108,7 +108,7 @@ class NormalizeReward(BaseParallelWrapper):
         return rews / np.sqrt(self.return_rms.var + self.epsilon)
 
 
-class CentraliseAgent(MOParallelEnv):
+class CentraliseAgent(BaseParallelWrapper):
     """This wrapper will create a central agent that observes the full state of the environment.
 
     The central agent will receive the concatenation of all agents' observations as its own observation, and a
@@ -122,9 +122,9 @@ class CentraliseAgent(MOParallelEnv):
         Args:
             env: The parallel environment to apply the wrapper
         """
-        super().__init__()
+        super().__init__(env)
         self.env = env
-        self.possible_agents = env.possible_agents
+        self.possible_agents = self.env.possible_agents
         if env.metadata.get("central_observation"):
             self.observation_space = env.central_observation_space
         else:
