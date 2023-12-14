@@ -58,7 +58,7 @@ def save_results(returns, exp_name, seed):
     """
     if not os.path.exists("results"):
         os.makedirs("results")
-    filename = f"results/results_{exp_name}_{seed}.csv"
+    filename = f"results/{exp_name}_{seed}.csv"
     print(f"Saving results to {filename}")
     df = pd.DataFrame(returns)
     df.columns = ["Total timesteps", "Time", "Episodic return"]

@@ -212,7 +212,7 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
         env.possible_agents[2]: weights,
         env.possible_agents[3]: weights,
     }
-    env = LinearizeReward(env, weights)
+    env = LinearizeReward(env, weights)  # linearizing the rewards given the weight distribution
     env = RecordEpisodeStatistics(env)
 
     # Initial reset to have correct dimensions in the observations
@@ -505,9 +505,6 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
     for _ in tqdm(range(num_updates), desc="Updates"):
         runner_state, metric = _update_step(runner_state)
 
-    for e in episode_returns:
-        print(e)
-        print()
     metric = {"returned_episode_returns": np.array(episode_returns)}
     return {"runner_state": runner_state, "metrics": metric}
 
@@ -527,10 +524,12 @@ if __name__ == "__main__":
     np.random.seed(args.seed)
 
     start_time = time.time()
-    # for i in range(1, 10): TODO outer weight loop
-    #     weights = np.array([1 - i/10, i/10])
-    #     out = train(args, weights, rng)
-    out = train(args, [0.5, 0.5], rng)
+    out = []
+    for i in range(1, 10):  # iterating over the different weights
+        weights = np.array([round(1 - i / 10, 1), round(i / 10, 1)])
+        out.append(train(args, weights, rng))
+        returns = out[-1]["metrics"]["returned_episode_returns"]
+        save_results(returns, f"MOMAPPO_Catch_{weights[0], 1}-{weights[1]}", args.seed)
     print(f"total time: {time.time() - start_time}")
     print(f"SPS: {args.total_timesteps / (time.time() - start_time)}")
 
@@ -538,9 +537,6 @@ if __name__ == "__main__":
     # save_actor(actor_state)
 
     # import matplotlib.pyplot as plt
-    #
-    returns = out["metrics"]["returned_episode_returns"]
-    save_results(returns, "MAPPO_CPU_Circle_(1env)", args.seed)
     # plt.plot(returns[:, 0], returns[:, 2], label="episode return")
 
     # plt.plot(out["metrics"]["total_loss"].mean(-1).reshape(-1), label="total loss")
