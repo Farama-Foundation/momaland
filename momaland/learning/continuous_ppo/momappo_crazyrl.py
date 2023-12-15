@@ -1,4 +1,4 @@
-"""This is an MOMAPPO implementation which runs the environment on CPU (MOMAland) and the learning on jax compiled functions."""
+"""Implementation of MAPPO with parameter sharing on the CPU. Learning on jax compiled functions. Works for cooperative settings."""
 
 import argparse
 import os
@@ -14,8 +14,6 @@ import jax.numpy as jnp
 import numpy as np
 import optax
 import orbax.checkpoint
-
-# from crazy_rl.utils.experiments_and_plots import save_results # TODO
 from distrax import MultivariateNormalDiag
 from etils import epath
 from flax.linen.initializers import constant, orthogonal
@@ -24,16 +22,14 @@ from jax import vmap
 from supersuit import agent_indicator_v0, clip_actions_v0, normalize_obs_v0
 from tqdm import tqdm
 
-from momaland.envs.crazyrl.catch import catch_v0 as Catch  # noqa
-from momaland.learning.continuous_ppo.wrappers import (
-    RecordEpisodeStatistics,
-    save_results,
-)
-
-# from momaland.envs.crazyrl.escort import escort_v0 as Escort  # noqa
-# from momaland.envs.crazyrl.surround import surround_v0 as Surround  # noqa
+from momaland.envs.crazyrl.catch import catch_v0 as Catch
+from momaland.learning.continuous_ppo.utils import save_results
 from momaland.utils.env import ParallelEnv
-from momaland.utils.parallel_wrappers import LinearizeReward, NormalizeReward
+from momaland.utils.parallel_wrappers import (
+    LinearizeReward,
+    NormalizeReward,
+    RecordEpisodeStatistics,
+)
 
 
 def parse_args():
@@ -206,13 +202,8 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
     for agent in env.possible_agents:
         for idx in range(env.unwrapped.reward_space(agent).shape[0]):  # reward space still not accessible? @ffelten
             env = NormalizeReward(env, agent, idx)
-    weights = {
-        env.possible_agents[0]: weights,
-        env.possible_agents[1]: weights,
-        env.possible_agents[2]: weights,
-        env.possible_agents[3]: weights,
-    }
-    env = LinearizeReward(env, weights)  # linearizing the rewards given the weight distribution
+    _weights = {agent: weights for agent in env.possible_agents}
+    env = LinearizeReward(env, _weights)  # linearizing the rewards given the weights
     env = RecordEpisodeStatistics(env)
 
     # Initial reset to have correct dimensions in the observations
