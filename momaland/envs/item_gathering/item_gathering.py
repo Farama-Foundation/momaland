@@ -14,7 +14,7 @@ Notes:
 Central observation:
     - If the central_observation flag is set to True, then the environment implements:
         - a central observation space: self.central_observation_space
-        - a central observation function: self.central_observation()
+        - a central observation function: self.state()
 """
 
 import functools
@@ -306,7 +306,7 @@ class MOItemGathering(MOParallelEnv):
 
         self.agent_positions, self.env_map = self._init_map_and_positions(self.env_map)
 
-        map_obs = self.central_observation()
+        map_obs = self.state()
         # observations are a tuple of agent id (in the map) and the map observation
         observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}
         self.time_num = 0
@@ -368,11 +368,11 @@ class MOItemGathering(MOParallelEnv):
         # update all reward vectors with collected items (if any), delete items from the map
         for i in range(len(self.agent_positions)):
             value_in_cell = self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]]
-            if value_in_cell > len(self.possible_agents):
+            if value_in_cell > 0:
                 rewards[self.agents[i]][self.item_dict[value_in_cell]] += 1
                 self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]] = 0
 
-        map_obs = self.central_observation()
+        map_obs = self.state()
         observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}
 
         # typically there won't be any information in the infos, but there must
@@ -393,8 +393,8 @@ class MOItemGathering(MOParallelEnv):
 
         return observations, rewards, self.truncations, self.terminations, infos
 
-    def central_observation(self):
-        """Function to create the observation passed to each agent at the end of a timestep.
+    def state(self):
+        """Function to create the observation passed to each agent at the end of a timestep, as well as the global observation received by a  central agent.
 
         Returns: a 2D Numpy array with the following items encoded:
         - 0 is empty space
