@@ -394,7 +394,7 @@ class MOItemGathering(MOParallelEnv):
         return observations, rewards, self.truncations, self.terminations, infos
 
     def state(self):
-        """Function to create the observation passed to each agent at the end of a timestep, as well as the global observation received by a  central agent.
+        """Returns the global observation of the map passed to each agent at the end of a timestep.
 
         Returns: a 2D Numpy array with the following items encoded:
         - 0 is empty space

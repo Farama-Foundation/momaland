@@ -1,4 +1,4 @@
-"""Tester for the Item Gathering environment."""
+"""Example script for environment interaction and centralised agent wrapper."""
 from momaland.envs.beach_domain import beach_domain
 from momaland.envs.item_gathering import item_gathering
 from momaland.envs.item_gathering.map_utils import generate_map
