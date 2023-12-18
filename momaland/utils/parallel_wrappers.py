@@ -136,7 +136,7 @@ class CentraliseAgent(BaseParallelWrapper):
         """Steps through the environment, joining the returned values for the central agent."""
         observations, rewards, terminations, truncations, infos = self.env.step(actions)
         if self.env.metadata.get("central_observation"):
-            observations = self.env.central_observation()
+            observations = self.env.state()
         joint_reward = np.sum(list(rewards.values()), axis=0)
         return (
             observations,
