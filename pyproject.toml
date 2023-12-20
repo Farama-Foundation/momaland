@@ -9,8 +9,8 @@ readme = "README.md"
 requires-python = ">= 3.8"
 authors = [
     {name="Florian Felten", email="florian.felten@uni.lu"},
-    {name="Umut Ucak", email=""},
-    {name="Hicham Azmani", email=""},
+    {name="Umut Ucak"},
+    {name="Hicham Azmani"},
     {name="Roxana Radulescu", email="roxana.radulescu@vub.be"},
     {name="Hendrik J. S. Baier", email="h.j.s.baier@tue.nl"},
     {name="Willem Röpke", email="willem.ropke@vub.be"},
