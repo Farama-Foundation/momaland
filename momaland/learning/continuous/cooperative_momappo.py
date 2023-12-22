@@ -23,7 +23,7 @@ from supersuit import agent_indicator_v0, clip_actions_v0, normalize_obs_v0
 from tqdm import tqdm
 
 from momaland.envs.crazyrl.catch import catch_v0 as Catch
-from momaland.learning.continuous_ppo.utils import save_results
+from momaland.learning.utils import save_results
 from momaland.utils.env import ParallelEnv
 from momaland.utils.parallel_wrappers import (
     LinearizeReward,
