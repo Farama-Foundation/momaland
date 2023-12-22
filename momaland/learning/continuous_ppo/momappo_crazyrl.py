@@ -62,6 +62,10 @@ def parse_args():
                         help="the coefficient for the value function loss")
     parser.add_argument("--max-grad-norm", type=float, default=0.5,
                         help="the maximum norm for the gradient clipping")
+    parser.add_argument("--actor-net-arch", type=lambda x: list(map(int, x.split(','))), default=[256, 256],
+                        help="actor network architecture excluding the output layer(size=action_space)")
+    parser.add_argument("--critic-net-arch", type=lambda x: list(map(int, x.split(','))), default=[256, 256],
+                        help="critic network architecture excluding the output layer (size=1)")
     parser.add_argument("--activation", type=str, default="tanh",
                         help="the activation function for the neural networks")
     parser.add_argument("--anneal-lr", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
@@ -76,6 +80,7 @@ class Actor(nn.Module):
     """Actor class for the agent."""
 
     action_dim: Sequence[int]
+    net_arch: np.ndarray
     activation: str = "tanh"
 
     @nn.compact
@@ -85,19 +90,23 @@ class Actor(nn.Module):
             activation = nn.relu
         else:
             activation = nn.tanh
-        actor_mean = nn.Dense(256, kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(local_obs_and_id)
+
+        actor_mean = nn.Dense(self.net_arch[0], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(local_obs_and_id)
         actor_mean = activation(actor_mean)
-        actor_mean = nn.Dense(256, kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(actor_mean)
-        actor_mean = activation(actor_mean)
+        for i in range(1, len(self.net_arch)):
+            actor_mean = nn.Dense(self.net_arch[i], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(actor_mean)
+            actor_mean = activation(actor_mean)
         actor_mean = nn.Dense(self.action_dim, kernel_init=orthogonal(0.01), bias_init=constant(0.0))(actor_mean)
         actor_logtstd = self.param("log_std", nn.initializers.zeros, (self.action_dim,))
         pi: MultivariateNormalDiag = distrax.MultivariateNormalDiag(actor_mean, jnp.exp(actor_logtstd))
+
         return pi
 
 
 class Critic(nn.Module):
     """Critic class for the agent."""
 
+    net_arch: np.ndarray
     activation: str = "tanh"
 
     @nn.compact
@@ -108,10 +117,11 @@ class Critic(nn.Module):
         else:
             activation = nn.tanh
 
-        critic = nn.Dense(256, kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(global_obs)
+        critic = nn.Dense(self.net_arch[0], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(global_obs)
         critic = activation(critic)
-        critic = nn.Dense(256, kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(critic)
-        critic = activation(critic)
+        for i in range(1, len(self.net_arch)):
+            critic = nn.Dense(self.net_arch[i], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(critic)
+            critic = activation(critic)
         critic = nn.Dense(1, kernel_init=orthogonal(1.0), bias_init=constant(0.0))(critic)
 
         return jnp.squeeze(critic, axis=-1)
@@ -200,7 +210,7 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
     env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
     env = agent_indicator_v0(env)
     for agent in env.possible_agents:
-        for idx in range(env.unwrapped.reward_space(agent).shape[0]):  # reward space still not accessible? @ffelten
+        for idx in range(env.unwrapped.reward_space(agent).shape[0]):  # TODO
             env = NormalizeReward(env, agent, idx)
     _weights = {agent: weights for agent in env.possible_agents}
     env = LinearizeReward(env, _weights)  # linearizing the rewards given the weights
@@ -213,8 +223,8 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
     single_action_space = env.action_space(env.possible_agents[0])
     single_obs_space = env.observation_space(env.possible_agents[0])
 
-    actor = Actor(single_action_space.shape[0], activation=args.activation)
-    critic = Critic(activation=args.activation)
+    actor = Actor(single_action_space.shape[0], net_arch=args.actor_net_arch, activation=args.activation)
+    critic = Critic(net_arch=args.critic_net_arch, activation=args.activation)
     key, actor_key, critic_key = jax.random.split(key, 3)
     dummy_local_obs_and_id = jnp.zeros(single_obs_space.shape)
     dummy_global_obs = jnp.zeros(env.state().shape)
