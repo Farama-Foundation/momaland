@@ -306,7 +306,7 @@ class MOConnect4(MOAECEnv, EzPickle):
 
         # Load and scale all of the necessary images
         print(f"width:{screen_width}, height:{screen_height}")
-        size_cap = max(screen_width, screen_height)
+        size_cap = min(screen_width, screen_height)
         tile_size = (size_cap * 91 / 99) / self.board_width
 
         red_chip = get_image(os.path.join("img", "C4RedPiece.png"))
