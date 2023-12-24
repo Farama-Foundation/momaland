@@ -1,4 +1,4 @@
-"""Implementation of MAPPO with parameter sharing on the CPU. Learning on jax compiled functions. Works for cooperative settings."""
+"""Implementation of multi-objective MAPPO with parameter sharing on the CPU. Learning on jax compiled functions. Works for cooperative settings."""
 
 import argparse
 import os
@@ -197,7 +197,7 @@ class Buffer:
 
 
 def train(args, weights: np.ndarray, key: chex.PRNGKey):
-    """Main training loop for MOMAPPO with SO collapse."""
+    """MAPPO scalarizing the vector reward using weights and weighted sum."""
     num_updates = int(args.total_timesteps // args.num_steps)
     minibatch_size = int(args.num_steps // args.num_minibatches)
 
@@ -210,7 +210,7 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
     env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
     env = agent_indicator_v0(env)
     for agent in env.possible_agents:
-        for idx in range(env.unwrapped.reward_space(agent).shape[0]):  # TODO
+        for idx in range(env.unwrapped.reward_space(agent).shape[0]):
             env = NormalizeReward(env, agent, idx)
     _weights = {agent: weights for agent in env.possible_agents}
     env = LinearizeReward(env, _weights)  # linearizing the rewards given the weights
@@ -318,18 +318,18 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
         traj_batch, advantages, targets = batch_info
 
         def _loss_fn(actor_params, critic_params, traj_batch, gae, targets):
-            # Batch values are in shape (batch_size, num_drones, ...)
+            # Batch values are in shape (batch_size, len(env.possible_agents), ...)
 
             # RERUN NETWORK
             pi = _batched_ma_get_pi(
                 actor_params, traj_batch.obs
             )  # this is a list of distributions with batch_shape of minibatch_size and event shape of action_dim
             new_value = vmapped_get_value(critic_params, traj_batch.global_obs)
-            # MA Log Prob: shape (num_drones, minibatch_size)
+            # MA Log Prob: shape (len(env.possible_agents), minibatch_size)
             new_log_probs = jnp.array(
                 [pi[i].log_prob(traj_batch.joint_actions[:, i, :]) for i in range(len(env.possible_agents))]
             )
-            new_log_probs = new_log_probs.transpose()  # (minibatch_size, num_drones)
+            new_log_probs = new_log_probs.transpose()  # (minibatch_size, len(env.possible_agents))
 
             # Normalizes advantage (trick)
             gae = (gae - gae.mean()) / (gae.std() + 1e-8)
@@ -371,7 +371,7 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
         batch_size = minibatch_size * args.num_minibatches
         permutation = jax.random.permutation(subkey, batch_size)
         batch = (traj_batch, advantages, targets)
-        # flattens the num_steps dimensions into batch_size; keeps the other dimensions untouched (num_drones, obs_dim, ...)
+        # flattens the num_steps dimensions into batch_size; keeps the other dimensions untouched (len(env.possible_agents), obs_dim, ...)
         batch = jax.tree_util.tree_map(lambda x: x.reshape((batch_size,) + x.shape[1:]), batch)
         # shuffles the full batch using permutations
         shuffled_batch = jax.tree_util.tree_map(lambda x: jnp.take(x, permutation, axis=0), batch)
@@ -400,7 +400,7 @@ def train(args, weights: np.ndarray, key: chex.PRNGKey):
 
             # SELECT ACTION
             key, subkey = jax.random.split(key)
-            # pi contains the normal distributions for each drone (num_drones x  Distribution(action_dim))
+            # pi contains the normal distributions for each drone (len(env.possible_agents) x  Distribution(action_dim))
             np_obs = _to_array_obs(obs)
             pi = _ma_get_pi(actor_state.params, jnp.array(np_obs))
             action_keys = jax.random.split(subkey, len(env.possible_agents))
@@ -531,8 +531,8 @@ if __name__ == "__main__":
         out.append(train(args, weights, rng))
         returns = out[-1]["metrics"]["returned_episode_returns"]
         save_results(returns, f"MOMAPPO_Catch_{weights[0], 1}-{weights[1]}", args.seed)
+        print(f"SPS: {args.total_timesteps / (time.time() - start_time)}")
     print(f"total time: {time.time() - start_time}")
-    print(f"SPS: {args.total_timesteps / (time.time() - start_time)}")
 
     # actor_state = out["runner_state"][0]
     # save_actor(actor_state)
