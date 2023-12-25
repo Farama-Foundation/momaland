@@ -125,7 +125,7 @@ def raw_env(**kwargs):
 class MOSameGame(MOAECEnv):
     """SameGame environment for multiple agents with multiple objectives."""
 
-    metadata = {"render_modes": ["human"], "name": "mosamegame_v0", "is_parallelizable": False}
+    metadata = {"render_modes": ["ansi"], "name": "mosamegame_v0", "is_parallelizable": False}
 
     BLANK = 0
 
@@ -135,11 +135,10 @@ class MOSameGame(MOAECEnv):
         board_height: int = 15,
         num_colors: int = 5,
         num_agents: int = 1,
-        team_rewards=False,
-        color_rewards=True,
-        render_mode=None,
-        seed=None,
-    ):  # TODO get rid of gameinfo, use normal instance variables?
+        team_rewards: bool = False,
+        color_rewards: bool = True,
+        render_mode: str | None = None,
+    ):
         """Initializes the MOSameGame environment.
 
         Args:
@@ -154,7 +153,7 @@ class MOSameGame(MOAECEnv):
         """
         self.env = super().__init__()
 
-        self.rng = np.random.default_rng(seed)
+        self.rng = np.random.default_rng()
         self.rng_initial_state = self.rng.__getstate__()
         self.gameinfo = {}
         self.gameinfo["ncolors"] = num_colors
@@ -176,12 +175,12 @@ class MOSameGame(MOAECEnv):
         self.legal_moves = self._legal_moves()
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
-        self.infos = {i: {} for i in self.agents}
-        self.rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
-        self._cumulative_rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
-        self.action_spaces = {i: spaces.Discrete(self.max_move) for i in self.agents}
+        self.infos = {agent: {} for agent in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self._cumulative_rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self.action_spaces = {agent: spaces.Discrete(self.max_move) for agent in self.agents}
         self.observation_spaces = {
-            i: spaces.Dict(
+            agent: spaces.Dict(
                 {
                     "observation": spaces.Box(
                         low=0, high=1, shape=(board_height, board_width, self.gameinfo["ncolors"]), dtype=np.int8
@@ -189,7 +188,7 @@ class MOSameGame(MOAECEnv):
                     "action_mask": spaces.Box(low=0, high=1, shape=(self.max_move,), dtype=np.int8),
                 }
             )
-            for i in self.agents
+            for agent in self.agents
         }
         self.reward_spaces = dict(
             zip(
@@ -210,8 +209,8 @@ class MOSameGame(MOAECEnv):
             warn("You are calling render method without specifying any render mode.")
             return
 
-        if self.render_mode == "human":
-            self.print_board()
+        if self.render_mode == "ansi":
+            self._print_board()
 
     @override
     def observe(self, agent):
@@ -239,7 +238,7 @@ class MOSameGame(MOAECEnv):
 
     def _legal_moves(
         self,
-    ):  # TODO at the moment, every clickable coordinate is a distinct action. an alternative would be having only 1 distinct legal action per clickable group (via a representative coordinate for the group, i.e. the one in the top right)
+    ):
         """Returns a list of legal moves for the current player."""
         legal_moves = set()
         board = self.gameinfo["board"][self.gameinfo["curmove"]]
@@ -298,7 +297,7 @@ class MOSameGame(MOAECEnv):
         # handle the rewards
         action_score = self.gameinfo["score"][self.gameinfo["curmove"]]
         action_color = self.gameinfo["color"][self.gameinfo["curmove"]]
-        self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
         if self.color_rewards:
             index = action_color - 1
         else:
@@ -310,8 +309,8 @@ class MOSameGame(MOAECEnv):
         else:
             self.rewards[agent][index] = action_score
         if self._game_over():
-            self.terminations = {i: True for i in self.agents}
-        self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
+            self.terminations = {agent: True for agent in self.agents}
+        self._cumulative_rewards[agent] = np.zeros(self.num_objectives)
         self._accumulate_rewards()
 
         # select the next agent
@@ -327,11 +326,11 @@ class MOSameGame(MOAECEnv):
         else:
             self.rng = np.random.default_rng(seed)
         self.agents = self.possible_agents[:]
-        self.rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
-        self._cumulative_rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
-        self.terminations = {i: False for i in self.agents}
-        self.truncations = {i: False for i in self.agents}
-        self.infos = {i: {} for i in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self._cumulative_rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self.terminations = {agent: False for agent in self.agents}
+        self.truncations = {agent: False for agent in self.agents}
+        self.infos = {agent: {} for agent in self.agents}
         self.move_count = 0
         self._initialize_board()
         self.legal_moves = self._legal_moves()
@@ -371,7 +370,7 @@ class MOSameGame(MOAECEnv):
         """Checks if the game is over, i.e. if there are no groups of size >=2 anymore that can be removed."""
         return self.gameinfo["maxgroupsize"] < 2
 
-    def print_board(self):
+    def _print_board(self):
         """Prints the board in a human-readable format."""
         for row in range(self.gameinfo["boardrows"]):
             for col in range(self.gameinfo["boardcols"]):

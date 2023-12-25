@@ -18,9 +18,8 @@ def main():
             action = None
         else:
             if observation:
-                mask = observation["action_mask"]
                 # this is where you would insert your policy
-                action = environment.action_space(agent).sample(mask)
+                action = np.where(observation["action_mask"] != 0)[0][0]
                 print("observation: ", observation)
                 # print("cumulative rewards", environment._cumulative_rewards)
                 # print("action: ", action)
@@ -46,4 +45,4 @@ def random_test():
 
 
 if __name__ == "__main__":
-    random_test()
+    main()

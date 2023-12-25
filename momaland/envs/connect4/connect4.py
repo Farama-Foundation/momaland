@@ -135,7 +135,7 @@ class MOConnect4(MOAECEnv, EzPickle):
         screen_scaling: int = 9,
         board_width: int = 7,
         board_height: int = 6,
-        column_objectives=True,
+        column_objectives: bool = True,
     ):
         """Initializes a new MOConnect4 environment.
 
@@ -170,9 +170,9 @@ class MOConnect4(MOAECEnv, EzPickle):
         self.truncations = {agent: False for agent in self.agents}
         self.move_count = 0
 
-        self.action_spaces = {i: spaces.Discrete(board_width) for i in self.agents}
+        self.action_spaces = {agent: spaces.Discrete(board_width) for agent in self.agents}
         self.observation_spaces = {
-            i: spaces.Dict(
+            agent: spaces.Dict(
                 {
                     "observation": spaces.Box(
                         low=0, high=1, shape=(board_height, board_width, len(self.agents)), dtype=np.int8
@@ -180,7 +180,7 @@ class MOConnect4(MOAECEnv, EzPickle):
                     "action_mask": spaces.Box(low=0, high=1, shape=(board_width,), dtype=np.int8),
                 }
             )
-            for i in self.agents
+            for agent in self.agents
         }
         self.reward_spaces = dict(
             zip(self.agents, [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents))
@@ -230,7 +230,7 @@ class MOConnect4(MOAECEnv, EzPickle):
         # make the move
         agent = self.agent_selection
         piece = self.agents.index(agent) + 1
-        for i in list(filter(lambda x: x % self.board_width == action, list(range(self.board_size - 1, -1, -1)))):
+        for i in filter(lambda x: x % self.board_width == action, range(self.board_size - 1, -1, -1)):
             if self.board[i] == 0:
                 self.board[i] = piece
                 self.move_count += 1
@@ -239,7 +239,7 @@ class MOConnect4(MOAECEnv, EzPickle):
         # handle the rewards
         next_agent = self._agent_selector.next()
         winner = self.check_for_winner()
-        self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
         if winner:
             self.rewards[agent][0] = 1
             self.rewards[next_agent][0] = -1
@@ -249,8 +249,8 @@ class MOConnect4(MOAECEnv, EzPickle):
         if winner or all(x in [1, 2] for x in self.board):
             if self.column_objectives:
                 self._assign_column_rewards(agent, next_agent)
-            self.terminations = {i: True for i in self.agents}
-        self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
+            self.terminations = {agent: True for agent in self.agents}
+        self._cumulative_rewards[agent] = np.zeros(self.num_objectives)
         self._accumulate_rewards()
 
         # select the next agent
@@ -275,11 +275,11 @@ class MOConnect4(MOAECEnv, EzPickle):
             np.random.seed(seed)
         self.board = [0] * (self.board_height * self.board_width)
         self.agents = self.possible_agents[:]
-        self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
-        self._cumulative_rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
-        self.terminations = {i: False for i in self.agents}
-        self.truncations = {i: False for i in self.agents}
-        self.infos = {i: {} for i in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self._cumulative_rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self.terminations = {agent: False for agent in self.agents}
+        self.truncations = {agent: False for agent in self.agents}
+        self.infos = {agent: {} for agent in self.agents}
         self._agent_selector = agent_selector(self.agents)
         self.agent_selection = self._agent_selector.reset()
         self.move_count = 0

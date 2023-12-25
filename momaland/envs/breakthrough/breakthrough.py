@@ -110,7 +110,7 @@ class MOBreakthrough(MOAECEnv):
     """Multi-objective Breakthrough."""
 
     metadata = {
-        "render_modes": ["human"],
+        "render_modes": ["ansi"],
         "name": "mobreakthrough_v0",
         "is_parallelizable": False,
     }
@@ -118,7 +118,7 @@ class MOBreakthrough(MOAECEnv):
     OFF_BOARD = -1
     ANGLES = ["LEFT", "STRAIGHT", "RIGHT"]
 
-    def __init__(self, board_width: int = 8, board_height: int = 8, num_objectives=4, render_mode=None):
+    def __init__(self, board_width: int = 8, board_height: int = 8, num_objectives: int = 4, render_mode: str | None = None):
         """Initializes a new MOBreakthrough environment.
 
         Args:
@@ -149,22 +149,22 @@ class MOBreakthrough(MOAECEnv):
         self.move_count = 0
         self.max_turns = 4 * board_width * (board_height - 3) + 1
         self.max_move = board_height * board_width * 3
-        self._cumulative_rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
+        self._cumulative_rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
         self._initialize_board(board_height, board_width)
         self.legal_moves = self._legal_moves()
         self.render_mode = render_mode
 
-        self.action_spaces = {i: spaces.Discrete(self.max_move) for i in self.agents}
+        self.action_spaces = {agent: spaces.Discrete(self.max_move) for agent in self.agents}
         self.observation_spaces = {
-            i: spaces.Dict(
+            agent: spaces.Dict(
                 {
                     "observation": spaces.Box(
                         low=0, high=1, shape=(board_height, board_width, len(self.agents)), dtype=np.int8
                     ),
-                    "action_mask": spaces.Box(low=0, high=1, shape=(self.max_move,), dtype=np.int8),
+                    "action_mask": spaces.MultiBinary(self.max_move),
                 }
             )
-            for i in self.agents
+            for agent in self.agents
         }
         self.reward_spaces = dict(
             zip(self.agents, [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents))
@@ -181,7 +181,7 @@ class MOBreakthrough(MOAECEnv):
             warn("You are calling render method without specifying any render mode.")
             return
 
-        if self.render_mode == "human":
+        if self.render_mode == "ansi":
             self.print_board()
 
     @override
@@ -193,8 +193,7 @@ class MOBreakthrough(MOAECEnv):
         observation = np.stack([cur_p_board, opp_p_board], axis=2).astype(np.int8)
         actions = self.legal_moves if agent == self.agent_selection else []
         action_mask = np.zeros(self.max_move, "int8")
-        for i in actions:
-            action_mask[i] = 1
+        action_mask[list(actions)] = 1
         return {"observation": observation, "action_mask": action_mask}
 
     @override
@@ -265,7 +264,7 @@ class MOBreakthrough(MOAECEnv):
         self.move_count += 1
 
         # handle the rewards
-        self.rewards = {i: np.array([0] * self.num_objectives, dtype=np.float32) for i in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
         if capture:
             if self.num_objectives > 2:
                 self.rewards[agent][2] = 1 / (self.board_width * 2)
@@ -277,8 +276,8 @@ class MOBreakthrough(MOAECEnv):
             if self.num_objectives > 1:
                 self.rewards[agent][1] = 1 - (self.move_count / self.max_turns)
                 self.rewards[next_agent][1] = -(1 - (self.move_count / self.max_turns))
-            self.terminations = {i: True for i in self.agents}
-        self._cumulative_rewards[agent] = np.array([0] * self.num_objectives, dtype=np.float32)
+            self.terminations = {agent: True for agent in self.agents}
+        self._cumulative_rewards[agent] = np.zeros(self.num_objectives)
         self._accumulate_rewards()
 
         # select the next agent
@@ -292,11 +291,11 @@ class MOBreakthrough(MOAECEnv):
         if seed is not None:
             np.random.seed(seed)
         self.agents = self.possible_agents[:]
-        self.rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
-        self._cumulative_rewards = {i: np.zeros(self.num_objectives) for i in self.agents}
-        self.terminations = {i: False for i in self.agents}
-        self.truncations = {i: False for i in self.agents}
-        self.infos = {i: {} for i in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self._cumulative_rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self.terminations = {agent: False for agent in self.agents}
+        self.truncations = {agent: False for agent in self.agents}
+        self.infos = {agent: {} for agent in self.agents}
         self.move_count = 0
         self._initialize_board(self.board_height, self.board_width)
         self.legal_moves = self._legal_moves()
