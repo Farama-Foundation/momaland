@@ -6,7 +6,7 @@ from connect4 import MOConnect4
 
 def main():
     """Checks the environment."""
-    environment = MOConnect4(board_width=7, board_height=6, column_objectives=False)
+    environment = MOConnect4(board_width=8, board_height=10, column_objectives=False, render_mode="human")
     environment.reset(seed=42)
 
     for agent in environment.agent_iter():
@@ -46,4 +46,5 @@ def random_test():
 
 
 if __name__ == "__main__":
-    random_test()
+    # random_test()
+    main()

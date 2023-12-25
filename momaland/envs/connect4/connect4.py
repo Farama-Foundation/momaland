@@ -304,7 +304,7 @@ class MOConnect4(MOAECEnv, EzPickle):
 
         # Load and scale all of the necessary images
         size_cap = min(screen_width, screen_height)
-        tile_size = (size_cap * 91 / 99) / self.board_width
+        tile_size = (size_cap * 91 / 99) / max(self.board_width, self.board_height)
 
         red_chip = get_image(os.path.join("img", "C4RedPiece.png"))
         red_chip = pygame.transform.scale(red_chip, (int(tile_size * (9 / 13)), int(tile_size * (9 / 13))))
