@@ -149,7 +149,6 @@ class MOSameGame(MOAECEnv):
             team_rewards: True = agents share all rewards, False = agents get individual rewards
             color_rewards: True = agents get separate rewards for each color, False = agents get a single reward accumulating all colors
             render_mode: The render mode
-            seed: The random seed for the board state initialization.
         """
         self.env = super().__init__()
 

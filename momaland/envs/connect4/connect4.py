@@ -271,8 +271,6 @@ class MOConnect4(MOAECEnv, EzPickle):
 
     @override
     def reset(self, seed=None, options=None):
-        if seed is not None:
-            np.random.seed(seed)
         self.board = [0] * (self.board_height * self.board_width)
         self.agents = self.possible_agents[:]
         self.rewards = {agent: np.zeros(self.num_objectives, dtype=np.float32) for agent in self.agents}

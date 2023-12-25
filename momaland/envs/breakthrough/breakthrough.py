@@ -127,8 +127,6 @@ class MOBreakthrough(MOAECEnv):
             num_objectives: The number of objectives (from 1 to 4)
             render_mode: The render mode.
         """
-        self.env = super().__init__()
-
         if not (3 <= board_width <= 20):
             raise ValueError("Config parameter board_width must be between 3 and 20.")
 
@@ -288,8 +286,6 @@ class MOBreakthrough(MOAECEnv):
 
     @override
     def reset(self, seed=None, options=None):
-        if seed is not None:
-            np.random.seed(seed)
         self.agents = self.possible_agents[:]
         self.rewards = {agent: np.zeros(self.num_objectives, dtype=np.float32) for agent in self.agents}
         self._cumulative_rewards = {agent: np.zeros(self.num_objectives, dtype=np.float32) for agent in self.agents}
