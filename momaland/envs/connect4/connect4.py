@@ -183,7 +183,7 @@ class MOConnect4(MOAECEnv, EzPickle):
             for agent in self.agents
         }
         self.reward_spaces = dict(
-            zip(self.agents, [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents))
+            zip(self.agents, [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents)), dtype=np.float32
         )
 
         if self.render_mode == "human":
@@ -250,7 +250,7 @@ class MOConnect4(MOAECEnv, EzPickle):
             if self.column_objectives:
                 self._assign_column_rewards(agent, next_agent)
             self.terminations = {agent: True for agent in self.agents}
-        self._cumulative_rewards[agent] = np.zeros(self.num_objectives)
+        self._cumulative_rewards[agent] = np.zeros(self.num_objectives, dtype=np.float32)
         self._accumulate_rewards()
 
         # select the next agent
@@ -275,8 +275,8 @@ class MOConnect4(MOAECEnv, EzPickle):
             np.random.seed(seed)
         self.board = [0] * (self.board_height * self.board_width)
         self.agents = self.possible_agents[:]
-        self.rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
-        self._cumulative_rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
+        self.rewards = {agent: np.zeros(self.num_objectives, dtype=np.float32) for agent in self.agents}
+        self._cumulative_rewards = {agent: np.zeros(self.num_objectives, dtype=np.float32) for agent in self.agents}
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
         self.infos = {agent: {} for agent in self.agents}
