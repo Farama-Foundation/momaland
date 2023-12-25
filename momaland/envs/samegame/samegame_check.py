@@ -1,5 +1,6 @@
 """MO Samegame check."""
 
+import numpy as np
 from samegame import MOSameGame
 
 
@@ -12,10 +13,9 @@ def main():
         num_agents=5,
         team_rewards=True,
         color_rewards=True,
-        render_mode=None,
-        seed=1,
+        render_mode="ansi",
     )
-    # environment.reset(seed=1)
+    environment.reset(seed=1)
 
     for agent in environment.agent_iter():
         observation, reward, termination, truncation, info = environment.last()
@@ -27,15 +27,14 @@ def main():
         else:
             if observation:
                 print("environment before action:")
-                environment.print_board()
-                mask = observation["action_mask"]
+                environment.render()
                 # this is where you would insert your policy
-                action = environment.action_space(agent).sample(mask)
+                action = np.where(observation["action_mask"] != 0)[0][0]
                 print("action: ", action)
 
         environment.step(action)
         print("environment after action:")
-        environment.print_board()
+        environment.render()
         print("cumulative rewards after action", environment._cumulative_rewards)
 
     # print("observation: ", observation)

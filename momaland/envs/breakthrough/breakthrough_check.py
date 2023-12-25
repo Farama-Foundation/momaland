@@ -1,11 +1,12 @@
 """MO Breakthrough check."""
 
+import numpy as np
 from breakthrough import MOBreakthrough
 
 
 def check_env():
     """Check the environment."""
-    environment = MOBreakthrough(board_width=6, board_height=6, num_objectives=4, render_mode="human")
+    environment = MOBreakthrough(board_width=6, board_height=6, num_objectives=4, render_mode="ansi")
     environment.reset(seed=42)
 
     for agent in environment.agent_iter():
@@ -21,9 +22,8 @@ def check_env():
                 environment.render()
                 # print("observation:")
                 # print(observation)
-                mask = observation["action_mask"]
                 # this is where you would insert your policy
-                action = environment.action_space(agent).sample(mask)
+                action = np.where(observation["action_mask"] != 0)[0][0]
                 print("action: ", action)
 
         environment.step(action)

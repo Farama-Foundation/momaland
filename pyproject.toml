@@ -8,12 +8,14 @@ description="A standard API for Multi-Objective Multi-Agent Decision making and 
 readme = "README.md"
 requires-python = ">= 3.8"
 authors = [
+    {name="Florian Felten", email="florian.felten@uni.lu"},
+    {name="Umut Ucak"},
+    {name="Hicham Azmani"},
     {name="Roxana Radulescu", email="roxana.radulescu@vub.be"},
+    {name="Hendrik J. S. Baier", email="h.j.s.baier@tue.nl"},
     {name="Willem Röpke", email="willem.ropke@vub.be"},
     {name="Patrick Mannion", email="patrick.mannion@universityofgalway.ie"},
     {name="Diederik M. Roijers",email="diederik.roijers@vub.be"},
-    {name="Lucas N. Alegre", email="lnalegre@inf.ufrgs.br"},
-    {name="Florian Felten", email="florian.felten@uni.lu"},
 ]
 license = { text = "GNU General Public License v3.0" }
 keywords = ["Reinforcement Learning", "Multi-Objective", "Multi-Agent", "RL", "AI", "gymnasium", "pettingzoo"]
