@@ -46,7 +46,7 @@ class MOIngenious(MOAECEnv):
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
-    def __init__(self, num_players=3, init_draw=6, num_colors=6, board_size=8, limitation_score=20, render_mode=None):
+    def __init__(self, num_players=3, init_draw=6, num_colors=6, board_size=8, limitation_score=18, render_mode=None):
         """Initializes the ingenious game.
 
         Args:

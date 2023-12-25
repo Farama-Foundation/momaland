@@ -104,7 +104,7 @@ def generate_board(board_size):
 class IngeniousBase:
     """Base class for Ingenious environment."""
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=20):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=18):
         """Initialize the Ingenious environment.
 
         Args:
@@ -244,31 +244,43 @@ class IngeniousBase:
 
     def tiles_bag_reset(self):
         """Generate and shuffle the tiles bag."""
-        basic_tiles = list(itertools.combinations_with_replacement(ALL_COLORS[: self.colors], 2))
-        self.tiles_bag = int(NUM_TILES / len(basic_tiles)) * basic_tiles
+        # Create a list of tuples for combinations of two different colors
+        diff_color_combinations = list(itertools.combinations(ALL_COLORS[: self.colors], 2))
+        # Create a list of tuples for combinations of the same integer (color)
+        same_color_combinations = [(color, color) for color in ALL_COLORS[: self.colors]]
+        # Create the tiles bag
+        if self.colors == len(ALL_COLORS):
+            # when color type is 6, tiles bag follow the original game setting : six tiles for each two-colour combination (e.g. red/orange) and five for each double (red/red)
+            self.tiles_bag = (diff_color_combinations * 6) + (same_color_combinations * 5)
+        else:
+            # when color type is not 6( like 1-5), the number of combinations could be divided by NUM_TILES(120)
+            self.tiles_bag = int(NUM_TILES / len(diff_color_combinations + same_color_combinations)) * (
+                diff_color_combinations + same_color_combinations
+            )
+        # Shuffle the tiles bag
         self.random.shuffle(self.tiles_bag)
-        return basic_tiles, self.tiles_bag
 
     def set_action_index(self, index):
         """Apply the corresponding action for the given index on the board."""
-        # if selected actions is not a legal move, return False
+        """If selected actions is not a legal move, return False"""
         if self.masked_action[index] == 0:
-            # print("llegal move:choose a masked action")
+            assert "illegal move:choose a masked action(0)"
             return False
         if (index not in self.first_round_pos) and self.first_round:
-            # print("llegal move:")
+            assert "illegal move: choose a action legally in first round"
             return False
+        """Hex Coordinate: h1,h2 ;  Tile to play: card"""
         h1, h2, card = self.action_index_map[index]
         agent_i = self.agent_selector
         agent = self.agents[agent_i]
-        # print(agent, self.p_tiles[agent],index)
         if card >= len(self.p_tiles[agent]):
-            # print("illegal move: choosing tile out of hand(happening after ingenious)")
+            assert "illegal move: choosing tile out of hand(happening after ingenious)"
             return False
+        """Extract the certain tile (color1 , color2) as (c1,c2)"""
         c1, c2 = self.p_tiles[agent][card]
+        # Translate Hex Coordinate to Offset Coordinate(x,y)
         x1, y1 = Hex2ArrayLocation(h1, self.board_size)
         x2, y2 = Hex2ArrayLocation(h2, self.board_size)
-        # print(agent_i, agent, index ,self.p_tiles[agent], h1, h2, c1, c2, (x1, y1), (x2, y2), self.board_array[x1][y1], self.board_array[x2][y2])
         flag = False
         for item in self.p_tiles[agent]:
             # print(item)
@@ -280,22 +292,17 @@ class IngeniousBase:
                 self.p_tiles[agent].remove(item)
                 flag = True
                 break
-
         if not flag:
-            warnings("illegal move")
+            assert "illegal move: set the tile to the coordinate unsuccessfully"
             return False
-
-        # print('after remove',agent_i,self.p_tiles[agent])
-
+        """Update the mask_action list after the action"""
         self.legal_move.remove(index)
         self.board_array[x1][y1] = c1
         self.board_array[x2][y2] = c2
-
         self.exclude_action(h1)
         self.exclude_action(h2)
-
         skip_flag = False
-
+        """Update score through checking 5 neighboring directions for h1 and h2 independently"""
         point = 0
         for i in range(0, 6):
             h1n = hex_neighbor(h1, i)
@@ -311,12 +318,10 @@ class IngeniousBase:
                     break
                 h1n = hex_neighbor(h1n, i)
                 # print(h1n)
-
         self.score[agent][c1] += point
         if self.score[agent][c1] > self.limitation_score:
             skip_flag = True
             self.score[agent][c1] = 0
-
         point = 0
         for i in range(0, 6):
             h2n = hex_neighbor(h2, i)
@@ -330,24 +335,27 @@ class IngeniousBase:
                     break
                 h2n = hex_neighbor(h2n, i)
         self.score[agent][c2] += point
-
         if self.score[agent][c2] > self.limitation_score:
             skip_flag = True
             self.score[agent][c2] = 0
+
+        """End game if no more legal actions."""
         if len(self.legal_move) == 0:
             self.end_flag = True
+            return True
 
-        """all tiles in hand has been played"""
+        """All tiles in hand has been played"""
         if len(self.p_tiles[agent]) == 0:
-            skip_flag = False
+            self.end_flag = True  # The player should win instantly if he plays out all the tiles in hand.
+            return True
 
+        """Ingenious Situation"""
         if not skip_flag:
             self.get_tile(agent)
+            """Swapping your Tiles if tiles in hand has no color with the lowest score"""
+            self.refresh_hand(agent)
             self.next_turn()
-        # else:
-        # print(self.log())
-        # print("ingenious!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        # print('after draw', agent_i, self.p_tiles[agent])
+
         return True
 
     def exclude_action(self, hx):
@@ -368,47 +376,46 @@ class IngeniousBase:
 
     def next_turn(self):
         """Move to the next turn."""
+        """
         self.agent_selector += 1
         if self.agent_selector >= self.num_player:
             self.agent_selector = 0
             if self.first_round:
                 self.first_round = False
+        """
+        self.agent_selector = (self.agent_selector + 1) % self.num_player
+        if self.agent_selector == 0 and self.first_round:
+            self.first_round = False
         return self.agent_selector
 
     def refresh_hand(self, player):
-        """Additional rule to refresh hand hold tile."""
-        xx = 100
-        lowest_color = -1
-        for i in self.colors:
-            if self.score[player][i] < xx:
-                xx = self.score[player][i]
-                lowest_color = i
-        flag = False
+        """Additional rule to refresh hand-held tiles."""
+        """find the color for which the player has the lowest score"""
+        minval = min(self.score[player].values())
+        flag_lowest_score = False
         for item in self.p_tiles[player]:
-            if lowest_color in item:
-                flag = True
+            for col in item:
+                if self.score[player][col] == minval:
+                    flag_lowest_score = True
+            if flag_lowest_score:
                 break
-        if flag:
-            self.get_tile(player)
-        else:
+        if not flag_lowest_score:
+            """no lowest score color"""
+            # save current unused tiles to add them back to the tiles bag
             back_up = self.p_tiles[player].copy()
+            # clear the player's tiles
             self.p_tiles[player].clear()
-            for i in self.colors:
-                self.get_tile(player)
-            for item in back_up:
-                self.tiles_bag.add(item)
-        return
+            # draw new tiles
+            self.get_tile(player)
+            # add unused tiles back to the tiles bag
+            self.tiles_bag.append(back_up)
 
     def return_action_list(self):
         """Return the legal action list."""
         if self.first_round:
-            l = []
-            for i in range(0, len(self.masked_action)):
-                if self.masked_action[i] == 1 and i in self.first_round_pos:
-                    l.append(1)
-                else:
-                    l.append(0)
-            return l
+            return [
+                1 if i in self.first_round_pos and self.masked_action[i] == 1 else 0 for i in range(len(self.masked_action))
+            ]
         return self.masked_action
 
     def log(self):
