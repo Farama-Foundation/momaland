@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Mobeach" href="../mobeach/" /><link rel="prev" title="Catch" href="../catch/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Moitemgathering" href="../moitemgathering/" /><link rel="prev" title="Mocongestion" href="../mocongestion/" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Escort - MOMAland Documentation</title>
+        <title>Mogemmining - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -163,10 +163,10 @@
 <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../all-envs/">Available environments</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../catch/">Catch</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Escort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../escort/">Escort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mobeach/">Mobeach</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mocongestion/">Mocongestion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mogemmining/">Mogemmining</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Mogemmining</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../moitemgathering/">Moitemgathering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../momultiwalker/">Momultiwalker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mopistonball/">Mopistonball</a></li>
@@ -198,7 +198,7 @@
         </a>
         <div class="content-icon-container">
           <div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/rradules/momaland/edit/main/docs/environments/escort.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/rradules/momaland/edit/main/docs/environments/mogemmining.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -220,11 +220,8 @@
           </label>
         </div>
         <article role="main">
-          <section id="escort">
-<h1>Escort<a class="headerlink" href="#escort" title="Link to this heading">#</a></h1>
-<figure class="align-default" id="id1">
-<a class="reference internal image-reference" href="../../_images/escort.gif"><img alt="../../_images/escort.gif" src="../../_images/escort.gif" style="width: 200px;" /></a>
-</figure>
+          <section id="mogemmining">
+<h1>Mogemmining<a class="headerlink" href="#mogemmining" title="Link to this heading">#</a></h1>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -234,24 +231,31 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Agents names</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">agent_i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">[0,</span> <span class="pre">3]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">agent_i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">[0,</span> <span class="pre">19]</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>Action Space</p></td>
-<td><p>Box(-1.0, 1.0, (3,), float32)</p></td>
+<td><p>[‘0: Discrete(4)’, ‘1: Discrete(3, start=1)’, ‘2: Discrete(4, start=2)’, ‘3: Discrete(2, start=3)’, ‘4: Discrete(3, start=4)’, ‘5: Discrete(3, start=5)’, ‘6: Discrete(4, start=6)’, ‘7: Discrete(3, start=7)’, ‘8: Discrete(4, start=8)’, ‘9: Discrete(3, start=9)’, ‘10: Discrete(4, start=10)’, ‘11: Discrete(2, start=11)’, ‘12: Discrete(4, start=12)’, ‘13: Discrete(4, start=13)’, ‘14: Discrete(2, start=14)’, ‘15: Discrete(4, start=15)’, ‘16: Discrete(4, start=16)’, ‘17: Discrete(3, start=17)’, ‘18: Discrete(4, start=18)’, ‘19: Discrete(3, start=19)’]</p></td>
 </tr>
 <tr class="row-even"><td><p>Observation Space</p></td>
-<td><p>Box([-3. -3.  0. -3. -3.  0. -3. -3.  0. -3. -3.  0. -3. -3.  0.], 3.0, (15,), float32)</p></td>
+<td><p>Box(0.0, 20.0, (1,), float32)</p></td>
 </tr>
 <tr class="row-odd"><td><p>Reward Space</p></td>
-<td><p>Box(-10.0, [ 1. inf], (2,), float32)</p></td>
+<td><p>Box(0.0, 23.0, (2,), float32)</p></td>
 </tr>
 <tr class="row-even"><td><p>Import</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">momaland.envs.escort_v0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">momaland.envs.mogemmining_v0</span></code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>A Parallel Environment where drone learn how to surround a moving target, going straight to one point to another.</p>
+<p>Environment for MO gem mining domain.</p>
+<p>The init method takes in environment arguments and should define the following attributes:</p>
+<ul class="simple">
+<li><p>possible_agents</p></li>
+<li><p>action_spaces</p></li>
+<li><p>observation_spaces
+These attributes should not be changed after initialization.</p></li>
+</ul>
 </section>
 
         </article>
@@ -259,23 +263,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../mobeach/">
+          <a class="next-page" href="../moitemgathering/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Mobeach</div>
+                <div class="title">Moitemgathering</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../catch/">
+          <a class="prev-page" href="../mocongestion/">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Catch</div>
+                <div class="title">Mocongestion</div>
                 
               </div>
             </a>
