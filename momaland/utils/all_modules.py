@@ -31,5 +31,5 @@ all_environments = {
     "moconnect4_v0": moconnect4_v0,
     "mobreakthrough_v0": mobreakthrough_v0,
     "mosamegame_v0": mosamegame_v0,
-    "mogemmining_v0": mogemmining_v0
+    "mogemmining_v0": mogemmining_v0,
 }
