@@ -1,4 +1,5 @@
 """Various wrappers for Parallel MO environments."""
+from typing import Optional
 
 import numpy as np
 from gymnasium.spaces import Dict
@@ -8,13 +9,48 @@ from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
 from momaland.utils.env import MOParallelEnv
 
 
+class RecordEpisodeStatistics(BaseParallelWrapper):
+    """This wrapper will record episode statistics and print them at the end of each episode."""
+
+    def __init__(self, env):
+        """This wrapper will record episode statistics and print them at the end of each episode.
+
+        Args:
+            env (env): The environment to apply the wrapper
+        """
+        BaseParallelWrapper.__init__(self, env)
+        self.episode_rewards = {agent: 0 for agent in self.possible_agents}
+        self.episode_lengths = {agent: 0 for agent in self.possible_agents}
+
+    def step(self, actions):
+        """Steps through the environment, recording episode statistics."""
+        obs, rews, terminateds, truncateds, infos = super().step(actions)
+        for agent in self.env.possible_agents:
+            self.episode_rewards[agent] += rews[agent]
+            self.episode_lengths[agent] += 1
+        if all(terminateds.values()) or all(truncateds.values()):
+            infos["episode"] = {
+                "r": self.episode_rewards,
+                "l": self.episode_lengths,
+            }
+        return obs, rews, terminateds, truncateds, infos
+
+    def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
+        """Resets the environment, recording episode statistics."""
+        obs, info = super().reset(seed, options)
+        for agent in self.env.possible_agents:
+            self.episode_rewards[agent] = 0
+            self.episode_lengths[agent] = 0
+        return obs, info
+
+
 class LinearizeReward(BaseParallelWrapper):
     """Convert MO reward vector into scalar SO reward value.
 
     `weights` represents the weights of each objective in the reward vector space for each agent.
 
     Example:
-    >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8]}
+    >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8])}
     >>> env = LinearizeReward(env, weights)
     """
 
