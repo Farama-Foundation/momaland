@@ -1,6 +1,7 @@
 """MO Gymnasium on centralised agents versions of MOMAland."""
 
 import numpy as np
+from gymnasium.spaces import Discrete, MultiBinary
 from morl_baselines.multi_policy.gpi_pd.gpi_pd import GPIPD
 
 from momaland.envs.item_gathering import item_gathering
@@ -17,8 +18,20 @@ if __name__ == "__main__":
     env = make_single_agent_ig_env()
     eval_env = make_single_agent_ig_env()
 
-    gpi_pd = True
+    gpi_pd = False
     g = 1000
+
+    action_space = env.action_space
+    if isinstance(env.action_space, (Discrete, MultiBinary)):
+        action_shape = (1,)
+        action_dim = env.action_space.n
+    else:
+        action_shape = env.action_space.shape
+        action_dim = env.action_space.shape[0]
+
+    print("action_space: ", action_space)
+    print("action_shape: ", action_shape)
+    print("action_dim: ", action_dim)
 
     agent = GPIPD(
         env,
@@ -51,9 +64,9 @@ if __name__ == "__main__":
         dynamics_rollout_starts=5000,
         dynamics_rollout_len=1,
         real_ratio=0.5,
-        log=True,
+        log=False,
         project_name="MOMAland-Baselines",
-        experiment_name="GPI-PD",
+        experiment_name="GPI-PD-IG",
     )
 
     timesteps_per_iter = 10000

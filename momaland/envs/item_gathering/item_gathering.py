@@ -170,7 +170,7 @@ class MOItemGathering(MOParallelEnv):
         self.central_observation_space = Box(
             low=-(len(self.possible_agents)),
             high=self.num_objectives,
-            shape=self.env_map.shape,
+            shape=self.env_map.flatten().shape,
             dtype=np.int64,
         )
 

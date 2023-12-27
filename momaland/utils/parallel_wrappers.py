@@ -2,7 +2,7 @@
 from typing import Optional
 
 import numpy as np
-from gymnasium.spaces import Dict
+from gymnasium.spaces import Box, Dict
 from gymnasium.wrappers.normalize import RunningMeanStd
 from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
 
@@ -147,9 +147,10 @@ class NormalizeReward(BaseParallelWrapper):
 class CentraliseAgent(BaseParallelWrapper):
     """This wrapper will create a central agent that observes the full state of the environment.
 
-    The central agent will receive the concatenation of all agents' observations as its own observation, and a
-    multi-objective reward vector (representing the component-wise sum of the individual agent rewards) as its own
-    reward. The central agent is expected to return a vector of actions, one for each agent in the original environment.
+    The central agent will receive the concatenation of all agents' observations as its own observation (or a global
+    state, if available in the environment), and a multi-objective reward vector (representing the component-wise sum of
+    the individual agent rewards) as its own reward. The central agent is expected to return a vector of actions, one
+    for each agent in the original environment.
     """
 
     def __init__(self, env: MOParallelEnv):
@@ -159,21 +160,37 @@ class CentraliseAgent(BaseParallelWrapper):
             env: The parallel environment to apply the wrapper
         """
         super().__init__(env)
-        self.env = env
-        self.possible_agents = self.env.possible_agents
-        if env.metadata.get("central_observation"):
+        if self.env.metadata.get("central_observation"):
             self.observation_space = env.central_observation_space
         else:
             self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
-        self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+        # self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+        # For compatibility with MORL baselines
+        # Make the action space a Box space with the same bounds as the first agent's action space
+        ag0_action_space = env.action_space(self.possible_agents[0])
+        self.action_space = Box(
+            low=ag0_action_space.start,
+            high=(ag0_action_space.n - 1),
+            shape=(len(self.possible_agents),),
+            dtype=ag0_action_space.dtype,
+        )
         self.reward_space = self.env.reward_space(self.possible_agents[0])
 
     def step(self, actions):
         """Steps through the environment, joining the returned values for the central agent."""
+        # Remake the action list into a dictionary compatible with MOMAland environments
+        print(actions)
+        actions = {agent: actions[num] for num, agent in enumerate(self.possible_agents)}
+        print(actions)
         observations, rewards, terminations, truncations, infos = self.env.step(actions)
         if self.env.metadata.get("central_observation"):
-            observations = self.env.state()
+            observations = self.env.state().flatten()
         joint_reward = np.sum(list(rewards.values()), axis=0)
+        print("obs", observations)
+        print("rew", joint_reward)
+        print("term", np.any(list(terminations.values())))
+        print("trunc", np.any(list(truncations.values())))
+        print("info", list(infos.values()))
         return (
             observations,
             joint_reward,
@@ -185,4 +202,7 @@ class CentraliseAgent(BaseParallelWrapper):
     def reset(self, seed=None):
         """Resets the environment, joining the returned values for the central agent."""
         observations, infos = self.env.reset(seed)
+        if self.env.metadata.get("central_observation"):
+            observations = self.env.state().flatten()
+        print(observations)
         return observations, list(infos.values())
