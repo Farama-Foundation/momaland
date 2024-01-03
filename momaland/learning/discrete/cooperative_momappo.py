@@ -14,6 +14,7 @@ import jax.numpy as jnp
 import numpy as np
 import optax
 import orbax.checkpoint
+import wandb
 from distrax import MultivariateNormalDiag
 from etils import epath
 from flax.linen.initializers import constant, orthogonal
@@ -23,7 +24,6 @@ from supersuit import agent_indicator_v0
 from tqdm import tqdm
 
 from momaland.envs.beach_domain import mobeach_v0
-from momaland.learning.utils import save_results
 from momaland.utils.env import ParallelEnv
 from momaland.utils.parallel_wrappers import (
     LinearizeReward,
@@ -41,6 +41,9 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=1,
                         help="seed of the experiment")
     parser.add_argument("--debug", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="run in debug mode")
+    parser.add_argument("--track", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="log metrics to wandb")
+    parser.add_argument("--wandb-project", type=str, default="MOMAland", help="the wandb's project name")
+    parser.add_argument("--wandb-entity", type=str, default="MOMAland", help="the wandb's entity")
 
     # Algorithm specific arguments
     parser.add_argument("--num-steps", type=int, default=128, help="the number of steps per epoch (higher batch size should be better)")
@@ -201,7 +204,6 @@ def _ma_get_pi(params, obs: jnp.ndarray):
     return [actor.apply(params, obs[i]) for i in range(len(env.possible_agents))]
 
 
-@jax.jit
 def _batched_ma_get_pi(params, obs: jnp.ndarray):
     """Gets the actions for all agents in all the envs at once. This is done with a for loop because distrax does not like vmapping."""
     return [actor.apply(params, obs[:, i, :]) for i in range(len(env.possible_agents))]
@@ -381,7 +383,6 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
     key, subkeys = jax.random.split(key)
     obs, info = env.reset(seed=args.seed)
     episode_returns = []
-    current_timestep = 0
 
     # TRAIN LOOP
     def _update_step(runner_state: Tuple[TrainState, TrainState, dict, chex.PRNGKey]):
@@ -411,7 +412,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
             # STEP ENV
             key, subkey = jax.random.split(key)
             obs, rewards, terminateds, truncateds, info = env.step(actions_dict)
-            nonlocal current_timestep
+            global current_timestep
             current_timestep += 1
 
             reward = np.array(list(rewards.values())).sum(axis=-1)  # team reward
@@ -434,7 +435,14 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
                 team_return = sum(list(info["episode"]["r"].values()))
                 if args.debug:
                     print(f"Episode return: ${team_return}, length: ${info['episode']['l']}")
-                episode_returns.append((current_timestep, time.time() - start_time, team_return))
+                if args.track:
+                    wandb.log(
+                        {
+                            f"charts_{weights}/episode_return": team_return,
+                            f"charts_{weights}/episode_length": info["episode"]["l"],
+                            "global_step": current_timestep,
+                        }
+                    )
                 obs, info = env.reset()
 
             runner_state = (actor_state, critic_state, obs, key)
@@ -460,34 +468,20 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
         actor_train_state = update_state[0]
         critic_train_state = update_state[1]
         key = update_state[-1]
+        if args.track:
+            wandb.log(
+                {
+                    f"losses_{weights}/total_loss": loss_info[0].mean(),
+                    f"losses_{weights}/value_loss": loss_info[1][0].mean(),
+                    f"losses_{weights}/actor_loss": loss_info[1][1].mean(),
+                    f"losses_{weights}/entropy": loss_info[1][2].mean(),
+                    f"losses_{weights}/approx_kl": loss_info[1][3].mean(),
+                    "global_step": current_timestep,
+                }
+            )
+
         buffer.flush()
-
         metric = traj_batch.info
-
-        # Careful, metric has a shape of (num_steps) and loss_info has a shape of (update_epochs, num_minibatches)
-        # losses = (
-        #     loss_info[0],
-        #     loss_info[1][0],
-        #     loss_info[1][1],
-        #     loss_info[1][2],
-        #     loss_info[1][3],
-        # )
-        # metric["total_loss"] = losses[0]
-        # metric["value_loss"] = losses[1]
-        # metric["actor_loss"] = losses[2]
-        # metric["entropy"] = losses[3]
-        # metric["approx_kl"] = losses[4]
-
-        # if args.debug:
-        #
-        #     def callback(info, loss):
-        #         print(f"total loss: {loss[0].mean()}")
-        #         print(f"value loss: {loss[1].mean()}")
-        #         print(f"actor loss: {loss[2].mean()}")
-        #         print(f"entropy: {loss[3].mean()}")
-        #         print(f"approx kl: {loss[4].mean()}")
-        #
-        #     jax.debug.callback(callback, metric, losses)
 
         runner_state = (actor_train_state, critic_train_state, obs, key)
         return runner_state, metric
@@ -517,13 +511,11 @@ if __name__ == "__main__":
 
     start_time = time.time()
     out = []
+
     # NN initialization and jit compiled functions
     env: ParallelEnv = mobeach_v0.parallel_env(num_agents=80)
     env.reset()
-
-    _ma_get_pi = jax.jit(_ma_get_pi)
-    _batched_ma_get_pi = jax.jit(_batched_ma_get_pi)
-    _ma_sample_and_log_prob_from_pi = jax.jit(_ma_sample_and_log_prob_from_pi)
+    current_timestep = 0
 
     single_action_space = env.action_space(env.possible_agents[0])
     actor = Actor(single_action_space.n, net_arch=args.actor_net_arch, activation=args.activation)
@@ -531,20 +523,31 @@ if __name__ == "__main__":
     vmapped_get_value = vmap(critic.apply, in_axes=(None, 0))
     critic.apply = jax.jit(critic.apply)
 
+    if args.track:
+        exp_name = os.path.basename(__file__)[: -len(".py")]
+        run_name = f"{env.__class__.__name__}_{exp_name}_{args.seed}"
+        wandb.init(
+            project=args.wandb_project,
+            entity=args.wandb_entity,
+            config=vars(args),
+            name=run_name,
+            save_code=True,
+        )
+
     for i in range(1, 10):  # iterating over the different weights
         weights = np.array([round(1 - i / 10, 1), round(i / 10, 1)])
         out.append(train(args, env, weights, rng))
-        returns = out[-1]["metrics"]["returned_episode_returns"]
-        save_results(returns, f"MOMAPPO_MOBeach_{weights[0], 1}-{weights[1]}", args.seed)
         print(f"SPS: {(args.total_timesteps * i) / (time.time() - start_time)}")
-        import matplotlib.pyplot as plt
 
-        plt.plot(returns[:, 0], returns[:, 2], label="episode return")
-        plt.show()
+    env.close()
+    wandb.finish()
     print(f"total time: {time.time() - start_time}")
 
     # actor_state = out["runner_state"][0]
     # save_actor(actor_state)
+
+    # import matplotlib.pyplot as plt
+    # plt.plot(returns[:, 0], returns[:, 2], label="episode return")
 
     # plt.plot(out["metrics"]["total_loss"].mean(-1).reshape(-1), label="total loss")
     # plt.plot(out["metrics"]["actor_loss"].mean(-1).reshape(-1), label="actor loss")
