@@ -20,10 +20,10 @@ from etils import epath
 from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
 from jax import vmap
-from supersuit import agent_indicator_v0, clip_actions_v0, normalize_obs_v0
+from supersuit import agent_indicator_v0
 from tqdm import tqdm
 
-from momaland.envs.crazyrl.catch import catch_v0 as Catch
+from momaland.envs.beach_domain import mobeach_v0
 from momaland.utils.env import ParallelEnv
 from momaland.utils.parallel_wrappers import (
     LinearizeReward,
@@ -46,20 +46,20 @@ def parse_args():
     parser.add_argument("--wandb-entity", type=str, default="MOMAland", help="the wandb's entity")
 
     # Algorithm specific arguments
-    parser.add_argument("--num-steps", type=int, default=1280, help="the number of steps per epoch (higher batch size should be better)")
-    parser.add_argument("--total-timesteps", type=int, default=1e5,
+    parser.add_argument("--num-steps", type=int, default=128, help="the number of steps per epoch (higher batch size should be better)")
+    parser.add_argument("--total-timesteps", type=int, default=2e3,
                         help="total timesteps of the experiments")
     parser.add_argument("--update-epochs", type=int, default=2, help="the number epochs to update the policy")
     parser.add_argument("--num-minibatches", type=int, default=2, help="the number of minibatches (keep small in MARL)")
     parser.add_argument("--gamma", type=float, default=0.99,
                         help="the discount factor gamma")
-    parser.add_argument("--lr", type=float, default=1e-3,
+    parser.add_argument("--lr", type=float, default=2.5e-4,
                         help="the learning rate of the policy network optimizer")
     parser.add_argument("--gae-lambda", type=float, default=0.99,
                         help="the lambda for the generalized advantage estimation")
     parser.add_argument("--clip-eps", type=float, default=0.2,
                         help="the epsilon for clipping in the policy objective")
-    parser.add_argument("--ent-coef", type=float, default=0.0,
+    parser.add_argument("--ent-coef", type=float, default=0.01,
                         help="the coefficient for the entropy bonus")
     parser.add_argument("--vf-coef", type=float, default=0.8,
                         help="the coefficient for the value function loss")
@@ -99,11 +99,10 @@ class Actor(nn.Module):
         for i in range(1, len(self.net_arch)):
             actor_mean = nn.Dense(self.net_arch[i], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(actor_mean)
             actor_mean = activation(actor_mean)
-        actor_mean = nn.Dense(self.action_dim, kernel_init=orthogonal(0.01), bias_init=constant(0.0))(actor_mean)
-        actor_logtstd = self.param("log_std", nn.initializers.zeros, (self.action_dim,))
-        pi: MultivariateNormalDiag = distrax.MultivariateNormalDiag(actor_mean, jnp.exp(actor_logtstd))
+        logits = nn.Dense(self.action_dim, kernel_init=orthogonal(0.01), bias_init=constant(0.0))(actor_mean)
+        probs = distrax.Categorical(logits=logits)
 
-        return pi
+        return probs
 
 
 class Critic(nn.Module):
@@ -257,7 +256,7 @@ def _update_minbatch(actor_critic_train_state, batch_info):
         )  # this is a list of distributions with batch_shape of minibatch_size and event shape of action_dim
         new_value = vmapped_get_value(critic_params, traj_batch.global_obs)
         # MA Log Prob: shape (len(env.possible_agents), minibatch_size)
-        new_log_probs = jnp.array([pi[i].log_prob(traj_batch.joint_actions[:, i, :]) for i in range(len(env.possible_agents))])
+        new_log_probs = jnp.array([pi[i].log_prob(traj_batch.joint_actions[:, i]) for i in range(len(env.possible_agents))])
         new_log_probs = new_log_probs.transpose()  # (minibatch_size, len(env.possible_agents))
 
         # Normalizes advantage (trick)
@@ -325,8 +324,6 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
         frac = 1.0 - (count // (args.num_minibatches * args.update_epochs)) / num_updates
         return args.lr * frac
 
-    env = clip_actions_v0(env)
-    env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
     env = agent_indicator_v0(env)
     for agent in env.possible_agents:
         for idx in range(env.unwrapped.reward_space(agent).shape[0]):
@@ -372,7 +369,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
     # BUFFER
     buffer = Buffer(
         batch_size=args.num_steps,
-        joint_actions_shape=(len(env.possible_agents), single_action_space.shape[0]),
+        joint_actions_shape=(len(env.possible_agents),),
         obs_shape=(len(env.possible_agents), single_obs_space.shape[0]),
         global_obs_shape=env.state().shape,
         num_agents=len(env.possible_agents),
@@ -516,12 +513,12 @@ if __name__ == "__main__":
     out = []
 
     # NN initialization and jit compiled functions
-    env: ParallelEnv = Catch.parallel_env()
+    env: ParallelEnv = mobeach_v0.parallel_env(num_agents=80)
     env.reset()
     current_timestep = 0
 
     single_action_space = env.action_space(env.possible_agents[0])
-    actor = Actor(single_action_space.shape[0], net_arch=args.actor_net_arch, activation=args.activation)
+    actor = Actor(single_action_space.n, net_arch=args.actor_net_arch, activation=args.activation)
     critic = Critic(net_arch=args.critic_net_arch, activation=args.activation)
     vmapped_get_value = vmap(critic.apply, in_axes=(None, 0))
     critic.apply = jax.jit(critic.apply)

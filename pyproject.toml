@@ -40,6 +40,7 @@ dependencies = [
     "PyOpenGL ==3.1.6",
     "PyOpenGL-accelerate >=3.1.1",
     "pillow >=8.3.1",
+    "wandb >=0.16.1",
 ]
 dynamic = ["version"]
 
