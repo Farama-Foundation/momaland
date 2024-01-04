@@ -5,6 +5,8 @@ import pytest
 from pettingzoo.test import parallel_api_test, seed_test
 
 from momaland.test.api_test import api_test
+
+# from momaland.test.wrapper_test import wrapper_test
 from momaland.utils.all_modules import all_environments
 
 
@@ -14,7 +16,7 @@ def test_module(name, env_module):
     assert str(_env) == os.path.basename(name)
     api_test(_env)
     parallel_api_test(env_module.parallel_env())
-
+    # wrapper_test(env_module): TODO: There are some problems with the NormalizeReward wrapper.
     seed_test(env_module.env, 50)
 
     # TODO render_test(env_module.env)

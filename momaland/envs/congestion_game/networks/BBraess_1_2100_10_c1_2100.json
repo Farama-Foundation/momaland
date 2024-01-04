@@ -1,0 +1,152 @@
+{
+    "graph": {
+        "directed": true,
+        "multigraph": false,
+        "graph": {},
+        "nodes": [
+            {
+                "id": "w0"
+            },
+            {
+                "id": "w1"
+            },
+            {
+                "id": "v1"
+            },
+            {
+                "id": "s2"
+            },
+            {
+                "id": "t2"
+            },
+            {
+                "id": "s1"
+            },
+            {
+                "id": "t1"
+            },
+            {
+                "id": "a"
+            }
+        ],
+        "links": [
+            {
+                "name": "w0-w1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.00238095238095,
+                        "n": 0.0
+                    }
+                },
+                "source": "w0",
+                "target": "w1"
+            },
+            {
+                "name": "w1-v1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w1",
+                "target": "v1"
+            },
+            {
+                "name": "w1-t2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "w1",
+                "target": "t2"
+            },
+            {
+                "name": "v1-t1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "v1",
+                "target": "t1"
+            },
+            {
+                "name": "s2-w0",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "s2",
+                "target": "w0"
+            },
+            {
+                "name": "s1-w0",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "s1",
+                "target": "w0"
+            },
+            {
+                "name": "s1-a",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "s1",
+                "target": "a"
+            },
+            {
+                "name": "a-w1",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "a",
+                "target": "w1"
+            }
+        ]
+    },
+    "od": [
+        "s2|t2",
+        "s1|t1"
+    ],
+    "routes": {
+        "s2|t2": [
+            "s2-w0,w0-w1,w1-t2"
+        ],
+        "s1|t1": [
+            "s1-w0,w0-w1,w1-v1,v1-t1",
+            "s1-a,a-w1,w1-v1,v1-t1"
+        ]
+    }
+}

@@ -1,0 +1,98 @@
+{
+    "graph": {
+        "directed": true,
+        "multigraph": false,
+        "graph": {},
+        "nodes": [
+            {
+                "id": "1"
+            },
+            {
+                "id": "2"
+            },
+            {
+                "id": "3"
+            },
+            {
+                "id": "4"
+            }
+        ],
+        "links": [
+            {
+                "name": "1-2",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.00238095238095,
+                        "n": 0.0
+                    }
+                },
+                "source": "1",
+                "target": "2"
+            },
+            {
+                "name": "1-3",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "1",
+                "target": "3"
+            },
+            {
+                "name": "2-3",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 0.0
+                    }
+                },
+                "source": "2",
+                "target": "3"
+            },
+            {
+                "name": "2-4",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.0,
+                        "n": 10.0
+                    }
+                },
+                "source": "2",
+                "target": "4"
+            },
+            {
+                "name": "3-4",
+                "latency_function": {
+                    "expr": "m*f+n",
+                    "param": "f",
+                    "constants": {
+                        "m": 0.00238095238095,
+                        "n": 0.0
+                    }
+                },
+                "source": "3",
+                "target": "4"
+            }
+        ]
+    },
+    "od": [
+        "1|4"
+    ],
+    "routes": {
+        "1|4": [
+            "1-2,2-3,3-4",
+            "1-3,3-4",
+            "1-2,2-4"
+        ]
+    }
+}
