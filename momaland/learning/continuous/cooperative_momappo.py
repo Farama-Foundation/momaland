@@ -20,6 +20,10 @@ from etils import epath
 from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
 from jax import vmap
+from morl_baselines.common.evaluation import (
+    policy_evaluation_mo,
+)
+from morl_baselines.multi_policy.linear_support.linear_support import LinearSupport
 from supersuit import agent_indicator_v0, clip_actions_v0, normalize_obs_v0
 from tqdm import tqdm
 
@@ -537,10 +541,19 @@ if __name__ == "__main__":
             save_code=True,
         )
 
-    for i in range(1, 10):  # iterating over the different weights
-        weights = np.array([round(1 - i / 10, 1), round(i / 10, 1)])
-        out.append(train(args, env, weights, rng))
-        print(f"SPS: {(args.total_timesteps * i) / (time.time() - start_time)}")
+    ols = LinearSupport(num_objectives=2, epsilon=0.0001, verbose=True)
+    while not ols.ended():
+        w = ols.next_weight()
+        out.append(train(args, env, w, rng))
+        value = []
+        for agent in env.possible_agents:
+            value.append(policy_evaluation_mo(agent=agent, env=env, w=w))
+        ols.add_solution(value, w)
+
+    # for i in range(1, 10):  # iterating over the different weights
+    #     weights = np.array([round(1 - i / 10, 1), round(i / 10, 1)])
+    #     out.append(train(args, env, weights, rng))
+    #     print(f"SPS: {(args.total_timesteps * i) / (time.time() - start_time)}")
 
     env.close()
     wandb.finish()
