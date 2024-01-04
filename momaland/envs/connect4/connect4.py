@@ -82,7 +82,7 @@ def get_image(path):
     from os import path as os_path
 
     cwd = os_path.dirname(__file__)
-    image = pygame.image.load(cwd + "\\" + path)
+    image = pygame.image.load(cwd + "/" + path)
     sfc = pygame.Surface(image.get_size(), flags=pygame.SRCALPHA)
     sfc.blit(image, (0, 0))
     return sfc
@@ -297,11 +297,12 @@ class MOConnect4(MOAECEnv, EzPickle):
             if self.render_mode == "human":
                 pygame.display.set_caption("Connect Four")
                 self.screen = pygame.display.set_mode((screen_width, screen_height))
-            elif self.render_mode == "rgb_array":
+            else:
                 self.screen = pygame.Surface((screen_width, screen_height))
 
         # Load and scale all of the necessary images
-        tile_size = (screen_width * (91 / 99)) / 7
+        size_cap = min(screen_width, screen_height)
+        tile_size = (size_cap * 91 / 99) / max(self.board_width, self.board_height)
 
         red_chip = get_image(os.path.join("img", "C4RedPiece.png"))
         red_chip = pygame.transform.scale(red_chip, (int(tile_size * (9 / 13)), int(tile_size * (9 / 13))))
@@ -309,31 +310,39 @@ class MOConnect4(MOAECEnv, EzPickle):
         black_chip = get_image(os.path.join("img", "C4BlackPiece.png"))
         black_chip = pygame.transform.scale(black_chip, (int(tile_size * (9 / 13)), int(tile_size * (9 / 13))))
 
-        board_img = get_image(os.path.join("img", "Connect4Board.png"))
-        board_img = pygame.transform.scale(board_img, ((int(screen_width)), int(screen_height)))
+        cell_img = get_image(os.path.join("img", "c4-empty.png"))
+        cell_img = pygame.transform.scale(cell_img, (int(tile_size), int(tile_size)))
 
-        self.screen.blit(board_img, (0, 0))
+        for i in range(0, self.board_height * self.board_width):
+            self.screen.blit(
+                cell_img,
+                (
+                    (i % self.board_width) * (tile_size) + (tile_size * (4 / 13)),
+                    int(i / self.board_width) * (tile_size) + (tile_size * (4 / 13)),
+                ),
+            )
 
         # Blit the necessary chips and their positions
-        for i in range(0, 42):
+        for i in range(0, self.board_height * self.board_width):
             if self.board[i] == 1:
                 self.screen.blit(
                     red_chip,
                     (
-                        (i % 7) * (tile_size) + (tile_size * (6 / 13)),
-                        int(i / 7) * (tile_size) + (tile_size * (6 / 13)),
+                        (i % self.board_width) * (tile_size) + (tile_size * (6 / 13)),
+                        int(i / self.board_width) * (tile_size) + (tile_size * (6 / 13)),
                     ),
                 )
             elif self.board[i] == 2:
                 self.screen.blit(
                     black_chip,
                     (
-                        (i % 7) * (tile_size) + (tile_size * (6 / 13)),
-                        int(i / 7) * (tile_size) + (tile_size * (6 / 13)),
+                        (i % self.board_width) * (tile_size) + (tile_size * (6 / 13)),
+                        int(i / self.board_width) * (tile_size) + (tile_size * (6 / 13)),
                     ),
                 )
 
         if self.render_mode == "human":
+            pygame.event.pump()
             pygame.display.update()
             self.clock.tick(self.metadata["render_fps"])
 
