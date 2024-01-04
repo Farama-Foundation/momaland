@@ -1,7 +1,6 @@
 """MO Gymnasium on centralised agents versions of MOMAland."""
 
 import numpy as np
-from gymnasium.spaces import Discrete, MultiBinary
 from morl_baselines.multi_policy.gpi_pd.gpi_pd import GPIPD
 
 from momaland.envs.item_gathering import item_gathering
@@ -11,7 +10,7 @@ from momaland.utils.parallel_wrappers import CentraliseAgent
 def make_single_agent_ig_env():
     """Create a centralised agent environment for the Item Gathering domain."""
     ig_env = item_gathering.parallel_env(num_timesteps=50, randomise=True, render_mode=None)
-    return CentraliseAgent(ig_env)
+    return CentraliseAgent(ig_env, action_mapping=True)
 
 
 if __name__ == "__main__":
@@ -20,18 +19,6 @@ if __name__ == "__main__":
 
     gpi_pd = False
     g = 1000
-
-    action_space = env.action_space
-    if isinstance(env.action_space, (Discrete, MultiBinary)):
-        action_shape = (1,)
-        action_dim = env.action_space.n
-    else:
-        action_shape = env.action_space.shape
-        action_dim = env.action_space.shape[0]
-
-    print("action_space: ", action_space)
-    print("action_shape: ", action_shape)
-    print("action_dim: ", action_dim)
 
     agent = GPIPD(
         env,

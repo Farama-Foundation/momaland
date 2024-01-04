@@ -35,3 +35,17 @@ def save_results(returns, exp_name, seed):
     df = pd.DataFrame(returns)
     df.columns = ["Total timesteps", "Time", "Episodic return"]
     df.to_csv(filename, index=False)
+
+
+def map_actions(actions, num_actions):
+    """Map a list of actions to a single number to create a Discrete action space for MORL baselines."""
+    return sum([actions[i] * num_actions**i for i in range(len(actions))])
+
+
+def remap_actions(action, num_agents, num_actions):
+    """Remap a single number to a list of actions."""
+    actions = []
+    for i in range(num_agents):
+        actions.append(action % num_actions)
+        action = action // num_actions
+    return actions
