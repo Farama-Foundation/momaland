@@ -319,8 +319,7 @@ def _update_epoch(update_state, unused):
 
 def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
     """MAPPO scalarizing the vector reward using weights and weighted sum."""
-    # num_updates = int(args.total_timesteps // args.num_steps)
-    num_updates = 1
+    num_updates = int(args.total_timesteps // args.num_steps)
     global minibatch_size
     minibatch_size = int(args.num_steps // args.num_minibatches)
 
@@ -520,9 +519,9 @@ if __name__ == "__main__":
     # NN initialization and jit compiled functions
     env: ParallelEnv = Catch.parallel_env()
     eval_env: ParallelEnv = Catch.parallel_env()
-    eval_env = clip_actions_v0(env)
+    eval_env = clip_actions_v0(eval_env)
     eval_env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
-    eval_env = agent_indicator_v0(env)
+    eval_env = agent_indicator_v0(eval_env)
 
     env.reset()
     eval_env.reset()
@@ -554,11 +553,6 @@ if __name__ == "__main__":
         _, disc_vec_return = policy_evaluation_mo(actor, actor_state, env=eval_env, num_obj=ols.num_objectives)
         value.append(disc_vec_return)
         ols.add_solution(value[-1], w)
-
-    # for i in range(1, 10):  # iterating over the different weights
-    #     weights = np.array([round(1 - i / 10, 1), round(i / 10, 1)])
-    #     out.append(train(args, env, weights, rng))
-    #     print(f"SPS: {(args.total_timesteps * i) / (time.time() - start_time)}")
 
     env.close()
     wandb.finish()
