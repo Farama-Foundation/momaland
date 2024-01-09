@@ -74,10 +74,10 @@ def eval_mo(
         actions_dict = dict()
         for i, agent in enumerate(env.possible_agents):
             actions_dict[agent] = np.array(actions[i])
-        obs, rew, term, trun, _ = env.step(actions_dict)
-        done = term or trun
+        obs, rew, term, trunc, _ = env.step(actions_dict)
+        done = term or trunc
 
-        vec_return = np.array(list(rew.values())).sum(axis=1)
+        vec_return = np.array(list(rew.values())).sum(axis=0)
         disc_vec_return = gamma * vec_return
         gamma *= 0.99
 
