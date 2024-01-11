@@ -318,8 +318,7 @@ def _update_epoch(update_state, unused):
 
 def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
     """MAPPO scalarizing the vector reward using weights and weighted sum."""
-    # num_updates = int(args.total_timesteps // args.num_steps)
-    num_updates = 1
+    num_updates = int(args.total_timesteps // args.num_steps)
     global minibatch_size
     minibatch_size = int(args.num_steps // args.num_minibatches)
 

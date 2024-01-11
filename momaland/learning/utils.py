@@ -42,12 +42,7 @@ def _ma_sample_and_log_prob_from_pi(pi: List[MultivariateNormalDiag], num_agents
     return [pi[i].sample_and_log_prob(seed=key[i]) for i in range(num_agents)]
 
 
-def eval_mo(
-    actor_module,
-    actor_state,
-    env,
-    num_obj,
-) -> Tuple[float, float, np.ndarray, np.ndarray]:
+def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[float, float, np.ndarray, np.ndarray]:
     """Evaluates one episode of the agent in the environment.
 
     Args:
@@ -79,7 +74,7 @@ def eval_mo(
 
         vec_return = np.array(list(rew.values())).sum(axis=0)
         disc_vec_return = gamma * vec_return
-        gamma *= 0.99
+        gamma *= gamma_decay
 
     return (
         vec_return,
