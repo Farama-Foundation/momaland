@@ -47,7 +47,7 @@ actions = {agent: env.action_spaces[agent].sample() for agent in env.agents}
 next_obs, vector_rewards, terminated, truncated, info = env.step(actions)
 
 # Optionally, you can scalarize the reward function with the LinearReward wrapper to fall back to the original PZ API
-env = momaland.LinearReward(env, weight=np.array([0.8, 0.2, 0.2]))
+env = momaland.LinearReward(env, weight=np.array([0.6, 0.2, 0.2]))
 ```
 For details on multi-objective multi-agent RL definitions, see [Multi-Objective Multi-Agent Decision Making: A Utility-based Analysis and Survey](https://arxiv.org/abs/1909.02964).
 
