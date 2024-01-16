@@ -8,7 +8,7 @@ A wrapper is an environment transformation that takes in an environment as input
 
 For conversion between `AEC` and `Parallel` APIs, the native MOMAland wrappers must be used. On top of conversion wrappers, there are also a few utility wrappers.
 
-Wrappers for the `AEC` and `Parallel` wrappers are split into their own modules and can be accessed like `momaland.utils.parallel_wrappers.LinearReward`.
+Wrappers for the `AEC` and `Parallel` wrappers are split into their own modules and can be accessed like `momaland.utils.parallel_wrappers.LinearizeReward`.
 
 ## Conversion
 
@@ -26,10 +26,10 @@ Wrappers for the `AEC` and `Parallel` wrappers are split into their own modules 
 
 ## `AEC`
 
-### `LinearReward`
+### `LinearizeReward`
 
 ```{eval-rst}
-.. autoclass:: momaland.utils.aec_wrappers.LinearReward
+.. autoclass:: momaland.utils.aec_wrappers.LinearizeReward
 ```
 
 ### `NormalizeReward`
@@ -40,10 +40,10 @@ Wrappers for the `AEC` and `Parallel` wrappers are split into their own modules 
 
 ## `Parallel`
 
-### `LinearReward`
+### `LinearizeReward`
 
 ```{eval-rst}
-.. autoclass:: momaland.utils.parallel_wrappers.LinearReward
+.. autoclass:: momaland.utils.parallel_wrappers.LinearizeReward
 ```
 
 ### `NormalizeReward`
