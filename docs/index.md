@@ -17,13 +17,8 @@ lastpage:
 
 introduction/install
 introduction/api
-```
-
-```{toctree}
-:hidden:
-:caption: Environments
-
 environments/all-envs
+wrappers/wrappers
 ```
 
 ```{toctree}
