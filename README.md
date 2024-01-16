@@ -86,6 +86,8 @@ If you use this repository in your research, please cite:
 ### Setup pre-commit
 Clone the repo and run `pre-commit install` to setup the pre-commit hooks.
 
+<!-- start custom_env -->
+
 ### New environment steps
 1. Create a new environment package in `momaland/envs/`
 2. Create a new environment class in `momaland/envs/<env_name>/<env_name>.py`, this class should extend `MOParallelEnv` or `MOAECEnv`. Override the PettingZoo methods (see their [documentation](https://pettingzoo.farama.org/api/aec/)). Additionally, you should define a member `self.reward_spaces` that is a dictionary of space specifying the shape of the reward vector of each agent, as well as a method `reward_space(self, agent) -> Space` that returns the reward space of a given agent.
@@ -94,3 +96,5 @@ Clone the repo and run `pre-commit install` to setup the pre-commit hooks.
 5. Add a versioned constructor of your env in the directory which exports the factory functions (see `mobeach_v0.py` for an example).
 6. Add your environment to the tests in `utils/all_modules.py`
 7. Run `pytest` to check that everything works
+
+<!-- end custom_env -->

@@ -23,6 +23,13 @@ wrappers/wrappers
 
 ```{toctree}
 :hidden:
+:caption: Tutorials
+
+tutorials/custom_env
+```
+
+```{toctree}
+:hidden:
 :caption: Development
 
 Github <https://github.com/rradules/momaland>
