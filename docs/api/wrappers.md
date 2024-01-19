@@ -1,8 +1,8 @@
 ---
-title: "Wrappers"
+title: "Wrappers and Utils"
 ---
 
-# Wrappers
+# Wrappers and Utils
 
 A wrapper is an environment transformation that takes in an environment as input, and outputs a new environment that is similar to the input environment, but with some transformation or validation applied.
 
