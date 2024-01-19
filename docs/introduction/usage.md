@@ -1,9 +1,9 @@
 ---
-title: API
+title: Usage
 firstpage:
 ---
 
-## API
+## Usage
 
 ```{include} ../../README.md
 :start-after: <!-- start snippet-usage -->
