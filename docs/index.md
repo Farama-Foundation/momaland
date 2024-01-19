@@ -34,7 +34,7 @@ envs/adversarial-envs
 :caption: Tutorials
 
 tutorials/custom_env
-tutorials/coop_momappo
+tutorials/training
 ```
 
 ```{toctree}
@@ -43,7 +43,7 @@ tutorials/coop_momappo
 
 Discord <https://discord.gg/bnJ6kubTg6>
 Github <https://github.com/rradules/momaland>
-release_notes/index
+release_notes
 Contribute to the Docs <https://github.com/rradules/momaland/tree/master/docs/>
 ```
 
