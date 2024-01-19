@@ -4,21 +4,31 @@ firstpage:
 lastpage:
 ---
 
-# MOMAland: A collection of multi-objective multi-agent reinforcement learning environments.
-
-```{figure} _static/gifs/surround.gif
-   :alt: Multiple agents collaborating to surround a target
-   :width: 500
-```
-
 ```{toctree}
 :hidden:
 :caption: Introduction
 
 introduction/install
-introduction/api
-environments/all-envs
-wrappers/wrappers
+introduction/usage
+```
+
+```{toctree}
+:hidden:
+:caption: API
+
+api/aec
+api/parallel
+api/wrappers
+api/utils
+```
+
+```{toctree}
+:hidden:
+:caption: Environments
+
+<!-- envs/all-envs -->
+envs/cooperative-envs
+envs/adversarial-envs
 ```
 
 ```{toctree}
@@ -26,22 +36,38 @@ wrappers/wrappers
 :caption: Tutorials
 
 tutorials/custom_env
+tutorials/api_test
+tutorials/coop_momappo
 ```
 
 ```{toctree}
 :hidden:
 :caption: Development
 
+Discord <https://discord.gg/bnJ6kubTg6>
 Github <https://github.com/rradules/momaland>
 release_notes/index
 Contribute to the Docs <https://github.com/rradules/momaland/tree/master/docs/>
 ```
 
-
+```{project-logo} _static/img/momaland-text.png
+:alt: MOMAland Logo
+```
 
 ```{project-heading}
-MOMAland is a standardized API and a suite of environments for multi-objective multi-agent reinforcement learning (MOMARL)
+An API standard for multi-agent multi-objective reinforcement learning (MOMARL)
 ```
+
+<!-- ```{figure} _static/img/environments-demo.gif TODO
+   :width: 480px
+   :name: MOMAland Environments
+``` -->
+```{figure} _static/gifs/surround.gif
+   :width: 480
+   :alt: Multiple agents collaborating to surround a target
+```
+
+# MOMAland: A collection of multi-objective multi-agent reinforcement learning environments.
 
 ```{include} ../README.md
 :start-after: <!-- start elevator-pitch -->
