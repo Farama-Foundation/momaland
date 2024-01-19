@@ -19,14 +19,12 @@ introduction/usage
 api/aec
 api/parallel
 api/wrappers
-api/utils
 ```
 
 ```{toctree}
 :hidden:
 :caption: Environments
 
-<!-- envs/all-envs -->
 envs/cooperative-envs
 envs/adversarial-envs
 ```
@@ -36,7 +34,6 @@ envs/adversarial-envs
 :caption: Tutorials
 
 tutorials/custom_env
-tutorials/api_test
 tutorials/coop_momappo
 ```
 
