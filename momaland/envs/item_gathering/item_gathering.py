@@ -74,7 +74,7 @@ def raw_env(**kwargs):
 
 
 class MOItemGathering(MOParallelEnv):
-    """Environment for the Item Gathering domain.
+    """Environment for the MO-ItemGathering problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -85,7 +85,7 @@ class MOItemGathering(MOParallelEnv):
 
     metadata = {
         "render_modes": ["human", "rgb_array"],
-        "name": "moitemgathering_v0",
+        "name": "moitem_gathering_v0",
         "render_fps": 50,
         "central_observation": True,
     }

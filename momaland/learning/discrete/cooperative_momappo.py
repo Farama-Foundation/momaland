@@ -23,7 +23,7 @@ from jax import vmap
 from supersuit import agent_indicator_v0
 from tqdm import tqdm
 
-from momaland.envs.beach_domain import mobeach_v0
+from momaland.envs.beach_domain import mobeach_domain_v0
 from momaland.utils.env import ParallelEnv
 from momaland.utils.parallel_wrappers import (
     LinearizeReward,
@@ -513,7 +513,7 @@ if __name__ == "__main__":
     out = []
 
     # NN initialization and jit compiled functions
-    env: ParallelEnv = mobeach_v0.parallel_env(num_agents=80)
+    env: ParallelEnv = mobeach_domain_v0.parallel_env(num_agents=80)
     env.reset()
     current_timestep = 0
 
