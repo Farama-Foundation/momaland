@@ -25,8 +25,7 @@ api/wrappers
 :hidden:
 :caption: Environments
 
-envs/cooperative-envs
-envs/adversarial-envs
+environments/all-envs
 ```
 
 ```{toctree}
