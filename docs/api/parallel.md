@@ -24,6 +24,9 @@ parallel_env.close()
 
 MOMAland environments extend the base `MOParallel` class, as opposed to PettingZoo's base `Parallel` class. `MOParallel` extends `Parallel` and has a `reward_space` member.
 
+For more detailed documentation on the Parallel API, [see the PettingZoo documentation](https://pettingzoo.farama.org/api/parallel/).
+
+## MOParallelEnv
 ```{eval-rst}
 .. currentmodule:: momaland.utils.env
 
@@ -85,5 +88,3 @@ MOMAland environments extend the base `MOParallel` class, as opposed to PettingZ
 .. automethod:: MOParallelEnv.action_space
 .. automethod:: MOParallelEnv.reward_space
 ```
-
-For more detailed documentation on the Parallel API, [see the PettingZoo documentation](https://pettingzoo.farama.org/api/parallel/).

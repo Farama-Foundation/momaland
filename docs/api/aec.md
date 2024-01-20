@@ -28,7 +28,9 @@ env.close()
 
 MOMAland environments extend the base `MOAEC` class, as opposed to PettingZoo's base `AEC` class. `MOAEC` extends `AEC` and has a `reward_space` member.
 
-## AECEnv
+For more detailed documentation on the AEC API, [see the PettingZoo documentation](https://pettingzoo.farama.org/api/aec/).
+
+## MOAECEnv
 
 ```{eval-rst}
 .. currentmodule:: momaland.utils.env
@@ -115,5 +117,3 @@ MOMAland environments extend the base `MOAEC` class, as opposed to PettingZoo's 
 .. automethod:: MOAECEnv.action_space
 .. automethod:: MOAECEnv.reward_space
 ```
-
-For more detailed documentation on the AEC API, [see the PettingZoo documentation](https://pettingzoo.farama.org/api/aec/).
