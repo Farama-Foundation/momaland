@@ -17,10 +17,12 @@ while parallel_env.agents:
     # this is where you would insert your policy
     actions = {agent: parallel_env.action_space(agent).sample() for agent in parallel_env.agents}
 
-    # reward is a numpy array
+    # reward is a dict[str, numpy array]
     observations, vec_rewards, terminations, truncations, infos = parallel_env.step(actions)
 parallel_env.close()
 ```
+
+In `Parallel`, the returned values of `observations`, `vec_rewards`, etc. are `dict` type, where the keys are agent names, and the values are the respective data. So for `vec_rewards`, the values are `numpy` arrays.
 
 MOMAland environments extend the base `MOParallel` class, as opposed to PettingZoo's base `Parallel` class. `MOParallel` extends `Parallel` and has a `reward_space` member.
 

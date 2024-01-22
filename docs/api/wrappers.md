@@ -26,13 +26,9 @@ Wrappers for the `AEC` and `Parallel` wrappers are split into their own modules 
 
 ## `AEC`
 
-### `LinearizeReward`
-
 ```{eval-rst}
 .. autoclass:: momaland.utils.aec_wrappers.LinearizeReward
 ```
-
-### `NormalizeReward`
 
 ```{eval-rst}
 .. autoclass:: momaland.utils.aec_wrappers.NormalizeReward
@@ -40,19 +36,13 @@ Wrappers for the `AEC` and `Parallel` wrappers are split into their own modules 
 
 ## `Parallel`
 
-### `LinearizeReward`
-
 ```{eval-rst}
 .. autoclass:: momaland.utils.parallel_wrappers.LinearizeReward
 ```
 
-### `NormalizeReward`
-
 ```{eval-rst}
 .. autoclass:: momaland.utils.parallel_wrappers.NormalizeReward
 ```
-
-### `RecordEpisodeStatistics`
 
 ```{eval-rst}
 .. autoclass:: momaland.utils.parallel_wrappers.RecordEpisodeStatistics
