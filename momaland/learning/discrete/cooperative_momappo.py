@@ -24,7 +24,7 @@ from morl_baselines.multi_policy.linear_support.linear_support import LinearSupp
 from supersuit import agent_indicator_v0
 from tqdm import tqdm
 
-from momaland.envs.beach_domain import mobeach_v0
+from momaland.envs.beach_domain import mobeach_domain_v0
 from momaland.learning.utils import policy_evaluation_mo
 from momaland.utils.env import ParallelEnv
 from momaland.utils.parallel_wrappers import (
@@ -514,8 +514,8 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # NN initialization and jit compiled functions
-    env: ParallelEnv = mobeach_v0.parallel_env(num_agents=80)
-    eval_env: ParallelEnv = mobeach_v0.parallel_env(num_agents=80)
+    env: ParallelEnv = mobeach_domain_v0.parallel_env(num_agents=80)
+    eval_env: ParallelEnv = mobeach_domain_v0.parallel_env(num_agents=80)
     eval_env = agent_indicator_v0(eval_env)
 
     env.reset()
