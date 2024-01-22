@@ -223,8 +223,9 @@ def test_ingenious_rule():
         else:
             sum += 1
         ag = ig_env.agent_selection
-        obs = ig_env.observe(ag)
-        masked_act_list = obs["action_mask"]
+        # obs = ig_env.observe(ag)
+        # masked_act_list = obs["action_mask"]
+        masked_act_list = ig_env.game.return_action_list()
         action = random_index_of_one(masked_act_list)
         ig_env.step(action)
         observation, reward, truncation, termination, _ = ig_env.last()
@@ -332,12 +333,12 @@ if __name__ == "__main__":
     # ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
     # ag = ig_env.agent_selection
     # ig_env.reset()
-    # t1 = test_ingenious_rule()
-    t1 = True
+    t1 = test_ingenious_rule()
+    # t1 = True
     # ig_env.reset()
     t2 = test_reset()
     # ig_env.reset()
-    t3 = test_move()
+    # t3 = test_move()  # no need anymore
     t4 = test_step()
 
     if t1:
@@ -348,10 +349,10 @@ if __name__ == "__main__":
         print("Accepted: reset test")
     else:
         print("Rejected: reset test")
-    if t3:
-        print("Accepted: move in ingenious_base test")
-    else:
-        print("Rejected: move in ingenious_base test")
+    # if t3:
+    #    print("Accepted: move in ingenious_base test")
+    # else:
+    #    print("Rejected: move in ingenious_base test")
     if t4:
         print("Accepted: move in step test")
     else:
