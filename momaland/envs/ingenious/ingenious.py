@@ -138,12 +138,6 @@ class MOIngenious(MOAECEnv):
             return
 
     @override
-    def close(self):
-        """Close should release any graphical displays, subprocesses, network connections or any other
-        environment data which should not be kept around after the user is no longer using the environment."""
-        pass
-
-    @override
     def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(),
         and step() can be called without issues.
@@ -159,7 +153,7 @@ class MOIngenious(MOAECEnv):
         self.truncations = {agent: False for agent in self.agents}
         self.infos = {agent: {} for agent in self.agents}
         self.agent_selection = self.agents[self.game.agent_selector]
-        self._cumulative_rewards = {agent: np.zeros(self.num_colors) for agent in self.agents}
+        # self._cumulative_rewards = {agent: np.zeros(self.num_colors) for agent in self.agents}
         self.agent_selection = self.agents[self.game.agent_selector]
         self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
         self._cumulative_rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
@@ -181,6 +175,9 @@ class MOIngenious(MOAECEnv):
         self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
         if self.refresh_cummulative_reward:
             self._cumulative_rewards[self.agent_selection] = np.zeros(self.num_colors, dtype="float64")
+
+        # assert self.game.return_action_list()[action] == 1, "played illegal move."
+        # if not self.game.end_flag:
         if not self.game.end_flag and self.game.return_action_list()[action] == 1:
             prev_rewards = np.array(list(self.game.score[self.agent_selection].values()))
             self.game.set_action_index(action)
@@ -189,7 +186,7 @@ class MOIngenious(MOAECEnv):
 
         if self.game.end_flag:
             self.terminations = {agent: True for agent in self.agents}
-            self.truncations = {agent: True for agent in self.agents}
+            # self.truncations = {agent: True for agent in self.agents}
             # self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
 
         # print('before accumulate',self.game.end_flag, self.rewards)
@@ -219,20 +216,3 @@ class MOIngenious(MOAECEnv):
 
         # print(observation)
         return {"observation": observation, "action_mask": action_mask}
-
-
-"""    @override
-    def last(self, observe=True):
-        self.agent_selection = self.agents[self.game.agent_selector]
-
-        assert  self.agent_selection
-        if self.game.end_flag:
-            self.terminations = {agent: True for agent in self.agents}
-            self.truncations = {agent: True for agent in self.agents}
-            self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
-        #else:
-            #self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
-
-        observation = self.observe( self.agent_selection ) if observe else None
-        return (observation, self._cumulative_rewards[ self.agent_selection ], self.terminations[ self.agent_selection ], self.truncations[ self.agent_selection ], self.infos[ self.agent_selection ])
-"""

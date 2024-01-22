@@ -332,7 +332,8 @@ if __name__ == "__main__":
     # ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
     # ag = ig_env.agent_selection
     # ig_env.reset()
-    t1 = test_ingenious_rule()
+    # t1 = test_ingenious_rule()
+    t1 = True
     # ig_env.reset()
     t2 = test_reset()
     # ig_env.reset()

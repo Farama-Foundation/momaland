@@ -7,7 +7,6 @@ board and rules.
 import collections
 import itertools
 import random
-import warnings
 
 import numpy as np
 
@@ -158,16 +157,6 @@ class IngeniousBase:
         self.masked_action = np.ones(self.action_size, "int8")
         # self.reset_game()
 
-    def render_all(self):
-        """Draft render function."""
-        # print("Show the board:")
-
-        # print("Show player's tile:")
-        # print(self.p_tiles)
-        # print("Show score")
-        # print(self.score)
-        pass
-
     def reset_game(self, seed=None):
         """Reset the board, racks, score, and tiles bag."""
         if seed is not None:
@@ -213,9 +202,6 @@ class IngeniousBase:
 
     def get_tile(self, a):
         """Draw tiles for a specific player."""
-        # print('get_tile',a,len(self.p_tiles[a]),self.init_draw)
-        if len(self.p_tiles[a]) >= self.init_draw:
-            warnings.warn(f"Warning: {a} cannot hold more than {self.init_draw} tiles.")
         while len(self.p_tiles[a]) < self.init_draw:
             self.p_tiles[a].append(self.tiles_bag.pop(self.random.randrange(len(self.tiles_bag))))
         return
@@ -228,6 +214,7 @@ class IngeniousBase:
             self.board_array[x, y] = self.corner_color[i]
             self.exclude_action(a)
 
+            # In first round, each player has to put the tile next to the the corners position. Therefore, we use self.first_round_pos to maintain the first round position.
             for k in range(0, 6):
                 hx1 = hex_neighbor(a, k)
                 for j in range(0, 6):
@@ -263,19 +250,17 @@ class IngeniousBase:
     def set_action_index(self, index):
         """Apply the corresponding action for the given index on the board."""
         """If selected actions is not a legal move, return False"""
-        if self.masked_action[index] == 0:
-            assert "illegal move:choose a masked action(0)"
-            return False
-        if (index not in self.first_round_pos) and self.first_round:
-            assert "illegal move: choose a action legally in first round"
-            return False
+        assert self.masked_action[index] == 1, "Illegal move, choose a valid action."
+        if self.first_round:
+            assert index in self.first_round_pos, "illegal move, in the first round tiles can only be placed next to corners."
         """Hex Coordinate: h1,h2 ;  Tile to play: card"""
         h1, h2, card = self.action_index_map[index]
         agent_i = self.agent_selector
         agent = self.agents[agent_i]
-        if card >= len(self.p_tiles[agent]):
-            assert "illegal move: choosing tile out of hand(happening after ingenious)"
-            return False
+        # if card >= len(self.p_tiles[agent]):
+        #    assert "illegal move: choosing tile out of hand(happening after ingenious)"
+        #    return False
+        assert card < len(self.p_tiles[agent]), "illegal move: choosing tile out of hand(happening after ingenious)"
         """Extract the certain tile (color1 , color2) as (c1,c2)"""
         c1, c2 = self.p_tiles[agent][card]
         # Translate Hex Coordinate to Offset Coordinate(x,y)
@@ -292,9 +277,10 @@ class IngeniousBase:
                 self.p_tiles[agent].remove(item)
                 flag = True
                 break
-        if not flag:
-            assert "illegal move: set the tile to the coordinate unsuccessfully"
-            return False
+        # if not flag:
+        #    assert "illegal move: set the tile to the coordinate unsuccessfully"
+        #    return False
+        assert flag, "illegal move: set the tile to the coordinate unsuccessfully"
         """Update the mask_action list after the action"""
         self.legal_move.remove(index)
         self.board_array[x1][y1] = c1
@@ -303,38 +289,11 @@ class IngeniousBase:
         self.exclude_action(h2)
         skip_flag = False
         """Update score through checking 5 neighboring directions for h1 and h2 independently"""
-        point = 0
-        for i in range(0, 6):
-            h1n = hex_neighbor(h1, i)
-            if h1n == h2:
-                continue
-            # print(h1n)
-            while h1n in self.board_hex:
-                x, y = Hex2ArrayLocation(h1n, self.board_size)
-                # print(x,y,h1n)
-                if self.board_array[x][y] == c1:
-                    point += 1
-                else:
-                    break
-                h1n = hex_neighbor(h1n, i)
-                # print(h1n)
-        self.score[agent][c1] += point
+        self.score[agent][c1] += self.calculate_score_for_piece(h1, h2, c1)
+        self.score[agent][c2] += self.calculate_score_for_piece(h2, h1, c2)
         if self.score[agent][c1] > self.limitation_score:
             skip_flag = True
             self.score[agent][c1] = 0
-        point = 0
-        for i in range(0, 6):
-            h2n = hex_neighbor(h2, i)
-            if h2n == h1:
-                continue
-            while h2n in self.board_hex:
-                x, y = Hex2ArrayLocation(h2n, self.board_size)
-                if self.board_array[x][y] == c2:
-                    point += 1
-                else:
-                    break
-                h2n = hex_neighbor(h2n, i)
-        self.score[agent][c2] += point
         if self.score[agent][c2] > self.limitation_score:
             skip_flag = True
             self.score[agent][c2] = 0
@@ -356,7 +315,23 @@ class IngeniousBase:
             self.refresh_hand(agent)
             self.next_turn()
 
-        return True
+        # return True
+
+    def calculate_score_for_piece(self, start_hex, other_hex, color):
+        """Calculate the scores after placing the tile."""
+        point = 0
+        for i in range(0, 6):
+            neighbor_hex = hex_neighbor(start_hex, i)
+            if neighbor_hex == other_hex:
+                continue
+            while neighbor_hex in self.board_hex:
+                x, y = Hex2ArrayLocation(neighbor_hex, self.board_size)
+                if self.board_array[x][y] == color:
+                    point += 1
+                else:
+                    break
+                neighbor_hex = hex_neighbor(neighbor_hex, i)
+        return point
 
     def exclude_action(self, hx):
         """Exclude the actions that are not legal moves."""
@@ -376,13 +351,6 @@ class IngeniousBase:
 
     def next_turn(self):
         """Move to the next turn."""
-        """
-        self.agent_selector += 1
-        if self.agent_selector >= self.num_player:
-            self.agent_selector = 0
-            if self.first_round:
-                self.first_round = False
-        """
         self.agent_selector = (self.agent_selector + 1) % self.num_player
         if self.agent_selector == 0 and self.first_round:
             self.first_round = False
