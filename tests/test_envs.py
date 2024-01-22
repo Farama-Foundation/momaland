@@ -15,7 +15,8 @@ def test_module(name, env_module):
     _env = env_module.env(render_mode=None)
     assert str(_env) == os.path.basename(name)
     api_test(_env)
-    parallel_api_test(env_module.parallel_env())
+    if _env.metadata["is_parallelizable"]:
+        parallel_api_test(env_module.parallel_env())
     # wrapper_test(env_module): TODO: There are some problems with the NormalizeReward wrapper.
     seed_test(env_module.env, 50)
 
