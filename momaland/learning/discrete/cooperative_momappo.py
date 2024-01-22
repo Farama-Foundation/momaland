@@ -20,10 +20,12 @@ from etils import epath
 from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
 from jax import vmap
+from morl_baselines.multi_policy.linear_support.linear_support import LinearSupport
 from supersuit import agent_indicator_v0
 from tqdm import tqdm
 
-from momaland.envs.beach_domain import mobeach_domain_v0
+from momaland.envs.beach_domain import mobeach_v0
+from momaland.learning.utils import policy_evaluation_mo
 from momaland.utils.env import ParallelEnv
 from momaland.utils.parallel_wrappers import (
     LinearizeReward,
@@ -510,11 +512,15 @@ if __name__ == "__main__":
     np.random.seed(args.seed)
 
     start_time = time.time()
-    out = []
 
     # NN initialization and jit compiled functions
-    env: ParallelEnv = mobeach_domain_v0.parallel_env(num_agents=80)
+    env: ParallelEnv = mobeach_v0.parallel_env(num_agents=80)
+    eval_env: ParallelEnv = mobeach_v0.parallel_env(num_agents=80)
+    eval_env = agent_indicator_v0(eval_env)
+
     env.reset()
+    eval_env.reset()
+
     current_timestep = 0
 
     single_action_space = env.action_space(env.possible_agents[0])
@@ -534,10 +540,15 @@ if __name__ == "__main__":
             save_code=True,
         )
 
-    for i in range(1, 10):  # iterating over the different weights
-        weights = np.array([round(1 - i / 10, 1), round(i / 10, 1)])
-        out.append(train(args, env, weights, rng))
-        print(f"SPS: {(args.total_timesteps * i) / (time.time() - start_time)}")
+    ols = LinearSupport(num_objectives=2, epsilon=0.0001, verbose=True)
+    value = []
+    while not ols.ended():
+        w = ols.next_weight()
+        out = train(args, env, w, rng)
+        actor_state = out["runner_state"][0]
+        _, disc_vec_return = policy_evaluation_mo(actor, actor_state, env=eval_env, num_obj=ols.num_objectives)
+        value.append(disc_vec_return)
+        ols.add_solution(value[-1], w)
 
     env.close()
     wandb.finish()
