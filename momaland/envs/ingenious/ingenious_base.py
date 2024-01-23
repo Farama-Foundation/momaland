@@ -279,12 +279,19 @@ class IngeniousBase:
         self.exclude_action(h2)
         skip_flag = False
         """Update score through checking 5 neighboring directions for h1 and h2 independently"""
+        ingenious_possible = [True, True]
+        if self.score[agent][c1] == self.limitation_score:
+            ingenious_possible[0] = False
+        if self.score[agent][c2] == self.limitation_score:
+            ingenious_possible[1] = False
+
         self.score[agent][c1] += self.calculate_score_for_piece(h1, h2, c1)
         self.score[agent][c2] += self.calculate_score_for_piece(h2, h1, c2)
-        if self.score[agent][c1] > self.limitation_score:
+
+        if self.score[agent][c1] > self.limitation_score and ingenious_possible[0]:
             skip_flag = True
             self.score[agent][c1] = self.limitation_score
-        if self.score[agent][c2] > self.limitation_score:
+        if self.score[agent][c2] > self.limitation_score and ingenious_possible[1]:
             skip_flag = True
             self.score[agent][c2] = self.limitation_score
 
@@ -298,11 +305,14 @@ class IngeniousBase:
             self.end_flag = True  # The player should win instantly if he plays out all the tiles in hand.
             return True
 
-        """Ingenious Situation"""
-        if not skip_flag:
-            self.get_tile(agent)
-            """Swapping your Tiles if tiles in hand has no color with the lowest score"""
-            self.refresh_hand(agent)
+        """
+            In the original rules of the game, when a player calls ingenious, he can play a bonus round without replenishing his hand.
+            However, due to implementation constraints in our case the player replenishes his hand in all cases (ingenious or not)
+        """
+        self.get_tile(agent)
+        # Rule that says if you have no tiles of a color, you can swap your tiles with the lowest score.
+        self.refresh_hand(agent)
+        if skip_flag:
             self.next_turn()
 
     def calculate_score_for_piece(self, start_hex, other_hex, color):
