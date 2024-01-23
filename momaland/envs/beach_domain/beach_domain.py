@@ -106,7 +106,7 @@ class MOBeachDomain(MOParallelEnv):
         self.render_mode = render_mode
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
         self.agents = self.possible_agents[:]
-        self.types, self.state = self._init_state()
+        self._types, self._state = self._init_state()
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
 
@@ -178,7 +178,7 @@ class MOBeachDomain(MOParallelEnv):
             np.random.seed(seed)
             random.seed(seed)
         self.agents = self.possible_agents[:]
-        self.types, self.state = self._init_state()
+        self._types, self._state = self._init_state()
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
         section_consumptions, section_agent_types = self._get_stats()
@@ -226,7 +226,7 @@ class MOBeachDomain(MOParallelEnv):
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[agent]
-            self.state[i] = min(self.sections - 1, max(self.state[i] + act, 0))
+            self._state[i] = min(self.sections - 1, max(self._state[i] + act, 0))
 
         section_consumptions, section_agent_types = self._get_stats()
 
@@ -255,7 +255,7 @@ class MOBeachDomain(MOParallelEnv):
 
         for i, agent in enumerate(self.agents):
             observations[agent] = self._get_obs(i, section_consumptions, section_agent_types)
-            rewards[agent] = reward_per_section[self.state[i]]
+            rewards[agent] = reward_per_section[self._state[i]]
 
         # typically there won't be any information in the infos, but there must
         # still be an entry for each agent
@@ -269,11 +269,21 @@ class MOBeachDomain(MOParallelEnv):
 
         return observations, rewards, self.truncations, self.terminations, infos
 
+    @override
+    def state(self) -> np.ndarray:
+        return np.array(self._types + self._state, dtype=np.int32)
+
     def _get_obs(self, i, section_consumptions, section_agent_types):
-        total_same_type = section_agent_types[self.state[i]][self.types[i]]
-        t = total_same_type / section_consumptions[self.state[i]]
+        total_same_type = section_agent_types[self._state[i]][self._types[i]]
+        t = total_same_type / section_consumptions[self._state[i]]
         obs = np.array(
-            [self.types[i], self.state[i], self.resource_capacities[self.state[i]], section_consumptions[self.state[i]], t],
+            [
+                self._types[i],
+                self._state[i],
+                self.resource_capacities[self._state[i]],
+                section_consumptions[self._state[i]],
+                t,
+            ],
             dtype=np.float32,
         )
         return obs
@@ -283,8 +293,8 @@ class MOBeachDomain(MOParallelEnv):
         section_agent_types = np.zeros((self.sections, len(self.type_distribution)))
 
         for i in range(len(self.agents)):
-            section_consumptions[self.state[i]] += 1
-            section_agent_types[self.state[i]][self.types[i]] += 1
+            section_consumptions[self._state[i]] += 1
+            section_agent_types[self._state[i]][self._types[i]] += 1
         return section_consumptions, section_agent_types
 
 

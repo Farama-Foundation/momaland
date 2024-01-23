@@ -40,6 +40,7 @@ dependencies = [
     "PyOpenGL ==3.1.6",
     "PyOpenGL-accelerate >=3.1.1",
     "pillow >=8.3.1",
+    "wandb >=0.16.1",
 ]
 dynamic = ["version"]
 
@@ -122,7 +123,25 @@ reportInvalidTypeVarUse = "none"
 # reportUnknownParameterType = "warning"  # -> raises warnings
 # reportUnknownVariableType = "warning"  # -> raises warnings
 # reportUnknownArgumentType = "warning"  # -> raises warnings
-reportGeneralTypeIssues = "none"  # -> commented out raises 489 errors
+reportGeneralTypeIssues = "none"  # -> commented out raises 489
+reportAbstractUsage = "none"
+reportArgumentType= "none"
+reportAssertTypeFailure= "none"
+reportAssignmentType= "none"
+reportAttributeAccessIssue= "none"
+reportCallIssue= "none"
+reportInconsistentOverload = "none"
+reportIndexIssue = "none"
+reportInvalidTypeArguments = "none"
+reportInvalidTypeForm = "none"
+reportNoOverloadImplementation = "none"
+reportOperatorIssue = "none"
+reportPossiblyUnboundVariable = "none"
+reportRedeclaration = "none"
+reportReturnType = "none"
+reportUnusedExcept = "none"
+reportOptionalSubscript = "none"
+
 reportUntypedFunctionDecorator = "none"  # -> pytest.mark.parameterize issues
 
 reportOptionalMemberAccess = "none" # -> commented out raises warnings
