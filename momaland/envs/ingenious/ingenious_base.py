@@ -298,14 +298,16 @@ class IngeniousBase:
         if len(self.legal_move) == 0:
             self.end_flag = True
             # Preserve the number of tiles in hand for each player to comply with observation dimensions
-            self.get_tile(agent)
+            while len(self.p_tiles[agent]) < self.init_draw:
+                self.p_tiles[agent].append([0, 0])
             return True
 
         """All tiles in hand has been played"""
         if len(self.p_tiles[agent]) == 0:
             self.end_flag = True  # The player should win instantly if he plays out all the tiles in hand.
             # Preserve the number of tiles in hand for each player to comply with observation dimensions
-            self.get_tile(agent)
+            while len(self.p_tiles[agent]) < self.init_draw:
+                self.p_tiles[agent].append([0, 0])
             return True
 
         """
