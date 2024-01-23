@@ -86,7 +86,7 @@ class MOItemGathering(MOParallelEnv):
     metadata = {
         "render_modes": ["human", "rgb_array"],
         "name": "moitemgathering_v0",
-        "is_parallelizable": True,
+        "render_fps": 50,
         "central_observation": True,
     }
 
