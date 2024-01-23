@@ -158,7 +158,6 @@ class IngeniousBase:
             np.random.seed(seed)
             random.seed(seed)
             self.random.seed(seed)
-            print("seed", seed)
         self.end_flag = False
         self.first_round = True
         self.first_round_pos.clear()
@@ -298,21 +297,25 @@ class IngeniousBase:
         """End game if no more legal actions."""
         if len(self.legal_move) == 0:
             self.end_flag = True
+            # Preserve the number of tiles in hand for each player to comply with observation dimensions
+            self.get_tile(agent)
             return True
 
         """All tiles in hand has been played"""
         if len(self.p_tiles[agent]) == 0:
             self.end_flag = True  # The player should win instantly if he plays out all the tiles in hand.
+            # Preserve the number of tiles in hand for each player to comply with observation dimensions
+            self.get_tile(agent)
             return True
 
         """
-            In the original rules of the game, when a player calls ingenious, he can play a bonus round without replenishing his hand.
-            However, due to implementation constraints in our case the player replenishes his hand in all cases (ingenious or not)
+        In the original rules of the game, when a player calls ingenious, he can play a bonus round without replenishing its hand.
+        However, due to implementation constraints in our case the player replenishes its hand in all cases (ingenious or not)
         """
         self.get_tile(agent)
         # Rule that says if you have no tiles of a color, you can swap your tiles with the lowest score.
         self.refresh_hand(agent)
-        if skip_flag:
+        if not skip_flag:
             self.next_turn()
 
     def calculate_score_for_piece(self, start_hex, other_hex, color):

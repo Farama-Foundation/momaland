@@ -46,7 +46,7 @@ class MOIngenious(MOAECEnv):
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
-    def __init__(self, num_players=3, init_draw=6, num_colors=6, board_size=8, limitation_score=18, render_mode=None):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=18, render_mode=None):
         """Initializes the ingenious game.
 
         Args:
@@ -80,6 +80,7 @@ class MOIngenious(MOAECEnv):
         self.infos = {agent: {} for agent in self.agents}
         self.agent_selection = self.agents[self.game.agent_selector]
         self._cumulative_rewards = {agent: np.zeros(self.num_colors) for agent in self.agents}
+        self.refresh_cumulative_reward = True
         self.render_mode = render_mode
 
         # Observation space is a dict of 2 elements: actions mask and game state (board, agent own tile bag,
@@ -154,7 +155,7 @@ class MOIngenious(MOAECEnv):
         self.agent_selection = self.agents[self.game.agent_selector]
         self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
         self._cumulative_rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
-        self.refresh_cummulative_reward = True
+        self.refresh_cumulative_reward = True
         return obs, self.infos
 
     @override
@@ -165,19 +166,19 @@ class MOIngenious(MOAECEnv):
             action: action of the active agent
         """
 
-        prev_agent = self.agent_selection
+        current_agent = self.agent_selection
 
-        if self.terminations[prev_agent] or self.truncations[prev_agent]:
+        if self.terminations[current_agent] or self.truncations[current_agent]:
             return self._was_dead_step(action)
         self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
-        if self.refresh_cummulative_reward:
-            self._cumulative_rewards[self.agent_selection] = np.zeros(self.num_colors, dtype="float64")
+        if self.refresh_cumulative_reward:
+            self._cumulative_rewards[current_agent] = np.zeros(self.num_colors, dtype="float64")
 
         if not self.game.end_flag:
-            prev_rewards = np.array(list(self.game.score[self.agent_selection].values()))
+            prev_rewards = np.array(list(self.game.score[current_agent].values()))
             self.game.set_action_index(action)
-            current_rewards = np.array(list(self.game.score[self.agent_selection].values()))
-            self.rewards[prev_agent] = current_rewards - prev_rewards
+            current_rewards = np.array(list(self.game.score[current_agent].values()))
+            self.rewards[current_agent] = current_rewards - prev_rewards
 
         if self.game.end_flag:
             self.terminations = {agent: True for agent in self.agents}
@@ -185,15 +186,13 @@ class MOIngenious(MOAECEnv):
         # update accumulate_rewards
         self._accumulate_rewards()
 
-        # update agent
+        # update to next agent
         self.agent_selection = self.agents[self.game.agent_selector]
 
-        if self.agent_selection != prev_agent:
-            self.refresh_cummulative_reward = True
+        if self.agent_selection != current_agent:
+            self.refresh_cumulative_reward = True
         else:
-            self.refresh_cummulative_reward = False
-
-        # print('after accumulate')
+            self.refresh_cumulative_reward = False
 
     @override
     def observe(self, agent):
