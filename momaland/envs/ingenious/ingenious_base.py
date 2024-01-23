@@ -27,9 +27,6 @@ ALL_COLORS = [RED, GREEN, BLUE, ORANGE, YELLOW, PURPLE]
 COLOR_NAMES = ["red", "green", "blue", "orange", "yellow", "purple"]
 
 NUM_TILES = 120
-
-# Point = collections.namedtuple("Point", ["x", "y"])
-
 Hex = collections.namedtuple("Hex", ["q", "r", "s"])
 
 
@@ -120,7 +117,6 @@ class IngeniousBase:
 
         self.board_size = board_size
         self.num_player = num_players
-        # self.agents = [r for r in range(num_players)]
         self.agents = [f"agent_{i}" for i in range(self.num_player)]
         self.agent_selector = 0
         self.limitation_score = limitation_score
@@ -155,7 +151,6 @@ class IngeniousBase:
                         self.legal_move.add(self.action_size)
                         self.action_size += 1
         self.masked_action = np.ones(self.action_size, "int8")
-        # self.reset_game()
 
     def reset_game(self, seed=None):
         """Reset the board, racks, score, and tiles bag."""
@@ -214,15 +209,14 @@ class IngeniousBase:
             self.board_array[x, y] = self.corner_color[i]
             self.exclude_action(a)
 
-            # In first round, each player has to put the tile next to the the corners position. Therefore, we use self.first_round_pos to maintain the first round position.
+            # In first round, each player has to put the tile next to the corners position. Therefore,
+            # we use self.first_round_pos to maintain the first round position.
             for k in range(0, 6):
                 hx1 = hex_neighbor(a, k)
                 for j in range(0, 6):
                     hx2 = hex_neighbor(hx1, j)
-                    # print(hx1, hx2, "2132")
                     if (hx2 not in self.board_hex) or (hx1 not in self.board_hex) or (hx2 == a):
                         continue
-                    # print(hx1, hx2, "21320000")
                     for card in range(0, self.init_draw):
                         c1 = self.action_map[(hx1, hx2, card)]
                         c2 = self.action_map[(hx2, hx1, card)]
@@ -237,7 +231,8 @@ class IngeniousBase:
         same_color_combinations = [(color, color) for color in ALL_COLORS[: self.colors]]
         # Create the tiles bag
         if self.colors == len(ALL_COLORS):
-            # when color type is 6, tiles bag follow the original game setting : six tiles for each two-colour combination (e.g. red/orange) and five for each double (red/red)
+            # when color type is 6, tiles bag follow the original game setting : six tiles for each two-colour
+            # combination (e.g. red/orange) and five for each double (red/red)
             self.tiles_bag = (diff_color_combinations * 6) + (same_color_combinations * 5)
         else:
             # when color type is not 6( like 1-5), the number of combinations could be divided by NUM_TILES(120)
@@ -252,15 +247,14 @@ class IngeniousBase:
         """If selected actions is not a legal move, return False"""
         assert self.masked_action[index] == 1, "Illegal move, choose a valid action."
         if self.first_round:
-            assert index in self.first_round_pos, "illegal move, in the first round tiles can only be placed next to corners."
+            assert index in self.first_round_pos, (
+                "Illegal move, in the first round tiles can only be placed next to " "corners."
+            )
         """Hex Coordinate: h1,h2 ;  Tile to play: card"""
         h1, h2, card = self.action_index_map[index]
         agent_i = self.agent_selector
         agent = self.agents[agent_i]
-        # if card >= len(self.p_tiles[agent]):
-        #    assert "illegal move: choosing tile out of hand(happening after ingenious)"
-        #    return False
-        assert card < len(self.p_tiles[agent]), "illegal move: choosing tile out of hand(happening after ingenious)"
+        assert card < len(self.p_tiles[agent]), "Illegal move: choosing tile out of hand(happening after ingenious)"
         """Extract the certain tile (color1 , color2) as (c1,c2)"""
         c1, c2 = self.p_tiles[agent][card]
         # Translate Hex Coordinate to Offset Coordinate(x,y)
@@ -268,7 +262,6 @@ class IngeniousBase:
         x2, y2 = Hex2ArrayLocation(h2, self.board_size)
         flag = False
         for item in self.p_tiles[agent]:
-            # print(item)
             if (c1, c2) == item:
                 self.p_tiles[agent].remove(item)
                 flag = True
@@ -277,10 +270,7 @@ class IngeniousBase:
                 self.p_tiles[agent].remove(item)
                 flag = True
                 break
-        # if not flag:
-        #    assert "illegal move: set the tile to the coordinate unsuccessfully"
-        #    return False
-        assert flag, "illegal move: set the tile to the coordinate unsuccessfully"
+        assert flag, "Illegal move: set the tile to the coordinate unsuccessfully"
         """Update the mask_action list after the action"""
         self.legal_move.remove(index)
         self.board_array[x1][y1] = c1
@@ -293,10 +283,10 @@ class IngeniousBase:
         self.score[agent][c2] += self.calculate_score_for_piece(h2, h1, c2)
         if self.score[agent][c1] > self.limitation_score:
             skip_flag = True
-            self.score[agent][c1] = 0
+            self.score[agent][c1] = self.limitation_score
         if self.score[agent][c2] > self.limitation_score:
             skip_flag = True
-            self.score[agent][c2] = 0
+            self.score[agent][c2] = self.limitation_score
 
         """End game if no more legal actions."""
         if len(self.legal_move) == 0:
@@ -314,8 +304,6 @@ class IngeniousBase:
             """Swapping your Tiles if tiles in hand has no color with the lowest score"""
             self.refresh_hand(agent)
             self.next_turn()
-
-        # return True
 
     def calculate_score_for_piece(self, start_hex, other_hex, color):
         """Calculate the scores after placing the tile."""

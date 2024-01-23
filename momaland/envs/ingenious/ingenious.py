@@ -132,7 +132,6 @@ class MOIngenious(MOAECEnv):
         In human mode, it can print to terminal, open
         up a graphical window, or open up some other display that a human can see and understand.
         """
-        # self.game.render_game()
         if self.render_mode is None:
             warn("You are calling render method without specifying any render mode.")
             return
@@ -147,13 +146,11 @@ class MOIngenious(MOAECEnv):
             random.seed(seed)
         self.game.reset_game(seed)
         self.agents = self.possible_agents[:]
-        # self.observation_spaces = {agent: self.observe(agent) for agent in self.agents}
         obs = {agent: self.observe(agent) for agent in self.agents}
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
         self.infos = {agent: {} for agent in self.agents}
         self.agent_selection = self.agents[self.game.agent_selector]
-        # self._cumulative_rewards = {agent: np.zeros(self.num_colors) for agent in self.agents}
         self.agent_selection = self.agents[self.game.agent_selector]
         self.rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
         self._cumulative_rewards = {agent: np.zeros(self.num_colors, dtype="float64") for agent in self.agents}
@@ -176,9 +173,7 @@ class MOIngenious(MOAECEnv):
         if self.refresh_cummulative_reward:
             self._cumulative_rewards[self.agent_selection] = np.zeros(self.num_colors, dtype="float64")
 
-        # assert self.game.return_action_list()[action] == 1, "played illegal move."
-        # if not self.game.end_flag:
-        if not self.game.end_flag and self.game.return_action_list()[action] == 1:
+        if not self.game.end_flag:
             prev_rewards = np.array(list(self.game.score[self.agent_selection].values()))
             self.game.set_action_index(action)
             current_rewards = np.array(list(self.game.score[self.agent_selection].values()))
@@ -186,10 +181,7 @@ class MOIngenious(MOAECEnv):
 
         if self.game.end_flag:
             self.terminations = {agent: True for agent in self.agents}
-            # self.truncations = {agent: True for agent in self.agents}
-            # self.rewards = {agent: np.array(list(self.game.score[agent].values())) for agent in self.agents}
 
-        # print('before accumulate',self.game.end_flag, self.rewards)
         # update accumulate_rewards
         self._accumulate_rewards()
 
@@ -208,11 +200,8 @@ class MOIngenious(MOAECEnv):
         board_vals = np.array(self.game.board_array, dtype=np.float32)
         p_tiles = np.array(self.game.p_tiles[agent], dtype=np.int32)
         p_score = np.array(list(self.game.score[agent].values()), dtype=np.int32)
-        # print(p_score)
-        # p_index = self.agents[self.game.agent_selector]
 
         observation = {"board": board_vals, "tiles": p_tiles, "scores": p_score}
         action_mask = np.array(self.game.return_action_list(), dtype=np.int8)
 
-        # print(observation)
         return {"observation": observation, "action_mask": action_mask}
