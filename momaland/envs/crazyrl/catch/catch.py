@@ -50,7 +50,47 @@ def raw_env(*args, **kwargs):
 
 
 class Catch(CrazyRLBaseParallelEnv):
-    """A Parallel Environment where drone learn how to surround a moving target trying to escape."""
+    """
+    ## Description
+    A Parallel Environment where drone learn how to surround a moving target trying to escape.
+
+    ## Observation Space
+    The observation space consists of `num_drones + 1` 3D continuous boxes representing the coordinates of the drones in this order:
+    - the agent.
+    - the target.
+    - the other agents.
+    The higher bound is the `size` of the environment. Lower bound is `-size`.
+
+    ## Action Space
+    The action space is a 3D vector representing the movement of the agent.
+    The higher bound is `1`, the lower bound is `-1`.
+
+    ## Reward Space
+    The reward space is a 2D vector containing rewards for:
+    - Keeping distance from the target.
+    - Keeping distance from the other cooperating drones.
+    The higher bound is `[1, inf]`, the lower bound is `[-10, -10]`.
+
+    ## Starting State
+    In an environment size of `3` the initial starting positions of the agents are `[0, 0, 1], [1, 1, 1], [0, 1, 1], [2, 2, 1]` while the target position is `[1, 1, 2.5]`
+
+    ## Episode Termination
+    The episode is terminated if one of the following conditions are met:
+    - 2 agents collide.
+    - An agent and the target collide.
+    - An agent collides with the ground.
+
+    ## Arguments
+    - render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
+    - size (int, optional): Size of the area sides
+    - num_drones (int, optional): Amount of drones
+    - init_flying_pos (nparray, optional): 2d array containing the coordinates of the agents is a (3)-shaped array containing the initial XYZ position of the drones.
+    - init_target_location (nparray, optional): Array of the initial position of the moving target
+    - target_speed (float, optional): Distance traveled by the target at each timestep
+
+    ## Credits
+    The code was adapted from: [Felten's source](https://github.com/ffelten/CrazyRL).
+    """
 
     metadata = {"render_modes": ["human"], "name": "catch_v0", "is_parallelizable": True, "render_fps": FPS}
 
@@ -61,11 +101,11 @@ class Catch(CrazyRLBaseParallelEnv):
         Args:
             render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
             size (int, optional): Size of the area sides
-            num_drones: amount of drones
-            init_flying_pos: 2d array containing the coordinates of the agents
+            num_drones (int, optional): Amount of drones
+            init_flying_pos (nparray, optional): 2d array containing the coordinates of the agents
                 is a (3)-shaped array containing the initial XYZ position of the drones.
-            init_target_location: Array of the initial position of the moving target
-            target_speed: Distance traveled by the target at each timestep
+            init_target_location (nparray, optional): Array of the initial position of the moving target
+            target_speed (float, optional): Distance traveled by the target at each timestep
         """
 
         super().__init__(*args, **kwargs)
