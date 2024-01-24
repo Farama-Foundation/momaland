@@ -169,12 +169,16 @@
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">All Environments</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of All Environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../catch/">Catch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../escort/">Escort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mobeach_domain/">MO-BeachDomain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mocongestion_game/">MO-CongestionGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mobeach/">MO-Beach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mobreakthrough/">MO-Breakthrough</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mocongestion/">MO-Congestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../moconnect4/">MO-Connect4</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mogem_mining/">MO-GemMining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../moingenious/">MO-Ingenious</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../moitem_gathering/">MO-ItemGathering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../momultiwalker/">MO-Multiwalker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mopistonball/">MO-Pistonball</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mosame_game/">MO-SameGame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../surround/">Surround</a></li>
 </ul>
 </li>
@@ -260,41 +264,71 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">[distance_target,</span> <span class="pre">distance_other_drones]</span></code></p></td>
 <td><p>Agents must circle around a mobile target drone and escort it to its destination without breaking formation while maintaining distance between themselves.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mobeach/"><code class="docutils literal notranslate"><span class="pre">mobeach-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mobeach.gif" width="400px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/surround/"><code class="docutils literal notranslate"><span class="pre">surround-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/surround.gif" width="400px"></p></td>
+<td><p>Cooperative</p></td>
+<td><p>Continuous / Continuous</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[distance_target,</span> <span class="pre">distance_other_drones]</span></code></p></td>
+<td><p>Agents must surround a fixed target point while maintaining distance between themselves.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mobeach/"><code class="docutils literal notranslate"><span class="pre">mo-beach-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mobeach.gif" width="400px"></p></td>
 <td><p></p></td>
 <td><p>Continuous / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
 <td><p>TODO</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mocongestion/"><code class="docutils literal notranslate"><span class="pre">mocongestion-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mocongestion.gif" width="400px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mobreakthrough/"><code class="docutils literal notranslate"><span class="pre">mo-breakthrough-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mobreakthrough.gif" width="400px"></p></td>
+<td><p></p></td>
+<td><p>Discrete / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mocongestion/"><code class="docutils literal notranslate"><span class="pre">mo-congestion-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mocongestion.gif" width="400px"></p></td>
 <td><p></p></td>
 <td><p>Continuous / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
 <td><p>TODO</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/moitemgathering/"><code class="docutils literal notranslate"><span class="pre">moitemgathering-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/moitemgathering.gif" width="400px"></p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/moconnect4/"><code class="docutils literal notranslate"><span class="pre">mo-connect4-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/moconnect4.gif" width="400px"></p></td>
 <td><p>Adversarial</p></td>
 <td><p>Discrete / Discrete</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
 <td><p>TODO</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/momultiwalker/"><code class="docutils literal notranslate"><span class="pre">momultiwalker-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/momultiwalker.gif" width="400px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mogem_mining/"><code class="docutils literal notranslate"><span class="pre">mo-gem-mining-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mogem_mining.gif" width="400px"></p></td>
+<td><p></p></td>
+<td><p>Continuous / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/moingenious/"><code class="docutils literal notranslate"><span class="pre">mo-ingenious-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/ingenious.gif" width="400px"></p></td>
+<td><p></p></td>
+<td><p>Discrete / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/moitem_gathering/"><code class="docutils literal notranslate"><span class="pre">mo-item-gathering-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/moitem_gathering.gif" width="400px"></p></td>
+<td><p>Adversarial</p></td>
+<td><p>Discrete / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/momultiwalker/"><code class="docutils literal notranslate"><span class="pre">mo-multiwalker-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/momultiwalker.gif" width="400px"></p></td>
 <td><p>Cooperative</p></td>
 <td><p>Continuous / Continuous</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
 <td><p>TODO</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mopistonball/"><code class="docutils literal notranslate"><span class="pre">mopistonball-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mopistonball.gif" width="400px"></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mopistonball/"><code class="docutils literal notranslate"><span class="pre">mo-pistonball-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mopistonball.gif" width="400px"></p></td>
 <td><p>Cooperative</p></td>
 <td><p>TODO / TODO</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
 <td><p>TODO</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/surround/"><code class="docutils literal notranslate"><span class="pre">surround-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/surround.gif" width="400px"></p></td>
-<td><p>Cooperative</p></td>
-<td><p>Continuous / Continuous</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[distance_target,</span> <span class="pre">distance_other_drones]</span></code></p></td>
-<td><p>Agents must surround a fixed target point while maintaining distance between themselves.</p></td>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mosame_game/"><code class="docutils literal notranslate"><span class="pre">mo-same-game-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mosame_game.gif" width="400px"></p></td>
+<td><p></p></td>
+<td><p>Discrete / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
 </tr>
 </tbody>
 </table>
