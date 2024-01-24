@@ -119,7 +119,7 @@ class MOSameGame(MOAECEnv):
     ## Version History
     """
 
-    metadata = {"render_modes": ["ansi"], "name": "mosamegame_v0", "is_parallelizable": False}
+    metadata = {"render_modes": ["ansi"], "name": "mosame_game_v0", "is_parallelizable": False}
 
     BLANK = 0
 
