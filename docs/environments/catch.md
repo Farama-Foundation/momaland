@@ -18,14 +18,17 @@ firstpage:
 | Import | `momaland.envs.catch_v0` |
 
 ## Description
-A Parallel Environment where drone learn how to surround a moving target trying to escape.
+A `Parallel` environment where drones learn how to surround a moving target trying to escape.
 
 ## Observation Space
-The observation space consists of `num_drones + 1` 3D continuous boxes representing the coordinates of the drones in this order:
+The observation space is a continuous boxes with the length `(num_drones + 1) * 3` where each 3 values represent the coordinates of the drones in this order:
 - the agent.
 - the target.
 - the other agents.
 The higher bound is the `size` of the environment. Lower bound is `-size`.
+
+Example:
+`[x_0, y_0, z_0, x_targ, y_targ, z_targ, x_1, y_1, z_1, ..., x_n, y_n, z_n]`
 
 ## Action Space
 The action space is a 3D vector representing the movement of the agent.
@@ -33,12 +36,12 @@ The higher bound is `1`, the lower bound is `-1`.
 
 ## Reward Space
 The reward space is a 2D vector containing rewards for:
-- Keeping distance from the target.
-- Keeping distance from the other cooperating drones.
+- Minimizing distance towards the target
+- Maximizing average distance towards other agents (avoiding collision).
 The higher bound is `[1, inf]`, the lower bound is `[-10, -10]`.
 
 ## Starting State
-In an environment size of `3` the initial starting positions of the agents are `[0, 0, 1], [1, 1, 1], [0, 1, 1], [2, 2, 1]` while the target position is `[1, 1, 2.5]`
+Where `size = 3`, the initial starting positions of the agents are `[0, 0, 1], [1, 1, 1], [0, 1, 1], [2, 2, 1]` while the target position is `[1, 1, 2.5]`
 
 ## Episode Termination
 The episode is terminated if one of the following conditions are met:
@@ -50,8 +53,8 @@ The episode is terminated if one of the following conditions are met:
 - render_mode (str, optional): The mode to display the rendering of the environment. Can be human or None.
 - size (int, optional): Size of the area sides
 - num_drones (int, optional): Amount of drones
-- init_flying_pos (nparray, optional): 2d array containing the coordinates of the agents is a (3)-shaped array containing the initial XYZ position of the drones.
-- init_target_location (nparray, optional): Array of the initial position of the moving target
+- init_flying_pos (nparray[float], optional): 2d array containing the coordinates of the agents is a (3)-shaped array containing the initial XYZ position of the drones.
+- init_target_location (nparray[float], optional): Array of the initial position of the moving target
 - target_speed (float, optional): Distance traveled by the target at each timestep
 
 ## Credits
