@@ -276,14 +276,16 @@ class IngeniousBase:
         self.board_array[x2][y2] = c2
         self.exclude_action(h1)
         self.exclude_action(h2)
+        # Flag to signal if ingenious is called
         skip_flag = False
-        """Update score through checking 5 neighboring directions for h1 and h2 independently"""
+        # flags to avoid calling ingenious on colour that was already maxed out
         ingenious_possible = [True, True]
         if self.score[agent][c1] == self.limitation_score:
             ingenious_possible[0] = False
         if self.score[agent][c2] == self.limitation_score:
             ingenious_possible[1] = False
 
+        """Update score through checking 5 neighboring directions for h1 and h2 independently"""
         self.score[agent][c1] += self.calculate_score_for_piece(h1, h2, c1)
         self.score[agent][c2] += self.calculate_score_for_piece(h2, h1, c2)
 
@@ -310,13 +312,13 @@ class IngeniousBase:
                 self.p_tiles[agent].append([0, 0])
             return True
 
-        """
-        In the original rules of the game, when a player calls ingenious, he can play a bonus round without replenishing its hand.
-        However, due to implementation constraints in our case the player replenishes its hand in all cases (ingenious or not)
-        """
+        """In the original rules of the game, when a player calls ingenious, they can play a bonus round without
+        replenishing tiles in hand. However, due to implementation constraints in our case the player replenishes its
+        hand in all cases (ingenious or not)"""
         self.get_tile(agent)
         # Rule that says if you have no tiles of a color, you can swap your tiles with the lowest score.
         self.refresh_hand(agent)
+        # Pass turn to next player if ingenious was not called
         if not skip_flag:
             self.next_turn()
 
