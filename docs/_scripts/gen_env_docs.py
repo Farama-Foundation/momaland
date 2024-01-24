@@ -112,7 +112,7 @@ for i, env_spec in tqdm(enumerate(filtered_envs)):
     print("ID:", env_spec.id)
     env_type = str(env_spec.module).split(".")[2]
     try:
-        env = env_spec.module.parallel_env()
+        env = env_spec.module.env()
         env.reset()
 
         docstring = env.unwrapped.__doc__
