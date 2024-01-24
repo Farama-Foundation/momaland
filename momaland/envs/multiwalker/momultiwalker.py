@@ -11,7 +11,7 @@ from pettingzoo.sisl.multiwalker.multiwalker import FPS
 from pettingzoo.sisl.multiwalker.multiwalker import raw_env as pz_multiwalker
 from pettingzoo.utils import wrappers
 
-from momaland.envs.multiwalker.multiwalker_base import MOMultiWalkerEnv as _env
+from momaland.envs.multiwalker.momultiwalker_base import MOMultiWalkerEnv as _env
 from momaland.utils.conversions import mo_aec_to_parallel
 from momaland.utils.env import MOAECEnv
 
@@ -58,14 +58,26 @@ def raw_env(**kwargs):
 
 
 class MOMultiwalker(MOAECEnv, pz_multiwalker):
-    """Environment for MO Multiwalker problem domain.
+    """An MO adaptation of the [multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment.
 
-    The init method takes in environment arguments and should define the following attributes:
-    - possible_agents
-    - action_spaces
-    - observation_spaces
-    - reward_spaces
-    These attributes should not be changed after initialization.
+    ## Observation Space
+    See [PettingZoo documentation](https://pettingzoo.farama.org/environments/sisl/multiwalker/#observation-space).
+
+    ## Action Space
+    The action space is a vector representing the force exerted at the 4 available joints (hips and knees), giving a continuous action space with a 4 element vector.
+    The higher bound is `1`, the lower bound is `-1`.
+
+    ## Reward Space
+    The reward space is a 3D vector containing rewards for:
+    - Maximizing distance traveled towards the end of the level during one step. `[-0.46, 0.46]`
+    - Penalty for agent falling. `[-110, 0]`
+    - Penalty for the package falling. `[-100, 0]`
+
+    ## Episode Termination
+    The episode is terminated if the package is dropped. If `terminate_on_fall` is `True` (default), then environment is terminated if a single agent falls even if the package is still alive.
+
+    ## Arguments
+    See [PettingZoo documentation](https://pettingzoo.farama.org/environments/sisl/multiwalker/#arguments).
     """
 
     metadata = {

@@ -53,7 +53,7 @@ def raw_env(**kwargs):
 
 
 class MOBeachDomain(MOParallelEnv):
-    """Environment for MO Beach problem domain.
+    """Environment for MO-BeachDomain problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -62,7 +62,7 @@ class MOBeachDomain(MOParallelEnv):
     These attributes should not be changed after initialization.
     """
 
-    metadata = {"render_modes": ["human"], "name": "mobeach_v0", "is_parallelizable": True}
+    metadata = {"render_modes": ["human"], "name": "mobeach_domain_v0"}
 
     # TODO does this environment require max_cycle?
     def __init__(
