@@ -132,7 +132,7 @@ class MOCongestion(MOParallelEnv):
         self.cost_function = dict()
         self._create_latency_and_cost_function(nx.get_edge_attributes(self.graph, "latency_function"), num_agents)
 
-    metadata = {"render_modes": ["human"], "name": "mocongestion_game_v0"}
+    metadata = {"render_modes": ["human"], "name": "mocongestion_v0"}
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
