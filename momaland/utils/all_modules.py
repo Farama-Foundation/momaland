@@ -17,7 +17,7 @@ from momaland.envs.ingenious import moingenious_v0
 from momaland.envs.item_gathering import moitem_gathering_v0
 from momaland.envs.multiwalker import momultiwalker_v0
 from momaland.envs.pistonball import mopistonball_v0
-from momaland.envs.samegame import mosamegame_v0
+from momaland.envs.samegame import mosame_game_v0
 
 
 all_environments = {
@@ -32,6 +32,6 @@ all_environments = {
     "mocongestion_v0": mocongestion_v0,
     "moconnect4_v0": moconnect4_v0,
     "mobreakthrough_v0": mobreakthrough_v0,
-    "mosamegame_v0": mosamegame_v0,
+    "mosame_game_v0": mosame_game_v0,
     "mogem_mining_v0": mogem_mining_v0,
 }
