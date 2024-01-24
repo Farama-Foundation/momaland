@@ -11,13 +11,16 @@ from momaland.envs.momultiwalker import momultiwalker_v0 as _env
 
 # .parallel_env() function will return a Parallel environment, as per PZ standard
 parallel_env = _env.parallel_env(render_mode="human")
-observations, infos = parallel_env.reset(seed=42)
 
+# optionally, you can scalarize the reward with weights
+parallel_env = momaland.LinearReward(parallel_env, weight=np.array([0.6, 0.2, 0.2]))
+
+observations, infos = parallel_env.reset(seed=42)
 while parallel_env.agents:
     # this is where you would insert your policy
     actions = {agent: parallel_env.action_space(agent).sample() for agent in parallel_env.agents}
 
-    # reward is a dict[str, numpy array]
+    # vec_reward is a dict[str, numpy array]
     observations, vec_rewards, terminations, truncations, infos = parallel_env.step(actions)
 parallel_env.close()
 ```

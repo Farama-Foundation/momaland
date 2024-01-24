@@ -4,26 +4,9 @@ title: "AEC"
 
 # AEC
 ## Usage
-AEC environments can be interacted with as follows:
-
-```python
-from momaland.envs.momultiwalker import momultiwalker_v0 as _env
-
-# .env() function will return an AEC environment, as per PZ standard
-env = _env.env(render_mode="human")
-env.reset(seed=42)
-
-for agent in env.agent_iter():
-    # reward is a numpy array
-    observation, vec_reward, termination, truncation, info = env.last()
-
-    if termination or truncation:
-        action = None
-    else:
-        action = env.action_space(agent).sample() # this is where you would insert your policy
-
-    env.step(action)
-env.close()
+```{include} ../../README.md
+:start-after: <!-- start snippet-usage -->
+:end-before: <!-- end snippet-usage -->
 ```
 
 MOMAland environments extend the base `MOAEC` class, as opposed to PettingZoo's base `AEC` class. `MOAEC` extends `AEC` and has a `reward_space` member.
@@ -73,7 +56,7 @@ For more detailed documentation on the AEC API, [see the PettingZoo documentatio
 
 .. autoattribute:: MOAECEnv.rewards
 
-    A dict of the rewards of every current agent at the time called, keyed by name. Rewards the instantaneous reward generated after the last step. Note that agents can be added or removed from this attribute. `last()` does not directly access this attribute, rather the returned reward is stored in an internal variable. The rewards structure looks like::
+    A dict of the rewards of every current agent at the time called, keyed by name. Contains the instantaneous reward generated after the last step (not accumulated). Note that agents can be added or removed from this attribute. `last()` does not directly access this attribute, rather the returned reward is stored in an internal variable. The rewards structure looks like::
 
     {0:[first agent reward], 1:[second agent reward] ... n-1:[nth agent reward]}
 

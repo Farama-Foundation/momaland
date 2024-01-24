@@ -9,7 +9,6 @@ lastpage:
 :caption: Introduction
 
 introduction/install
-introduction/usage
 ```
 
 ```{toctree}

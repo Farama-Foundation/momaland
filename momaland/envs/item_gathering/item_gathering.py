@@ -60,7 +60,7 @@ def env(**kwargs):
     Returns:
         A fully wrapped env
     """
-    env = parallel_env(**kwargs)
+    env = raw_env(**kwargs)
     env = mo_parallel_to_aec(env)
 
     # this wrapper helps error handling for discrete action spaces
@@ -285,8 +285,7 @@ class MOItemGathering(MOParallelEnv):
     @override
     def close(self):
         if self.render_mode is not None:
-            del_colored("item", len(self.item_dict))
-            del_colored("agent", len(self.possible_agents))
+            del_colored()
         pass
 
     @override

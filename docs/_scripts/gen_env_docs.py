@@ -119,7 +119,6 @@ for i, env_spec in tqdm(enumerate(filtered_envs)):
         if not docstring:
             docstring = env.unwrapped.__class__.__doc__
         docstring = trim(docstring)
-        print(docstring)
 
         # pascal case
         pascal_env_name = env_spec.id
