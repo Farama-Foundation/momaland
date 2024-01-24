@@ -17,7 +17,6 @@ firstpage:
 | Reward Space | Box([  -0.46666667 -110.         -100.        ], [0.46666667 0.         0.        ], (3,), float32) |
 | Import | `momaland.envs.momultiwalker_v0` |
 
-## Description
 An MO adaptation of the [multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment.
 
 ## Observation Space

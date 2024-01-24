@@ -50,9 +50,7 @@ def raw_env(*args, **kwargs):
 
 
 class Catch(CrazyRLBaseParallelEnv):
-    """
-    ## Description
-    A `Parallel` environment where drones learn how to surround a moving target trying to escape.
+    """A `Parallel` environment where drones learn how to surround a moving target trying to escape.
 
     ## Observation Space
     The observation space is a continuous boxes with the length `(num_drones + 1) * 3` where each 3 values represent the coordinates of the drones in this order:

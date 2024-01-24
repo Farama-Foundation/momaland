@@ -17,7 +17,6 @@ firstpage:
 | Reward Space | Box(-10.0, [ 1. inf], (2,), float32) |
 | Import | `momaland.envs.surround_v0` |
 
-## Description
 A `Parallel` environment where drones learn how to surround a static target point.
 
 ## Observation Space

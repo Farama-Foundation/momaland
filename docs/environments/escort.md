@@ -17,7 +17,6 @@ lastpage:
 | Reward Space | Box(-10.0, [ 1. inf], (2,), float32) |
 | Import | `momaland.envs.escort_v0` |
 
-## Description
 A `Parallel` environment where drones learn how to escort a moving target.
 
 ## Observation Space

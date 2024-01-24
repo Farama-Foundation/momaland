@@ -50,9 +50,7 @@ def raw_env(*args, **kwargs):
 
 
 class Escort(CrazyRLBaseParallelEnv):
-    """
-    ## Description
-    A `Parallel` environment where drones learn how to escort a moving target.
+    """A `Parallel` environment where drones learn how to escort a moving target.
 
     ## Observation Space
     The observation space consists of `num_drones + 1` 3D continuous boxes representing the coordinates of the drones in this order:

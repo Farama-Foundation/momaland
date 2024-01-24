@@ -49,9 +49,7 @@ def raw_env(*args, **kwargs):
 
 
 class Surround(CrazyRLBaseParallelEnv):
-    """
-    ## Description
-    A `Parallel` environment where drones learn how to surround a static target point.
+    """A `Parallel` environment where drones learn how to surround a static target point.
 
     ## Observation Space
     The observation space consists of `num_drones + 1` 3D continuous boxes representing the coordinates of the drones in this order:

@@ -58,9 +58,7 @@ def raw_env(**kwargs):
 
 
 class MOMultiwalker(MOAECEnv, pz_multiwalker):
-    """
-    ## Description
-    An MO adaptation of the [multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment.
+    """An MO adaptation of the [multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment.
 
     ## Observation Space
     See [PettingZoo documentation](https://pettingzoo.farama.org/environments/sisl/multiwalker/#observation-space).
