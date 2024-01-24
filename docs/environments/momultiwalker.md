@@ -17,11 +17,24 @@ firstpage:
 | Reward Space | Box([  -0.46666667 -110.         -100.        ], [0.46666667 0.         0.        ], (3,), float32) |
 | Import | `momaland.envs.momultiwalker_v0` |
 
-Environment for MO Multiwalker problem domain.
+## Description
+An MO adaptation of the [multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment.
 
-The init method takes in environment arguments and should define the following attributes:
-- possible_agents
-- action_spaces
-- observation_spaces
-- reward_spaces
-These attributes should not be changed after initialization.
+## Observation Space
+See [PettingZoo documentation](https://pettingzoo.farama.org/environments/sisl/multiwalker/#observation-space).
+
+## Action Space
+The action space is a vector representing the force exerted at the 4 available joints (hips and knees), giving a continuous action space with a 4 element vector.
+The higher bound is `1`, the lower bound is `-1`.
+
+## Reward Space
+The reward space is a 3D vector containing rewards for:
+- Maximizing distance traveled towards the end of the level during one step. `[-0.46, 0.46]`
+- Penalty for agent falling. `[-110, 0]`
+- Penalty for the package falling. `[-100, 0]`
+
+## Episode Termination
+The episode is terminated if the package is dropped. If `terminate_on_fall` is `True` (default), then environment is terminated if a single agent falls even if the package is still alive.
+
+## Arguments
+See [PettingZoo documentation](https://pettingzoo.farama.org/environments/sisl/multiwalker/#arguments).
