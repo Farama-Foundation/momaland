@@ -157,26 +157,38 @@
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction/install/">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="introduction/api/">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/aec/">AEC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/parallel/">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/wrappers/">Wrappers and Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="environments/all-envs/">Available environments</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="environments/all-envs/">All Environments</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of All Environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="environments/catch/">Catch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/escort/">Escort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="environments/mobeach/">Mobeach</a></li>
-<li class="toctree-l2"><a class="reference internal" href="environments/mocongestion/">Mocongestion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="environments/mogemmining/">Mogemmining</a></li>
-<li class="toctree-l2"><a class="reference internal" href="environments/moitemgathering/">Moitemgathering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="environments/momultiwalker/">Momultiwalker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="environments/mopistonball/">Mopistonball</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mobeach_domain/">MO-BeachDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mocongestion_game/">MO-CongestionGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mogem_mining/">MO-GemMining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/moitem_gathering/">MO-ItemGathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/momultiwalker/">MO-Multiwalker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mopistonball/">MO-Pistonball</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environments/surround/">Surround</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/custom_env/">Making a Custom Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/training/">Training</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference external" href="https://discord.gg/bnJ6kubTg6">Discord</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland/tree/master/docs/">Contribute to the Docs</a></li>
 </ul>
 
@@ -220,39 +232,55 @@
           </label>
         </div>
         <article role="main">
-          <section id="momaland-a-collection-of-multi-objective-multi-agent-reinforcement-learning-environments">
-<h1>MOMAland: A collection of multi-objective multi-agent reinforcement learning environments.<a class="headerlink" href="#momaland-a-collection-of-multi-objective-multi-agent-reinforcement-learning-environments" title="Link to this heading">#</a></h1>
+          <div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<section id="an-api-standard-for-multi-objective-multi-agent-reinforcement-learning-momarl">
+<h1>An API standard for multi-objective multi-agent reinforcement learning (MOMARL)<a class="headerlink" href="#an-api-standard-for-multi-objective-multi-agent-reinforcement-learning-momarl" title="Link to this heading">#</a></h1>
+<!-- ```{figure} _static/img/environments-demo.gif TODO
+   :width: 480px
+   :name: MOMAland Environments
+``` -->
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/surround.gif"><img alt="Multiple agents collaborating to surround a target" src="_images/surround.gif" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="_images/surround.gif"><img alt="Multiple agents collaborating to surround a target" src="_images/surround.gif" style="width: 480px;" /></a>
 </figure>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
 <p>MOMAland is an open source Python library for developing and comparing multi-objective multi-agent reinforcement learning algorithms by providing a standard API to communicate between learning algorithms and environments, as well as a standard set of environments compliant with that API. Essentially, the environments follow the standard <a class="reference external" href="https://github.com/Farama-Foundation/PettingZoo">PettingZoo APIs</a>, but return vectorized rewards as numpy arrays instead of scalar values.</p>
-<p>The documentation website is at TODO, and we have a public discord server (which we also use to coordinate development work) that you can join here: https://discord.gg/bnJ6kubTg6.</p>
+<p>The documentation website is at TODO, and we have a public discord server (which we also use to coordinate development work) that you can join <a class="reference external" href="https://discord.gg/bnJ6kubTg6">here</a>.</p>
 <section id="api">
 <h2>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h2>
-<p>As for PettingZoo, the MOMAland API models environments as simple Python <code class="docutils literal notranslate"><span class="pre">env</span></code> classes. Creating environment instances and interacting with them is very simple - here’s an example using the “mosurround_v0” environment:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">momaland</span>
+<p>Similar to <a class="reference external" href="https://pettingzoo.farama.org">PettingZoo</a>, the MOMAland API models environments as simple Python <code class="docutils literal notranslate"><span class="pre">env</span></code> classes. Creating environment instances and interacting with them is very simple - here’s an example using the “momultiwalker_v0” environment:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">momaland.envs.momultiwalker</span> <span class="kn">import</span> <span class="n">momultiwalker_v0</span> <span class="k">as</span> <span class="n">_env</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1"># It follows the original PettingZoo APIs ...</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">momaland</span><span class="o">.</span><span class="n">envs</span><span class="o">.</span><span class="n">crazyrl</span><span class="o">.</span><span class="n">surround</span><span class="o">.</span><span class="n">surround_v0</span><span class="o">.</span><span class="n">parallel_env</span><span class="p">()</span>
+<span class="c1"># .env() function will return an AEC environment, as per PZ standard</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">_env</span><span class="o">.</span><span class="n">env</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
 
-<span class="n">obs</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-<span class="c1"># but vector_reward is a numpy array!</span>
-<span class="n">actions</span> <span class="o">=</span> <span class="p">{</span><span class="n">agent</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">action_spaces</span><span class="p">[</span><span class="n">agent</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">agents</span><span class="p">}</span>
-<span class="n">next_obs</span><span class="p">,</span> <span class="n">vector_rewards</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
-
-<span class="c1"># Optionally, you can scalarize the reward function with the LinearReward wrapper to fall back to the original PZ API</span>
+<span class="c1"># optionally, you can scalarize the reward with weights</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">momaland</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
+
+<span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">agent_iter</span><span class="p">():</span>
+    <span class="c1"># vec_reward is a numpy array</span>
+    <span class="n">observation</span><span class="p">,</span> <span class="n">vec_reward</span><span class="p">,</span> <span class="n">termination</span><span class="p">,</span> <span class="n">truncation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">termination</span> <span class="ow">or</span> <span class="n">truncation</span><span class="p">:</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">agent</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="c1"># this is where you would insert your policy</span>
+
+    <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>For details on multi-objective multi-agent RL definitions, see <a class="reference external" href="https://arxiv.org/abs/1909.02964">Multi-Objective Multi-Agent Decision Making: A Utility-based Analysis and Survey</a>.</p>
-<p>You can also check more examples in this colab notebook! TODO</p>
+<p>You can also check more examples in this collab notebook! TODO</p>
 </section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
@@ -260,7 +288,12 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>momaland
 </pre></div>
 </div>
-<p>This does not include dependencies for all families of environments (some can be problematic to install on certain systems). You can install these dependencies for one family like <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland&quot;</span></code> or use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[all]&quot;</span></code> to install all dependencies.</p>
+<p>This does not include dependencies for all components of MOMAland (not everything is required for the basic usage, and some can be problematic to install on certain systems).</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[testing]&quot;</span></code> to install dependencies for API testing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[learning]&quot;</span></code> to install dependencies for the supplied learning algorithms.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[all]&quot;</span></code> for all dependencies for all components.</p></li>
+</ul>
 </section>
 <section id="citing">
 <h2>Citing<a class="headerlink" href="#citing" title="Link to this heading">#</a></h2>

@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Catch" href="../catch/" /><link rel="prev" title="API" href="../../introduction/api/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Catch" href="../catch/" /><link rel="prev" title="Wrappers and Utils" href="../../api/wrappers/" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Available environments - MOMAland Documentation</title>
+        <title>All Environments - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -157,26 +157,38 @@
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/install/">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../introduction/api/">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/aec/">AEC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/parallel/">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/wrappers/">Wrappers and Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul class="current">
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Available environments</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">All Environments</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of All Environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../catch/">Catch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../escort/">Escort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mobeach/">Mobeach</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mocongestion/">Mocongestion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mogemmining/">Mogemmining</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../moitemgathering/">Moitemgathering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../momultiwalker/">Momultiwalker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mopistonball/">Mopistonball</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mobeach_domain/">MO-BeachDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mocongestion_game/">MO-CongestionGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mogem_mining/">MO-GemMining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../moitem_gathering/">MO-ItemGathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../momultiwalker/">MO-Multiwalker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mopistonball/">MO-Pistonball</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../surround/">Surround</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/custom_env/">Making a Custom Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/training/">Training</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference external" href="https://discord.gg/bnJ6kubTg6">Discord</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland/tree/master/docs/">Contribute to the Docs</a></li>
 </ul>
 
@@ -220,11 +232,73 @@
           </label>
         </div>
         <article role="main">
-          <section id="available-environments">
-<h1>Available environments<a class="headerlink" href="#available-environments" title="Link to this heading">#</a></h1>
+          <section id="all-environments">
+<h1>All Environments<a class="headerlink" href="#all-environments" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>TODO Table</p>
+<p>MOMAland includes environments taken from the MO/MARL literature, as well as multi-objective versions of environments from PettingZoo.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Env</p></th>
+<th class="head"><p>Cooperative/Adversarial</p></th>
+<th class="head"><p>Obs/Action spaces</p></th>
+<th class="head"><p>Objectives</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/catch/"><code class="docutils literal notranslate"><span class="pre">catch-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/catch.gif" width="400px"></p></td>
+<td><p>Cooperative</p></td>
+<td><p>Continuous / Continuous</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[distance_target,</span> <span class="pre">distance_other_drones]</span></code></p></td>
+<td><p>Agents must corner and catch a target drone while maintaining distance between themselves.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/escort/"><code class="docutils literal notranslate"><span class="pre">escort-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/escort.gif" width="400px"></p></td>
+<td><p>Cooperative</p></td>
+<td><p>Continuous / Continuous</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[distance_target,</span> <span class="pre">distance_other_drones]</span></code></p></td>
+<td><p>Agents must circle around a mobile target drone and escort it to its destination without breaking formation while maintaining distance between themselves.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mobeach/"><code class="docutils literal notranslate"><span class="pre">mobeach-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mobeach.gif" width="400px"></p></td>
+<td><p></p></td>
+<td><p>Continuous / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mocongestion/"><code class="docutils literal notranslate"><span class="pre">mocongestion-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mocongestion.gif" width="400px"></p></td>
+<td><p></p></td>
+<td><p>Continuous / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/moitemgathering/"><code class="docutils literal notranslate"><span class="pre">moitemgathering-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/moitemgathering.gif" width="400px"></p></td>
+<td><p>Adversarial</p></td>
+<td><p>Discrete / Discrete</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/momultiwalker/"><code class="docutils literal notranslate"><span class="pre">momultiwalker-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/momultiwalker.gif" width="400px"></p></td>
+<td><p>Cooperative</p></td>
+<td><p>Continuous / Continuous</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://momaland.farama.org/environments/mopistonball/"><code class="docutils literal notranslate"><span class="pre">mopistonball-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/mopistonball.gif" width="400px"></p></td>
+<td><p>Cooperative</p></td>
+<td><p>TODO / TODO</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[TODO]</span></code></p></td>
+<td><p>TODO</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://momaland.farama.org/environments/surround/"><code class="docutils literal notranslate"><span class="pre">surround-v0</span></code></a> <br><img src="https://momaland.farama.org/_static/gifs/surround.gif" width="400px"></p></td>
+<td><p>Cooperative</p></td>
+<td><p>Continuous / Continuous</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[distance_target,</span> <span class="pre">distance_other_drones]</span></code></p></td>
+<td><p>Agents must surround a fixed target point while maintaining distance between themselves.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 
         </article>
@@ -241,14 +315,14 @@
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../../introduction/api/">
+          <a class="prev-page" href="../../api/wrappers/">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">API</div>
+                <div class="title">Wrappers and Utils</div>
                 
               </div>
             </a>

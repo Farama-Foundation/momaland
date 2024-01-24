@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="API" href="../api/" /><link rel="prev" title="MOMAland: A collection of multi-objective multi-agent reinforcement learning environments." href="../../" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="AEC" href="../../api/aec/" /><link rel="prev" title="An API standard for multi-objective multi-agent reinforcement learning (MOMARL)" href="../../" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Install - MOMAland Documentation</title>
@@ -157,26 +157,38 @@
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/aec/">AEC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/parallel/">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/wrappers/">Wrappers and Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../environments/all-envs/">Available environments</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../environments/all-envs/">All Environments</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of All Environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/catch/">Catch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/escort/">Escort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../environments/mobeach/">Mobeach</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../environments/mocongestion/">Mocongestion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../environments/mogemmining/">Mogemmining</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../environments/moitemgathering/">Moitemgathering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../environments/momultiwalker/">Momultiwalker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../environments/mopistonball/">Mopistonball</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mobeach_domain/">MO-BeachDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mocongestion_game/">MO-CongestionGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mogem_mining/">MO-GemMining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/moitem_gathering/">MO-ItemGathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/momultiwalker/">MO-Multiwalker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../environments/mopistonball/">MO-Pistonball</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/surround/">Surround</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/custom_env/">Making a Custom Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/training/">Training</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference external" href="https://discord.gg/bnJ6kubTg6">Discord</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland/tree/master/docs/">Contribute to the Docs</a></li>
 </ul>
 
@@ -226,7 +238,13 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>momaland
 </pre></div>
 </div>
-<p>This does not include dependencies for all families of environments (some can be problematic to install on certain systems). You can install these dependencies for one family like <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland&quot;</span></code> or use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[all]&quot;</span></code> to install all dependencies.</p>
+<p>This does not include dependencies for all components of MOMAland (not everything is required for the basic usage, and some can be problematic to install on certain systems).</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[testing]&quot;</span></code> to install dependencies for API testing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[learning]&quot;</span></code> to install dependencies for the supplied learning algorithms.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;momaland[all]&quot;</span></code> for all dependencies for all components.</p></li>
+</ul>
+<p>See the <a class="reference external" href="https://momaland.farama.org/api/aec">AEC</a> and <a class="reference external" href="https://momaland.farama.org/api/parallel">Parallel</a> API documentation for usage guides.</p>
 </section>
 
         </article>
@@ -234,12 +252,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../api/">
+          <a class="next-page" href="../../api/aec/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">API</div>
+                <div class="title">AEC</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

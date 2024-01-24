@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="prev" title="Mopistonball" href="../mopistonball/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Making a Custom Environment" href="../../tutorials/custom_env/" /><link rel="prev" title="MO-Pistonball" href="../mopistonball/" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>Surround - MOMAland Documentation</title>
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -157,26 +157,38 @@
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/install/">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../introduction/api/">API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/aec/">AEC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/parallel/">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/wrappers/">Wrappers and Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../all-envs/">Available environments</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Available environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../all-envs/">All Environments</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of All Environments</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../catch/">Catch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../escort/">Escort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mobeach/">Mobeach</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mocongestion/">Mocongestion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mogemmining/">Mogemmining</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../moitemgathering/">Moitemgathering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../momultiwalker/">Momultiwalker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mopistonball/">Mopistonball</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mobeach_domain/">MO-BeachDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mocongestion_game/">MO-CongestionGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mogem_mining/">MO-GemMining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../moitem_gathering/">MO-ItemGathering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../momultiwalker/">MO-Multiwalker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mopistonball/">MO-Pistonball</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Surround</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/custom_env/">Making a Custom Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/training/">Training</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference external" href="https://discord.gg/bnJ6kubTg6">Discord</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/rradules/momaland/tree/master/docs/">Contribute to the Docs</a></li>
 </ul>
 
@@ -214,7 +226,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -251,7 +263,64 @@
 </tbody>
 </table>
 </div>
-<p>A Parallel Environment where drone learn how to surround a target point.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Parallel</span></code> environment where drones learn how to surround a static target point.</p>
+<section id="observation-space">
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<p>The observation space is a continuous box with the length <code class="docutils literal notranslate"><span class="pre">(num_drones</span> <span class="pre">+</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">3</span></code> where each 3 values represent the XYZ coordinates of the drones in this order:</p>
+<ul class="simple">
+<li><p>the agent.</p></li>
+<li><p>the target.</p></li>
+<li><p>the other agents.</p></li>
+</ul>
+<p>Example:
+<code class="docutils literal notranslate"><span class="pre">[x_0,</span> <span class="pre">y_0,</span> <span class="pre">z_0,</span> <span class="pre">x_targ,</span> <span class="pre">y_targ,</span> <span class="pre">z_targ,</span> <span class="pre">x_1,</span> <span class="pre">y_1,</span> <span class="pre">z_1,</span> <span class="pre">...,</span> <span class="pre">x_n,</span> <span class="pre">y_n,</span> <span class="pre">z_n]</span></code></p>
+</section>
+<section id="action-space">
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<p>The action space is a 3D speed vector representing the direction in which the agent should move.</p>
+</section>
+<section id="reward-space">
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<p>The reward space is a 2D vector containing rewards for:</p>
+<ul class="simple">
+<li><p>Minimizing distance towards the target</p></li>
+<li><p>Maximizing average distance towards other agents (avoiding collision).</p></li>
+</ul>
+</section>
+<section id="starting-state">
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<p>Where <code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">=</span> <span class="pre">3</span></code>, the initial starting positions of the agents are <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">1],</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1],</span> <span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">1],</span> <span class="pre">[2,</span> <span class="pre">2,</span> <span class="pre">1]</span></code> while the target position is <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">2.5]</span></code></p>
+</section>
+<section id="episode-termination">
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<p>The episode is terminated if one of the following conditions are met:</p>
+<ul class="simple">
+<li><p>2 agents collide.</p></li>
+<li><p>An agent and the target collide.</p></li>
+<li><p>An agent collides with the ground.</p></li>
+</ul>
+</section>
+<section id="episode-truncation">
+<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">#</a></h2>
+<p>The episode is truncated when an agent reaches 200 steps.</p>
+</section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">render_mode</span> <span class="pre">(str,</span> <span class="pre">optional)</span></code>: The mode to display the rendering of the environment. Can be human or None.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">(int,</span> <span class="pre">optional)</span></code>: Size of the area sides</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_drones</span> <span class="pre">(int,</span> <span class="pre">optional)</span></code>: Amount of drones</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">init_flying_pos</span> <span class="pre">(nparray[float],</span> <span class="pre">optional)</span></code>: 2d array containing the coordinates of the agents is a (3)-shaped array containing the initial XYZ position of the drones.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">init_target_location</span> <span class="pre">(nparray[float],</span> <span class="pre">optional)</span></code>: A (3)-shaped array for the XYZ position of the target.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_speed</span> <span class="pre">(float,</span> <span class="pre">optional)</span></code>: Distance traveled by the target at each timestep</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">final_target_location</span> <span class="pre">(nparray[float],</span> <span class="pre">optional)</span></code>: Array of the final position of the moving target</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_intermediate_points</span> <span class="pre">(int,</span> <span class="pre">optional)</span></code>: Number of intermediate points in the target trajectory</p></li>
+</ul>
+</section>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">#</a></h2>
+<p>The code was adapted from <a class="reference external" href="https://github.com/ffelten/CrazyRL">Felten’s source</a>.</p>
+</section>
 </section>
 
         </article>
@@ -259,7 +328,15 @@
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="../../tutorials/custom_env/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Making a Custom Environment</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="../mopistonball/">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -267,7 +344,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Mopistonball</div>
+                <div class="title">MO-Pistonball</div>
                 
               </div>
             </a>
@@ -289,8 +366,34 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Surround</a><ul>
+<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
+<li><a class="reference internal" href="#action-space">Action Space</a></li>
+<li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#starting-state">Starting State</a></li>
+<li><a class="reference internal" href="#episode-termination">Episode Termination</a></li>
+<li><a class="reference internal" href="#episode-truncation">Episode Truncation</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
+<li><a class="reference internal" href="#credits">Credits</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
