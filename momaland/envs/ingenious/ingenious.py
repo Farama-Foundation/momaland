@@ -21,7 +21,7 @@ from momaland.utils.env import MOAECEnv
 
 
 def env(**kwargs):
-    """Autowrapper for the item gathering problem.
+    """Autowrapper for multi-objective Ingenious game.
 
     Args:
         **kwargs: keyword args to forward to the parallel_env function
@@ -37,7 +37,7 @@ def env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """Env factory function for the item gathering problem."""
+    """Env factory function for multi-objective Ingenious game."""
     return MOIngenious(**kwargs)
 
 
@@ -47,7 +47,7 @@ class MOIngenious(MOAECEnv):
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
     def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=18, render_mode=None):
-        """Initializes the ingenious game.
+        """Initializes the multi-objective Ingenious game.
 
         Args:
             num_players (int): The number of players in the environment. Default: 2
