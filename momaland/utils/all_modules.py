@@ -5,9 +5,9 @@ Used for:
 - rendering GIF images
 """
 
-from momaland.envs.beach_domain import mobeach_domain_v0
+from momaland.envs.beach import mobeach_v0
 from momaland.envs.breakthrough import mobreakthrough_v0
-from momaland.envs.congestion_game import mocongestion_game_v0
+from momaland.envs.congestion import mocongestion_v0
 from momaland.envs.connect4 import moconnect4_v0
 from momaland.envs.crazyrl.catch import catch_v0
 from momaland.envs.crazyrl.escort import escort_v0
@@ -21,7 +21,7 @@ from momaland.envs.samegame import mosamegame_v0
 
 
 all_environments = {
-    "mobeach_domain_v0": mobeach_domain_v0,
+    "mobeach_v0": mobeach_v0,
     "momultiwalker_v0": momultiwalker_v0,
     "catch_v0": catch_v0,
     "surround_v0": surround_v0,
@@ -29,7 +29,7 @@ all_environments = {
     "moitem_gathering_v0": moitem_gathering_v0,
     "moingenious_v0": moingenious_v0,
     "mopistonball_v0": mopistonball_v0,
-    "mocongestion_game_v0": mocongestion_game_v0,
+    "mocongestion_v0": mocongestion_v0,
     "moconnect4_v0": moconnect4_v0,
     "mobreakthrough_v0": mobreakthrough_v0,
     "mosamegame_v0": mosamegame_v0,
