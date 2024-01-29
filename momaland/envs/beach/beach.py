@@ -53,7 +53,7 @@ def raw_env(**kwargs):
 
 
 class MOBeachDomain(MOParallelEnv):
-    """Environment for MO Beach problem domain.
+    """Environment for MO-BeachDomain problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents

@@ -60,7 +60,7 @@ def env(**kwargs):
     Returns:
         A fully wrapped env
     """
-    env = parallel_env(**kwargs)
+    env = raw_env(**kwargs)
     env = mo_parallel_to_aec(env)
 
     # this wrapper helps error handling for discrete action spaces
@@ -74,7 +74,7 @@ def raw_env(**kwargs):
 
 
 class MOItemGathering(MOParallelEnv):
-    """Environment for the Item Gathering domain.
+    """Environment for the MO-ItemGathering problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -85,8 +85,8 @@ class MOItemGathering(MOParallelEnv):
 
     metadata = {
         "render_modes": ["human", "rgb_array"],
-        "name": "moitemgathering_v0",
-        "render_fps": 50,
+        "name": "moitem_gathering_v0",
+        "is_parallelizable": True,
         "central_observation": True,
     }
 
@@ -285,8 +285,7 @@ class MOItemGathering(MOParallelEnv):
     @override
     def close(self):
         if self.render_mode is not None:
-            del_colored("item", len(self.item_dict))
-            del_colored("agent", len(self.possible_agents))
+            del_colored()
         pass
 
     @override

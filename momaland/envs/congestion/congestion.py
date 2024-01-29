@@ -46,11 +46,11 @@ def env(**kwargs):
 
 def raw_env(**kwargs):
     """Env factory function for the congestion game."""
-    return MOCongestionGame(**kwargs)
+    return MOCongestion(**kwargs)
 
 
-class MOCongestionGame(MOParallelEnv):
-    """Environment for MO Congestion Game problem.
+class MOCongestion(MOParallelEnv):
+    """Environment for MO-Congestion problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
