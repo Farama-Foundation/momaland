@@ -74,13 +74,37 @@ def raw_env(**kwargs):
 
 
 class MOItemGathering(MOParallelEnv):
-    """Environment for the MO-ItemGathering problem.
+    """A `Parallel` multi-objective environment of the Item Gathering problem.
 
-    The init method takes in environment arguments and should define the following attributes:
-    - possible_agents
-    - action_spaces
-    - observation_spaces
-    These attributes should not be changed after initialization.
+    ## Observation Space
+    The observation space is a tuple containing the agent id (a negative integer) and the 2D map observation, where
+    0 is an empty cell, negative integers represent agent IDs, and positive integers represent items
+
+    ## Action Space
+    The action space is a Discrete space, where:
+    -   0: stay
+    -   1: up
+    -   2: down
+    -   3: left
+    -   4: right
+
+    ## Reward Space
+    The reward space is a vector containing rewards for each type of items available in the environment
+
+    ## Starting State
+    The initial position of the agent is determined by the 1 entries of the initial map.
+
+    ## Episode Termination
+    The episode is terminated if all the items have been gathered.
+
+    ## Episode Truncation
+    The episode termination occurs if the maximum number of timesteps is reached.
+
+    ## Arguments
+    - 'num_timesteps': number of timesteps to run the environment for. Default: 10
+    - 'initial_map': map of the environment. Default: 8x8 grid, 2 agents, 3 objectives (Källström and Heintz, 2019)
+    - 'randomise': whether to randomise the map, at each episode. Default: False
+    - 'render_mode': render mode for the environment. Default: None
     """
 
     metadata = {
@@ -110,12 +134,6 @@ class MOItemGathering(MOParallelEnv):
         self.render_mode = render_mode
         self.randomise = randomise
 
-        """
-        # check is the initial map has any entries equal to 2
-        assert (
-            len(np.argwhere(initial_map == 2).flatten()) == 0
-        ), "Initial map cannot contain any 2s. That values is reserved for other agents, in the observation space."
-        """
         # check if the initial map has any entries equal to 1
         assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
         self.initial_map = initial_map
@@ -146,7 +164,7 @@ class MOItemGathering(MOParallelEnv):
 
         # observations are a tuple of agent id (in the map) and the map observation
         # the map observation is a 2D array of integers, where each integer represents either agents or items.
-        # 0 for empty, 1 for the current agent, 2 for other agents, 3 for objective 1, 4 for objective 2, ...
+        # 0 for empty, negative integers for agents, positive integers for items
         self.observation_spaces = dict(
             zip(
                 self.agents,
@@ -378,7 +396,8 @@ class MOItemGathering(MOParallelEnv):
         # still be an entry for each agent
         infos = {agent: {} for agent in self.agents}
 
-        # environment termination, after all timesteps are exhausted or all items or gathered
+        # termination occurs when all items or gathered
+        # truncation occurs if all timesteps are exhausted
         self.time_num += 1
         env_termination = bool(np.sum(self.env_map) == 0)
         env_truncation = bool(self.time_num >= self.num_timesteps)

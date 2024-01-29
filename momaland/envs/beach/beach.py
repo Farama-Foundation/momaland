@@ -53,18 +53,57 @@ def raw_env(**kwargs):
 
 
 class MOBeachDomain(MOParallelEnv):
-    """Environment for MO-BeachDomain problem.
+    """A `Parallel` 2-objective environment of the Beach problem domain.
 
-    The init method takes in environment arguments and should define the following attributes:
-    - possible_agents
-    - action_spaces
-    - observation_spaces
-    These attributes should not be changed after initialization.
+    ## Observation Space
+    The observation space is a continuous box with the length `5` containing:
+     - agent type
+     - section id (where the agent is)
+     - section capacity
+     - section consumption
+     - percentage of agents of the agent's type in the section
+
+    Example:
+    `[a_type, section_id, section_capacity, section_consumption, %_of_a_of_current_type]`
+
+    ## Action Space
+    The action space is a Discrete space, where:
+    - moving left is -1
+    - moving right is +1
+    - staying is 0
+
+    ## Reward Space
+    The reward space is a 2D vector containing rewards for two different schemes ('local' or 'global') for:
+    - the occupation level
+    - the mixture level
+    If the scheme is 'local', the reward is given for the currently occupied section.
+    If the scheme is 'global', the reward is summed over all sections.
+
+    ## Starting State
+    The initial position is a uniform random distribution of agents over the sections. This can be changed via the
+    'position_distribution' argument. The agent types are also randomly distributed according to the
+    'type_distribution' argument. The default is a uniform distribution over all types.
+
+    ## Episode Termination
+    The episode is terminated if num_timesteps is reached. The default value is 100.
+    Agents only receive the reward after the last timestep.
+
+    ## Episode Truncation
+    The problem is not truncated. It has a maximum number of timesteps.
+
+    ## Arguments
+    - 'num_timesteps (int)': number of timesteps in the domain. Default: 100
+    - 'num_agents (int)': number of agents in the domain. Default: 100
+    - 'reward_scheme (str)': the reward scheme to use ('local', or 'global'). Default: local
+    - 'sections (int)': number of beach sections in the domain. Default: 6
+    - 'capacity (int)': capacity of each beach section. Default: 10
+    - 'type_distribution (tuple)': the distribution of agent types in the domain. Default: 2 types equally distributed (0.5, 0.5).
+    - 'position_distribution (tuple)': the initial distribution of agents in the domain. Default: uniform over all sections (None).
+    - 'render_mode (str)': render mode. Default: None
     """
 
     metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
 
-    # TODO does this environment require max_cycle?
     def __init__(
         self,
         num_timesteps=10,
