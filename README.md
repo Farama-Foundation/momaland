@@ -36,9 +36,6 @@ import numpy as np
 # .env() function will return an AEC environment, as per PZ standard
 env = _env.env(render_mode="human")
 
-# optionally, you can scalarize the reward with weights
-env = momaland.LinearReward(env, weight=np.array([0.6, 0.2, 0.2]))
-
 env.reset(seed=42)
 for agent in env.agent_iter():
     # vec_reward is a numpy array
@@ -51,6 +48,9 @@ for agent in env.agent_iter():
 
     env.step(action)
 env.close()
+
+# optionally, you can scalarize the reward with weights
+env = momaland.LinearReward(env, weight=np.array([0.6, 0.2, 0.2]))
 ```
 
 For details on multi-objective multi-agent RL definitions, see [Multi-Objective Multi-Agent Decision Making: A Utility-based Analysis and Survey](https://arxiv.org/abs/1909.02964).
