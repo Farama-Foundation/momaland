@@ -1,8 +1,43 @@
 """Various wrappers for AEC MO environments."""
+from typing import Optional
 
 import numpy as np
 from gymnasium.wrappers.normalize import RunningMeanStd
 from pettingzoo.utils.wrappers.base import BaseWrapper
+
+
+class RecordEpisodeStatistics(BaseWrapper):
+    """This wrapper will record episode statistics and print them at the end of each episode."""
+
+    def __init__(self, env):
+        """This wrapper will record episode statistics and print them at the end of each episode.
+
+        Args:
+            env (env): The environment to apply the wrapper
+        """
+        BaseWrapper.__init__(self, env)
+        self.episode_rewards = {agent: 0 for agent in self.possible_agents}
+        self.episode_lengths = {agent: 0 for agent in self.possible_agents}
+
+    def last(self, observe: bool = True):
+        """Receives the latest observation from the environment, recording episode statistics."""
+        obs, rews, terminated, truncated, infos = super().last(observe=observe)
+        for agent in self.env.possible_agents:
+            self.episode_rewards[agent] += rews
+            self.episode_lengths[agent] += 1
+        if terminated or truncated:
+            infos["episode"] = {
+                "r": self.episode_rewards,
+                "l": self.episode_lengths,
+            }
+        return obs, rews, terminated, truncated, infos
+
+    def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
+        """Resets the environment and the episode statistics."""
+        super().reset(seed, options)
+        for agent in self.env.possible_agents:
+            self.episode_rewards[agent] = 0
+            self.episode_lengths[agent] = 0
 
 
 class LinearizeReward(BaseWrapper):
