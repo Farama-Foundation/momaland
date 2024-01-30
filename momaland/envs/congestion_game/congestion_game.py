@@ -104,11 +104,8 @@ class MOCongestionGame(MOParallelEnv):
             zip(
                 self.agents,
                 [
-                    Box(
-                        low=0,
-                        high=self.num_agents,
-                        shape=(1,),
-                        dtype=np.float32,
+                    Discrete(
+                        1,
                     )
                 ]
                 * num_agents,
@@ -170,7 +167,7 @@ class MOCongestionGame(MOParallelEnv):
         self.truncations = {agent: False for agent in self.agents}
         # Reset the flows of each arc
         self.flows = {f"{edge[0]}-{edge[1]}": 0 for edge in self.graph.edges}
-        observations = {agent: np.array([0], dtype=np.float32) for agent in self.agents}
+        observations = {agent: 0 for agent in self.agents}
         self.episode_num = 0
 
         infos = {agent: {} for agent in self.agents}
@@ -220,7 +217,7 @@ class MOCongestionGame(MOParallelEnv):
 
         # - Observations -#
         # return constant observations '0' as this is a stateless setting
-        observations = {agent: np.array([0], dtype=np.float32) for agent in self.agents}
+        observations = {agent: 0 for agent in self.agents}
 
         # - Rewards -#
         # compute latency and cost of each route
