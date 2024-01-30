@@ -7,11 +7,90 @@ import time
 from distutils.util import strtobool
 
 import numpy as np
+from gymnasium.spaces import Discrete
 
-from momaland.envs.beach_domain import mobeach_v0 as BeachDomain
+from momaland.envs.beach_domain.beach_domain import MOBeachDomain
+
 
 # from momaland.envs.congestion_game import mocongestion_v0 as CongestionGame
-from momaland.utils.env import ParallelEnv
+
+
+class TabularMOBeachDomainWrapper(MOBeachDomain):
+    """Wrapper for the MO-beach domain environment to return only the current beach section as state.
+
+    MO-Beach domain returns 5 observations in each timestep:
+        - agent type
+        - section id
+        - section capacity
+        - section consumption
+        - % of agents of current type
+    In the original paper however tabular Q-learning is used and therefore only the current beach section is used as
+    the state. This provide allows to compare results of the original paper:
+
+    From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping for knowledge-based multi-objective multi-agent reinforcement learning.
+    """
+
+    def __init__(self, **kwargs):
+        """Initialize the wrapper.
+
+        Initialize the wrapper and set the observation space to be a discrete space with the number of sections as
+        possible states.
+
+        Args:
+            **kwargs: keyword arguments for the MO-beach domain environment
+        """
+        super().__init__(**kwargs)
+        super().__init__(**kwargs)
+        self.observation_spaces = dict(
+            zip(
+                self.agents,
+                [
+                    Discrete(
+                        self.sections,
+                    )
+                ],
+            )
+        )
+
+    def step(self, actions):
+        """Step function of the environment.
+
+        Intercepts the observations and returns only the section id as observation.
+
+        Args:
+            actions: dict of actions for each agent
+
+        Returns:
+            observations: dict of observations for each agent
+            rewards: dict of rewards for each agent
+            terminations: dict of terminations for each agent
+            truncations: dict of truncations for each agent
+            infos: dict of infos for each agent
+        """
+        observations, rewards, truncations, terminations, infos = super().step(actions)
+        # Observations: agent type, section id, section capacity, section consumption, % of agents of current type
+        # Instead we want to only extract the section id
+        observations = {agent: int(obs[1]) for agent, obs in observations.items()}
+        return observations, rewards, terminations, truncations, infos
+
+    def reset(self, seed=None, options=None):
+        """Reset function of the environment.
+
+        Intercepts the observations and returns only the section id as observation.
+
+        Args:
+            seed: seed for the environment
+            options: options for the environment
+
+        Returns:
+            observations: dict of observations for each agent
+            infos: dict of infos for each agent
+        """
+        observations, infos = super().reset(seed=seed, options=options)
+        # Observations: agent type, section id, section capacity, section consumption, % of agents of current type
+        # Instead we want to only extract the section id
+        observations = {agent: int(obs[1]) for agent, obs in observations.items()}
+        return observations, infos
 
 
 def compute_utlity(weights, rewards):
@@ -84,33 +163,16 @@ def train(args, weights):
     """IQL scalarizing the vector reward using weights and weighted sum."""
     # Environment Initialization
     # env: ParallelEnv = CongestionGame.parallel_env()
-    env: ParallelEnv = BeachDomain.parallel_env()
+    env = TabularMOBeachDomainWrapper()
     # TODO: are these wrappers needed?
     # env = clip_actions_v0(env)
     # env = agent_indicator_v0(env)
     obs, info = env.reset()
 
-    # TODO: This is a hacky way to get the number of states, once it is decided what the actual state is, this can be
-    #  re-written properly. Also, in the case of stateless settings we might consider changing from 'Box' observations
-    #  to 'Discrete' observations
-    n_states = 0
-
-    def get_obs_beach(i_obs):
-        return int(i_obs[1])
-
-    def get_obs_congestion(i_obs):
-        return int(i_obs[0])
-
-    if env.metadata["name"] == "mocongestion_v0":
-        # Stateless setting
-        n_states = env.observation_space(env.agents[0]).shape[0]
-    if env.metadata["name"] == "mobeach_v0":
-        # States of MO-beach domain is currently the section on which the agent is standing instead of being based on
-        # the whole observation (like in the original paper) TODO: to be decided what the actual state is
-        n_states = env.sections
-    get_obs = get_obs_congestion if env.metadata["name"] == "mocongestion_v0" else get_obs_beach
-
-    agents = {QAgent(agent_id, n_states, env.action_spaces[agent_id].n) for agent_id in env.possible_agents}
+    agents = {
+        QAgent(agent_id, env.observation_space(env.agents[0]).n, env.action_spaces[agent_id].n)
+        for agent_id in env.possible_agents
+    }
 
     # Algorithm specific parameters
     epsilon = args.epsilon
@@ -127,7 +189,7 @@ def train(args, weights):
         if current_iter % 100 == 0:
             print(f"iteration: {current_iter}/{args.num_iterations}")
         # Get the actions from the agents
-        actions = {q_agent.agent_id: q_agent.act(get_obs(obs[q_agent.agent_id]), epsilon) for q_agent in agents}
+        actions = {q_agent.agent_id: q_agent.act(obs[q_agent.agent_id], epsilon) for q_agent in agents}
 
         # Update the exploration rate
         if epsilon > epsilon_min:
@@ -140,8 +202,8 @@ def train(args, weights):
         for agent in agents:
             # state, new_state, action, alpha, gamma, reward
             agent.update(
-                get_obs(obs[agent.agent_id]),
-                get_obs(new_obs[agent.agent_id]),
+                obs[agent.agent_id],
+                new_obs[agent.agent_id],
                 actions[agent.agent_id],
                 alpha,
                 gamma,
