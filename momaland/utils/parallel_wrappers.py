@@ -33,7 +33,7 @@ class RecordEpisodeStatistics(BaseParallelWrapper):
         return obs, rews, terminateds, truncateds, infos
 
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
-        """Resets the environment, recording episode statistics."""
+        """Resets the environment and the episode statistics."""
         obs, info = super().reset(seed, options)
         for agent in self.env.possible_agents:
             self.episode_rewards[agent] = 0
