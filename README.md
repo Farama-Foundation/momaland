@@ -55,7 +55,7 @@ env.close()
 
 For details on multi-objective multi-agent RL definitions, see [Multi-Objective Multi-Agent Decision Making: A Utility-based Analysis and Survey](https://arxiv.org/abs/1909.02964).
 
-You can also check more examples in this collab notebook! [![MOMAland Demo in Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/momaland/blob/doc/notebook/momaland_demo.ipynb)
+You can also check more examples in this colab notebook! [![MOMAland Demo in Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/momaland/blob/doc/notebook/momaland_demo.ipynb)
 <!-- end snippet-usage -->
 
 ## Environment Versioning
