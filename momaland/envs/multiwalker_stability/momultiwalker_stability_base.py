@@ -20,14 +20,15 @@ from pettingzoo.sisl.multiwalker.multiwalker_base import (
     VIEWPORT_W,
     WALKER_SEPERATION,
 )
-
-from momaland.envs.multiwalker.momultiwalker_base import (
-    MOBipedalWalker,
-    MOMultiWalkerEnv,
+from pettingzoo.sisl.multiwalker.multiwalker_base import (
+    BipedalWalker as pz_bipedalwalker,
+)
+from pettingzoo.sisl.multiwalker.multiwalker_base import (
+    MultiWalkerEnv as pz_multiwalker_base,
 )
 
 
-class MOStableBipedalWalker(MOBipedalWalker):
+class MOBipedalWalkerStability(pz_bipedalwalker):
     """Walker Object with the physics implemented."""
 
     @override
@@ -55,28 +56,20 @@ class MOStableBipedalWalker(MOBipedalWalker):
 
     @property
     def reward_space(self):
-        """Reward space shape = 4 element 1D array, each element representing 1 objective.
+        """Reward space shape = 2 element 1D array, each element representing 1 objective.
 
-        1. package moving forward.
-        2. no walkers falling.
-        3. package not falling.
-        4. package not tipping
+        1. scalarized reward of: package moving forward, no walkers falling, and package not falling
+        2. package not tipping
         """
         return spaces.Box(
-            low=np.array(
-                [
-                    -(self.terrain_step * self.forward_reward),
-                    self.fall_reward + self.terminate_reward,
-                    self.terminate_reward,
-                ]  # TODO
-            ),
-            high=np.array([self.terrain_step * self.forward_reward, 0, 0]),
-            shape=(3,),
+            low=np.array([-210, -15.67]),
+            high=np.array([0.46, 0]),
+            shape=(2,),
             dtype=np.float32,
         )
 
 
-class MOMultiWalkerStabilityEnv(MOMultiWalkerEnv):
+class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
     """Multiwalker problem domain environment engine.
 
     Deals with the simulation of the environment.
@@ -115,7 +108,7 @@ class MOMultiWalkerStabilityEnv(MOMultiWalkerEnv):
             render_mode=render_mode,
         )
         self.setup()
-        self.last_rewards = [np.zeros(shape=(4,), dtype=np.float32) for _ in range(self.n_walkers)]
+        self.last_rewards = [np.zeros(shape=(2,), dtype=np.float32) for _ in range(self.n_walkers)]
 
     @override
     def setup(self):
@@ -123,7 +116,7 @@ class MOMultiWalkerStabilityEnv(MOMultiWalkerEnv):
         super().setup()
         init_y = TERRAIN_HEIGHT + 2 * LEG_H
         self.walkers = [
-            MOStableBipedalWalker(
+            MOBipedalWalkerStability(
                 self.world,
                 self.forward_reward,
                 self.fall_reward,
@@ -136,6 +129,12 @@ class MOMultiWalkerStabilityEnv(MOMultiWalkerEnv):
             for sx in self.start_x
         ]
         self.reward_space = [agent.reward_space for agent in self.walkers]
+
+    @override
+    def reset(self):
+        obs = super().reset()
+        self.last_rewards = [np.zeros(shape=(2,), dtype=np.float32) for _ in range(self.n_walkers)]
+        return obs
 
     @override
     def step(self, action, agent_id, is_last):
@@ -160,12 +159,12 @@ class MOMultiWalkerStabilityEnv(MOMultiWalkerEnv):
     def scroll_subroutine(self):
         """This is the step engine of the environment.
 
-        Here we have vectorized the reward math from the PettingZoo env to be multi-objective.
+        Here we have vectorized the reward by adding the stability objective to each agent's reward.
         """
         xpos = np.zeros(self.n_walkers)
         obs = []
         done = False
-        rewards = np.array([np.zeros(shape=(3,), dtype=np.float32) for _ in range(self.n_walkers)])
+        rewards = np.array([np.zeros(shape=(2,), dtype=np.float32) for _ in range(self.n_walkers)])
 
         for i in range(self.n_walkers):
             if self.walkers[i].hull is None:
@@ -194,8 +193,11 @@ class MOMultiWalkerStabilityEnv(MOMultiWalkerEnv):
             neighbor_obs.append(self.np_random.normal(self.package.angle, self.angle_noise))
             obs.append(np.array(walker_obs + neighbor_obs))
 
-        # Below this point is the MO reward computation. Above this point is the original PZ code.
-        package_shaping = self.forward_reward * self.package.position.x
+            shaping = -5.0 * abs(walker_obs[0])
+            rewards[i] = shaping - self.prev_shaping[i]
+            self.prev_shaping[i] = shaping
+
+        package_shaping = self.forward_reward * 130 * self.package.position.x / SCALE
         rewards[:, 0] = package_shaping - self.prev_package_shaping  # obj1: move forward
         self.prev_package_shaping = package_shaping
 
@@ -203,24 +205,19 @@ class MOMultiWalkerStabilityEnv(MOMultiWalkerEnv):
 
         done = [False] * self.n_walkers
         for i, (fallen, walker) in enumerate(zip(self.fallen_walkers, self.walkers)):
-            if fallen:  # obj2: agent does not fall
-                rewards[i, 1] = self.fall_reward  # not all, only the one that fell
+            if fallen:
+                rewards[i, 0] += self.fall_reward
                 if self.remove_on_fall:
                     walker._destroy()
-                if self.terminate_on_fall:
-                    rewards[:, 1] += self.terminate_reward
+                if not self.terminate_on_fall:
+                    rewards[i, 0] += self.terminate_reward
                 done[i] = True
-
-        if self.terminate_on_fall and np.sum(self.fallen_walkers) > 0:  # terminate_on_fall global termination
+        if (self.terminate_on_fall and np.sum(self.fallen_walkers) > 0) or self.game_over or self.package.position.x < 0:
+            rewards[:, 0] += self.terminate_reward
             done = [True] * self.n_walkers
-
-        if self.game_over or self.package.position.x < 0:  # obj3: package doesn't fall
-            done = [True] * self.n_walkers
-            rewards[:, 2] = self.terminate_reward
-
         elif self.package.position.x > (self.terrain_length - TERRAIN_GRASS) * TERRAIN_STEP:
             done = [True] * self.n_walkers
 
-        self.package.GetAngle()  # TODO
-
+        # package stability obj
+        rewards[:, 1] = abs(self.package.angle * self.stability_reward)
         return rewards, done, obs

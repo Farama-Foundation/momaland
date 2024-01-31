@@ -6,14 +6,16 @@ deep reinforcement learning. International Conference on Autonomous Agents and M
 
 from typing_extensions import override
 
+import numpy as np
 from pettingzoo.sisl.multiwalker.multiwalker import FPS
+from pettingzoo.sisl.multiwalker.multiwalker import raw_env as pz_multiwalker
 from pettingzoo.utils import wrappers
 
-from momaland.envs.multiwalker.momultiwalker import MOMultiwalker
 from momaland.envs.multiwalker_stability.momultiwalker_stability_base import (
-    MOMultiWalkerStabilityEnv,
+    MOMultiWalkerStabilityEnv as _env,
 )
 from momaland.utils.conversions import mo_aec_to_parallel
+from momaland.utils.env import MOAECEnv
 
 
 def env(**kwargs):
@@ -48,7 +50,7 @@ def raw_env(**kwargs):
     """Returns the environment in `AEC` format.
 
     Args:
-        **kwargs: keyword args to forward to create the `MOMultiwalkerStability` environment.
+        **kwargs: keyword args to forward to create the `MOMultiwalker` environment.
 
     Returns:
         A raw env.
@@ -57,8 +59,8 @@ def raw_env(**kwargs):
     return env
 
 
-class MOMultiwalkerStability(MOMultiwalker):
-    """An MO adaptation of the [multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment. Additionally it has an extra `stability` objective dimension.
+class MOMultiwalkerStability(MOAECEnv, pz_multiwalker):
+    """A sister environment to [MO-Multiwalker](https://momaland.farama.org/environments/momultiwalker), which is the MO adaptation of the [Multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment from PettingZoo.
 
     ## Observation Space
     See [PettingZoo documentation](https://pettingzoo.farama.org/environments/sisl/multiwalker/#observation-space).
@@ -68,11 +70,12 @@ class MOMultiwalkerStability(MOMultiwalker):
     The higher bound is `1`, the lower bound is `-1`.
 
     ## Reward Space
-    The reward space is a 4D vector containing rewards for:
+    The reward space is a 2D vector where; the first value contains the sum of following rewards:
     - Maximizing distance traveled towards the end of the level during one step. `[-0.46, 0.46]`
     - Penalty for agent falling. `[-110, 0]`
     - Penalty for the package falling. `[-100, 0]`
-    - Penalty for the package tipping. `[TODO, TODO]`
+    and the second value contains:
+    - The tipping angle of the package. `[-15.67, 0]` (practical estimate) The low bound is the cases when the package tips 90 degrees in either direction, which is impossible in practice.
 
     ## Episode Termination
     The episode is terminated if the package is dropped. If `terminate_on_fall` is `True` (default), then environment is terminated if a single agent falls even if the package is still alive.
@@ -91,17 +94,32 @@ class MOMultiwalkerStability(MOMultiwalker):
     @override
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.env = MOMultiWalkerStabilityEnv(*args, **kwargs)  # override engine
+        self.env = _env(*args, **kwargs)  # override engine
+        # spaces
+        self.reward_spaces = dict(zip(self.agents, self.env.reward_space))
+
+    def reward_space(self, agent):
+        """Returns the reward space for the given agent."""
+        return self.reward_spaces[agent]
+
+    @override
+    def reset(self, seed=None, options=None):
+        super().reset(seed, options)  # super
+        zero_reward = np.zeros(
+            self.reward_spaces[self.agents[0]].shape, dtype=np.float32
+        )  # np.copy() makes different copies of this.
+        self._cumulative_rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))
+        self.rewards = dict(zip(self.agents, [zero_reward.copy() for _ in self.agents]))
 
 
 if __name__ == "__main__":
     from momaland.envs.multiwalker_stability import momultiwalker_stability_v0
 
-    _env = momultiwalker_stability_v0.env(render_mode="human")
+    test_env = momultiwalker_stability_v0.env(render_mode="human")
 
-    _env.reset()
-    for agent in _env.agent_iter():
-        obs, rew, term, trunc, info = _env.last()
-        action = None if term or trunc else _env.action_space(agent).sample()
-        _env.step(action)
-    _env.close()
+    test_env.reset()
+    for agent in test_env.agent_iter():
+        obs, rew, term, trunc, info = test_env.last()
+        action = None if term or trunc else test_env.action_space(agent).sample()
+        test_env.step(action)
+    test_env.close()
