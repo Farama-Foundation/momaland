@@ -92,3 +92,16 @@ class MOMultiwalkerStability(MOMultiwalker):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.env = MOMultiWalkerStabilityEnv(*args, **kwargs)  # override engine
+
+
+if __name__ == "__main__":
+    from momaland.envs.multiwalker_stability import momultiwalker_stability_v0
+
+    _env = momultiwalker_stability_v0.env(render_mode="human")
+
+    _env.reset()
+    for agent in _env.agent_iter():
+        obs, rew, term, trunc, info = _env.last()
+        action = None if term or trunc else _env.action_space(agent).sample()
+        _env.step(action)
+    _env.close()
