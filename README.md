@@ -36,9 +36,6 @@ import numpy as np
 # .env() function will return an AEC environment, as per PZ standard
 env = _env.env(render_mode="human")
 
-# optionally, you can scalarize the reward with weights
-env = momaland.LinearReward(env, weight=np.array([0.6, 0.2, 0.2]))
-
 env.reset(seed=42)
 for agent in env.agent_iter():
     # vec_reward is a numpy array
@@ -51,11 +48,21 @@ for agent in env.agent_iter():
 
     env.step(action)
 env.close()
+
+# optionally, you can scalarize the reward with weights
+# Making the vector reward a scalar reward to shift to single-objective multi-agent (aka PettingZoo)
+# We can assign different weights to the objectives of each agent.
+weights = {
+    "walker_0": np.array([0.1, 0.7, 0.2]),
+    "walker_1": np.array([0.6, 0.1, 0.3]),
+    "walker_2": np.array([0.2, 0.2, 0.6]),
+}
+env = LinearizeReward(env, weights)
 ```
 
 For details on multi-objective multi-agent RL definitions, see [Multi-Objective Multi-Agent Decision Making: A Utility-based Analysis and Survey](https://arxiv.org/abs/1909.02964).
 
-You can also check more examples in this collab notebook! TODO
+You can also check more examples in this colab notebook! [![MOMAland Demo in Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/momaland/blob/doc/notebook/momaland_demo.ipynb)
 <!-- end snippet-usage -->
 
 ## Environment Versioning
