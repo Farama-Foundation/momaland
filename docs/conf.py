@@ -74,7 +74,7 @@ html_theme_options = {
     # "light_logo": "img/PettingZoo.svg",
     # "dark_logo": "img/PettingZoo_White.svg",
     # "gtag": "G-Q4EGMJ3R24",
-    # "versioning": False,
+    "versioning": True,
     "source_repository": "https://github.com/rradules/momaland/",
     "source_branch": "main",
     "source_directory": "docs/",
