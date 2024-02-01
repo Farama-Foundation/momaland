@@ -52,11 +52,49 @@ def raw_env(**kwargs):
 class MOGemMining(MOParallelEnv):
     """Environment for MO-GemMining domain.
 
-    The init method takes in environment arguments and should define the following attributes:
-    - possible_agents
-    - action_spaces
-    - observation_spaces
-    These attributes should not be changed after initialization.
+    ## Observation Space
+    The observation space is a cBox of the number of agents in length.
+    As this is a stateless environment, all agents receive a "0" observation each timestep.
+
+    ## Action Space
+    The action space is discrete set of integers for each agent, and is agent-specific.
+    Each integer represents the ID of a mine (i.e., local reward function) which is reachable from the village (i.e., agent).
+    Selecting an action represents sending the workers that live in a given village to the corresponding mine.
+
+    ## Reward Space
+    The reward space is a vector containing rewards in each objective (customizable).
+    Each objective corresponds to a type of gem that can be found at the mines.
+    The rewards correspond to the total number of gems of each type found at all the mines together at a given timestep.
+    Please note that as this is a fully cooperative environment all agents receive the same reward vectors.
+
+    ## Starting State
+    As this is a state-less environment the "state" is just a default value. (See Observation Space.)
+
+    ## Episode Termination
+    As this is a state-less environment there isn't really an episode.
+    Hence the episode terminates after each timestep.
+
+    ## Episode Truncation
+    Each "episode" last 1 timestep (due to the bandit setting).
+
+    ## Arguments
+    - `num_agents: number of agents (i.e., villages) in the Gem Mining instance
+    - num_objectives: number of objectives (i.e., gem types), each mine has a probability of generating gems of any type at any timesteps
+    - min_connectivity: the minimum number of mines each agent is connected to. Should be greater or equal to 2
+    - max_connectivity: the maximum number of mines each agent is connected to. Should be greater or equal to min_connectivity
+    - min_workers: the minimum number of workers per village (agent). Should be greater or equal to 1.
+    - max_workers: the maximum number of workers per village (agent). Should be greater or equal to min_workers.
+    - min_prob: the minimum (Bernoulli) probability of finding a gem (per type) at a mine, excluding worker bonus
+    - max_prob: the maximum (Bernoulli) probability of finding a gem (per type) at a mine, excluding worker bonus
+    - trunc_probability: upper limit to the probability of finding a gem after adding the worker bonus
+    - w_bonus: worker bonus; the probability of finding a gem is multiplied by w_bonus^(w-1), where w is the number of workers at a mine
+    - correlated_objectives: if true, the probability of mining a given type of gem at a mine is negatively correlated to finding a gem of another type, and the (non-bonus) expectation of finding any gem is at most max_prob per mine per timestep.
+    - num_timesteps: number of timesteps (stateless, therefore defaultly set to 1 timestep)
+    - render_mode: render mode
+    - seed: This environment is generated randomly using the provided seed. Defaults to 42.
+
+    ## Credits
+    The code was based on previous code by Diederik Roijers and Eugenio Bargiacchi (in different programming languages), and reimplemented.
     """
 
     metadata = {"render_modes": ["human"], "name": "mogem_mining_v0"}
