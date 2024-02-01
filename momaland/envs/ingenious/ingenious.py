@@ -42,19 +42,60 @@ def raw_env(**kwargs):
 
 
 class MOIngenious(MOAECEnv):
-    """Environment for the multi-objective Ingenious game."""
+    """Ingenious board game.
+
+    Ingenious is a turn-based board game for multiple players. 2-4 players can play (default is 2), on a hexagonal
+    board with an edge length of 3-10 (default is 6). Each player has 2-6 (default is 6) tiles with colour symbols on
+    their rack (hand). In sequential order, players play one of their tiles onto the hexagonal board, with the goal
+    of establishing lines of matching symbols emerging from the placed tile. This allows the players to increase
+    their score in the respective colors, each color representing one of 2-6 (default is 6) objectives. New tiles are
+    randomly drawn, and the racks of other players with their currently available tiles are not observable (in the
+    default rules). When the board is filled, the original game rules define the winner as the player who has the
+    highest score in their lowest-scoring colour. This implementation exposes the colour scores themselves as
+    different objectives, allowing arbitrary utility functions to be defined over them.
+
+    ## Observation Space
+    The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
+    below, and an `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
+    The main observation space is a dictionary containing the `'board'`, the `'tiles'`, and the `'scores'`. TODO describe. why do we return the scores of the player?
+
+    ## Legal Actions Mask
+    The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
+    The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
+    or not; the action encoding is described in the Action Space section below.
+    The `action_mask` will be all zeros for any agent except the one whose turn it is. TODO is this true?
+
+    ## Action Space
+    The action space is the set of integers from 0 to TODO describe action encoding here, with reference to web resource for hex encoding
+
+    ## Rewards
+    The reward dimensions correspond to the 2-6 (default is 6) different colors that the players can score points for.
+
+    ## Starting State
+    The game starts with an empty board, and each player with 2-6 (default is 6) randomly drawn tiles in their hand.
+
+    ## Arguments
+    - 'num_players' (int): The number of players in the environment. Default: 2
+    - 'init_draw' (int): The number of tiles each player draws at the beginning of the game. Default: 6
+    - 'num_colors' (int): The number of colors in the game. Default: 6
+    - 'board_size' (int): The size of the board. Default: 6
+    - 'limitation_score' (int): Maximum score for any color Default: 18
+    - 'render_mode' (str): The rendering mode. Default: None
+
+    ## Version History
+    """
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=18, render_mode=None):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=6, limitation_score=18, render_mode=None):
         """Initializes the multi-objective Ingenious game.
 
         Args:
             num_players (int): The number of players in the environment. Default: 2
             init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
-            num_colors (int): The number of colors in the game. Default: 4
-            board_size (int): The size of the board. Default: 8
-            limitation_score(int): Limitation to refresh the score board for any color. Default: 20
+            num_colors (int): The number of colors in the game. Default: 6
+            board_size (int): The size of the board. Default: 6
+            limitation_score (int): Maximum score for any color. Default: 18
             render_mode (str): The rendering mode. Default: None
         """
         self.board_size = board_size
