@@ -62,7 +62,7 @@ class MOBipedalWalkerStability(pz_bipedalwalker):
         2. package not tipping
         """
         return spaces.Box(
-            low=np.array([-210, -15.67]),
+            low=np.array([-210, -1.75]),
             high=np.array([0.46, 0]),
             shape=(2,),
             dtype=np.float32,
@@ -196,7 +196,7 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
             obs.append(np.array(walker_obs + neighbor_obs))
 
             shaping = -5.0 * abs(walker_obs[0])
-            rewards[i] = shaping - self.prev_shaping[i]
+            rewards[i, 0] = shaping - self.prev_shaping[i]
             self.prev_shaping[i] = shaping
 
         package_shaping = self.forward_reward * 130 * self.package.position.x / SCALE

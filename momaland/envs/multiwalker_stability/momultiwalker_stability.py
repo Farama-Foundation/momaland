@@ -75,7 +75,7 @@ class MOMultiwalkerStability(MOAECEnv, pz_multiwalker):
     - Penalty for agent falling. `[-110, 0]`
     - Penalty for the package falling. `[-100, 0]`
     and the second value contains:
-    - The tipping angle of the package. `[-15.67, 0]` (practical estimate) The low bound is the cases when the package tips 90 degrees in either direction, which is impossible in practice.
+    - The change in the angle of the package. `[-1.75, 0]`
 
     ## Episode Termination
     The episode is terminated if the package is dropped. If `terminate_on_fall` is `True` (default), then environment is terminated if a single agent falls even if the package is still alive.
