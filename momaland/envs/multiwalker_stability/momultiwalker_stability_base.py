@@ -84,7 +84,7 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
         forward_reward=1.0,
         terminate_reward=-100.0,
         fall_reward=-10.0,
-        stability_reward=-10,
+        stability_reward=-100,
         shared_reward=True,
         terminate_on_fall=True,
         remove_on_fall=True,
@@ -93,6 +93,7 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
         render_mode=None,
     ):
         self.stability_reward = stability_reward
+        self.previous_pkg_angle = 0
         super().__init__(
             n_walkers=n_walkers,
             position_noise=position_noise,
@@ -134,6 +135,7 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
     def reset(self):
         obs = super().reset()
         self.last_rewards = [np.zeros(shape=(2,), dtype=np.float32) for _ in range(self.n_walkers)]
+        self.previous_pkg_angle = 0
         return obs
 
     @override
@@ -219,5 +221,8 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
             done = [True] * self.n_walkers
 
         # package stability obj
-        rewards[:, 1] = abs(self.package.angle * self.stability_reward)
+        pkg_angle_delta = abs(self.previous_pkg_angle - self.package.angle)
+        rewards[:, 1] = pkg_angle_delta * self.stability_reward
+        self.previous_pkg_angle = self.package.angle
+
         return rewards, done, obs
