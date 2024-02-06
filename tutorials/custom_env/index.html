@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Training" href="../training/" /><link rel="prev" title="Surround" href="../../environments/surround/" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Setup pre-commit hooks - MOMAland Documentation</title>
+        <title>Making a Custom Environment - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -185,8 +185,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Setup pre-commit hooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#making-a-custom-environment">Making a Custom Environment</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Making a Custom Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../training/">Training</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
@@ -231,18 +230,17 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="setup-pre-commit-hooks">
-<h1>Setup pre-commit hooks<a class="headerlink" href="#setup-pre-commit-hooks" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code> to initialize pre-commit hooks. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pre-commit</span></code> if you don’t have the package.</p>
-</section>
-<section id="making-a-custom-environment">
+          <section id="making-a-custom-environment">
 <h1>Making a Custom Environment<a class="headerlink" href="#making-a-custom-environment" title="Link to this heading">#</a></h1>
+<section id="setup-pre-commit-hooks">
+<h2>Setup pre-commit hooks<a class="headerlink" href="#setup-pre-commit-hooks" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code> to initialize pre-commit hooks. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pre-commit</span></code> if you don’t have the package.</p>
 <ol class="arabic simple">
 <li><p>Create a new environment package in <code class="docutils literal notranslate"><span class="pre">momaland/envs/</span></code></p></li>
 <li><p>Create a new environment class in <code class="docutils literal notranslate"><span class="pre">momaland/envs/&lt;env_name&gt;/&lt;env_name&gt;.py</span></code>, this class should extend <code class="docutils literal notranslate"><span class="pre">MOParallelEnv</span></code> or <code class="docutils literal notranslate"><span class="pre">MOAECEnv</span></code>. Override the PettingZoo methods (see their <a class="reference external" href="https://pettingzoo.farama.org/api/aec/">documentation</a>). Additionally, you should define a member <code class="docutils literal notranslate"><span class="pre">self.reward_spaces</span></code> that is a dictionary of space specifying the shape of the reward vector of each agent, as well as a method <code class="docutils literal notranslate"><span class="pre">reward_space(self,</span> <span class="pre">agent)</span> <span class="pre">-&gt;</span> <span class="pre">Space</span></code> that returns the reward space of a given agent.</p></li>
@@ -256,6 +254,7 @@
 <li><p>Add your environment to the tests in <code class="docutils literal notranslate"><span class="pre">utils/all_modules.py</span></code></p></li>
 <li><p>Run <code class="docutils literal notranslate"><span class="pre">pytest</span></code> to check that everything works</p></li>
 </ol>
+</section>
 </section>
 
         </article>
@@ -301,8 +300,27 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Making a Custom Environment</a><ul>
+<li><a class="reference internal" href="#setup-pre-commit-hooks">Setup pre-commit hooks</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
