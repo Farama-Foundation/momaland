@@ -38,7 +38,6 @@ class MOBipedalWalkerStability(pz_bipedalwalker):
         forward_reward,
         fall_reward,
         terminate_reward,
-        stability_reward,
         init_x=TERRAIN_STEP * TERRAIN_STARTPAD / 2,
         init_y=TERRAIN_HEIGHT + 2 * LEG_H,
         n_walkers=2,
@@ -50,7 +49,6 @@ class MOBipedalWalkerStability(pz_bipedalwalker):
         self.forward_reward = forward_reward
         self.fall_reward = fall_reward
         self.terminate_reward = terminate_reward
-        self.stability_reward = stability_reward
         self.terrain_length = terrain_length
         self.terrain_step = terrain_step
 
@@ -62,7 +60,7 @@ class MOBipedalWalkerStability(pz_bipedalwalker):
         2. package not tipping
         """
         return spaces.Box(
-            low=np.array([-210, -1.75]),
+            low=np.array([-210, -0.01567]),
             high=np.array([0.46, 0]),
             shape=(2,),
             dtype=np.float32,
@@ -84,7 +82,6 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
         forward_reward=1.0,
         terminate_reward=-100.0,
         fall_reward=-10.0,
-        stability_reward=-100,
         shared_reward=True,
         terminate_on_fall=True,
         remove_on_fall=True,
@@ -92,8 +89,6 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
         max_cycles=500,
         render_mode=None,
     ):
-        self.stability_reward = stability_reward
-        self.previous_pkg_angle = 0
         super().__init__(
             n_walkers=n_walkers,
             position_noise=position_noise,
@@ -122,7 +117,6 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
                 self.forward_reward,
                 self.fall_reward,
                 self.terminate_reward,
-                self.stability_reward,
                 init_x=sx,
                 init_y=init_y,
                 seed=self.seed_val,
@@ -132,10 +126,14 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
         self.reward_space = [agent.reward_space for agent in self.walkers]
 
     @override
+    def _generate_package(self):
+        super()._generate_package()
+        self.previous_pkg_angle = 0  # to init this value
+
+    @override
     def reset(self):
         obs = super().reset()
         self.last_rewards = [np.zeros(shape=(2,), dtype=np.float32) for _ in range(self.n_walkers)]
-        self.previous_pkg_angle = 0
         return obs
 
     @override
@@ -222,7 +220,7 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
 
         # package stability obj
         pkg_angle_delta = abs(self.previous_pkg_angle - self.package.angle)
-        rewards[:, 1] = pkg_angle_delta * self.stability_reward
+        rewards[:, 1] = pkg_angle_delta
         self.previous_pkg_angle = self.package.angle
 
         return rewards, done, obs

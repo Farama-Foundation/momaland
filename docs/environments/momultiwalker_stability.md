@@ -14,7 +14,7 @@ firstpage:
 | Agents names | `walker_i for i in [0, 2]` |
 | Action Space | Box(-1.0, 1.0, (4,), float32) |
 | Observation Space | Box(-inf, inf, (31,), float32) |
-| Reward Space | Box([-210.    -15.67], [0.46 0.  ], (2,), float32) |
+| Reward Space | Box([-2.100e+02 -1.567e-02], [0.46 0.  ], (2,), float32) |
 | Import | `momaland.envs.momultiwalker_stability_v0` |
 
 A sister environment to [MO-Multiwalker](https://momaland.farama.org/environments/momultiwalker), which is the MO adaptation of the [Multiwalker](https://pettingzoo.farama.org/environments/sisl/multiwalker/) environment from PettingZoo.
@@ -32,7 +32,7 @@ The reward space is a 2D vector where; the first value contains the sum of follo
 - Penalty for agent falling. `[-110, 0]`
 - Penalty for the package falling. `[-100, 0]`
 and the second value contains:
-- The tipping angle of the package. `[-15.67, 0]` (practical estimate) The low bound is the cases when the package tips 90 degrees in either direction, which is impossible in practice.
+- A penalty based on the change of angle of the package, to avoid shaking the package. `[-0.01567, 0]`
 
 ## Episode Termination
 The episode is terminated if the package is dropped. If `terminate_on_fall` is `True` (default), then environment is terminated if a single agent falls even if the package is still alive.
