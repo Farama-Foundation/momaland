@@ -6,6 +6,7 @@ TODO AEC.
 """
 
 import os
+import subprocess
 from typing import List, Tuple
 
 import chex
@@ -13,6 +14,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import pandas as pd
+import requests
 from distrax import MultivariateNormalDiag
 
 
@@ -42,7 +44,7 @@ def _ma_sample_and_log_prob_from_pi(pi: List[MultivariateNormalDiag], num_agents
     return [pi[i].sample_and_log_prob(seed=key[i]) for i in range(num_agents)]
 
 
-def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[float, float, np.ndarray, np.ndarray]:
+def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[np.ndarray, np.ndarray]:
     """Evaluates one episode of the agent in the environment.
 
     Args:
@@ -82,9 +84,7 @@ def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[
     )
 
 
-def policy_evaluation_mo(
-    actor_module, actor_state, env, num_obj: np.ndarray, rep: int = 5
-) -> Tuple[float, float, np.ndarray, np.ndarray]:
+def policy_evaluation_mo(actor_module, actor_state, env, num_obj: np.ndarray, rep: int = 5) -> Tuple[np.ndarray, np.ndarray]:
     """Evaluates the value of a policy by running the policy for multiple episodes. Returns the average returns.
 
     Args:
@@ -122,3 +122,41 @@ def save_results(returns, exp_name, seed):
     df = pd.DataFrame(returns)
     df.columns = ["Total timesteps", "Time", "Episodic return"]
     df.to_csv(filename, index=False)
+
+
+def autotag():
+    """This adds a tag to the wandb run marking the commit number, allows versioning of experiments. From CleanRL's benchmark utility."""
+
+    def _autotag() -> str:
+        wandb_tag = ""
+        print("autotag feature is enabled")
+        try:
+            git_tag = subprocess.check_output(["git", "describe", "--tags"]).decode("ascii").strip()
+            wandb_tag = f"{git_tag}"
+            print(f"identified git tag: {git_tag}")
+        except subprocess.CalledProcessError:
+            return wandb_tag
+
+        git_commit = subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"]).decode("ascii").strip()
+        try:
+            # try finding the pull request number on github
+            prs = requests.get(f"https://api.github.com/search/issues?q=repo:Farama-Foundation/momaland+is:pr+{git_commit}")
+            if prs.status_code == 200:
+                prs = prs.json()
+                if len(prs["items"]) > 0:
+                    pr = prs["items"][0]
+                    pr_number = pr["number"]
+                    wandb_tag += f",pr-{pr_number}"
+            print(f"identified github pull request: {pr_number}")
+        except Exception as e:
+            print(e)
+
+        return wandb_tag
+
+    if "WANDB_TAGS" in os.environ:
+        raise ValueError(
+            "WANDB_TAGS is already set. Please unset it before running this script or run the script with --auto-tag False"
+        )
+    wandb_tag = _autotag()
+    if len(wandb_tag) > 0:
+        os.environ["WANDB_TAGS"] = wandb_tag

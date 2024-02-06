@@ -53,11 +53,12 @@ learning = [
     "flax >=0.6",
     "optax >=0.1",
     "orbax-checkpoint >=0.3",
-    "etils >=1.5", # not sure, wasn't in crazyrl/pyproject.toml
+    "etils >=1.5",
     "supersuit >=3.9",
     "tqdm >=4.66.1",
     "pandas >=2.1.0",
     "matplotlib >=3.8.0",
+    "morl_baselines@git+https://github.com/LucasAlegre/morl-baselines"
 ]
 all = [
     # All dependencies above except accept-rom-license
