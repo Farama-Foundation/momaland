@@ -2,7 +2,8 @@
 title: Making a Custom Environment
 firstpage:
 ---
-
+## Setup pre-commit hooks
+`pre-commit install` to initialize pre-commit hooks. `pip install pre-commit` if you don't have the package.
 
 ## Making a Custom Environment
 1. Create a new environment package in `momaland/envs/`
