@@ -65,6 +65,21 @@ For details on multi-objective multi-agent RL definitions, see [Multi-Objective 
 You can also check more examples in this colab notebook! [![MOMAland Demo in Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/momaland/blob/doc/notebook/momaland_demo.ipynb)
 <!-- end snippet-usage -->
 
+## Learning Algorithms
+<!-- start learning-algorithms -->
+We provide a set of learning algorithms that are compatible with the MOMAland environments. The learning algorithms are implemented in the [learning/](https://github.com/Farama-Foundation/momaland/tree/main/momaland/learning) directory. To keep everything as self-contained as possible, each algorithm is implemented as a single-file (close to [cleanRL's philosophy](https://github.com/vwxyzjn/cleanrl/tree/master)).
+
+Nevertheless, we reuse tools provided by other libraries, like multi-objective evaluations and performance indicators from [MORL-Baselines](https://github.com/LucasAlegre/morl-baselines).
+
+Here is a list of algorithms that are currently implemented:
+
+| **Name**                                                                                                                                                                                                                                                            | Single/Multi-policy | Reward | Utility       | Observation space | Action space | Paper |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|--------|---------------|-------------------|--------------|-------|
+| MOMAPPO (OLS) [continuous](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/continuous/cooperative_momappo.py),<br/> [discrete](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/discrete/cooperative_momappo.py) | Multi               | Team   | Team / Linear | Any               | Any          |       |
+
+
+<!-- end learning-algorithms -->
+
 ## Environment Versioning
 MOMAland keeps strict versioning for reproducibility reasons. All environments end in a suffix like "_v0".  When changes are made to environments that might impact learning results, the number is increased by one to prevent potential confusion.
 
