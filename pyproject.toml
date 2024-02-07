@@ -53,6 +53,7 @@ learning = [
     "flax >=0.6",
     "optax >=0.1",
     "orbax-checkpoint >=0.3",
+    "chex >=0.1",
     "etils >=1.5",
     "supersuit >=3.9",
     "tqdm >=4.66.1",
