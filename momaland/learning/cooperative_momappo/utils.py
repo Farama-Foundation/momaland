@@ -7,8 +7,10 @@ import chex
 import jax
 import jax.numpy as jnp
 import numpy as np
+import orbax
 import pandas as pd
 from distrax import MultivariateNormalDiag
+from etils import epath
 
 
 def _ma_get_pi(actor_module, params, obs: jnp.ndarray, num_agents):
@@ -124,3 +126,12 @@ def save_results(returns, exp_name, seed):
     df = pd.DataFrame(returns)
     df.columns = ["Total timesteps", "Time", "Episodic return"]
     df.to_csv(filename, index=False)
+
+
+def save_actor(actor_state, weights, args):
+    """Saves trained actor."""
+    directory = epath.Path(f"../trained_model_{args.env_id}_{args.exp_name}_{weights}_{args.seed}")
+    actor_dir = directory / "actor"
+    print("Saving actor to ", actor_dir)
+    ckptr = orbax.checkpoint.PyTreeCheckpointer()
+    ckptr.save(actor_dir, actor_state, force=True)

@@ -1,4 +1,4 @@
-"""Implementation of multi-objective MAPPO with parameter sharing on the CPU.
+"""Implementation of multi-objective MAPPO with parameter sharing (continuous envs).
 
 Utilizes OLS to generate weight vectors and learn a Pareto set of policies. Works for cooperative settings.
 """
@@ -16,10 +16,8 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import optax
-import orbax.checkpoint
 import wandb
 from distrax import MultivariateNormalDiag
-from etils import epath
 from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
 from jax import vmap
@@ -28,7 +26,7 @@ from morl_baselines.multi_policy.linear_support.linear_support import LinearSupp
 from supersuit import agent_indicator_v0, clip_actions_v0, normalize_obs_v0
 from tqdm import tqdm
 
-from momaland.learning.cooperative_momappo.utils import policy_evaluation_mo
+from momaland.learning.cooperative_momappo.utils import policy_evaluation_mo, save_actor
 from momaland.learning.utils import autotag
 from momaland.utils.all_modules import all_environments
 from momaland.utils.env import ParallelEnv
@@ -460,8 +458,8 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
 
             if terminated:
                 team_return = sum(list(info["episode"]["r"].values()))
-                # if args.debug:
-                # print(f"Episode return: ${team_return}, length: ${info['episode']['l']}")
+                if args.debug:
+                    print(f"Episode return: ${team_return}, length: ${info['episode']['l']}")
                 if args.track:
                     wandb.log(
                         {
@@ -522,15 +520,6 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
     return {"runner_state": runner_state, "metrics": metric}
 
 
-def save_actor(actor_state, weights, args):
-    """Saves trained actor."""
-    directory = epath.Path(f"../trained_model_{args.env_id}_{args.exp_name}_{weights}_{args.seed}")
-    actor_dir = directory / "actor"
-    print("Saving actor to ", actor_dir)
-    ckptr = orbax.checkpoint.PyTreeCheckpointer()
-    ckptr.save(actor_dir, actor_state, force=True)
-
-
 if __name__ == "__main__":
     args = parse_args()
     rng = jax.random.PRNGKey(args.seed)
@@ -577,9 +566,8 @@ if __name__ == "__main__":
     ols = LinearSupport(num_objectives=reward_dim, epsilon=0.0, verbose=args.debug)
     weight_number = 0
     value = []
+    w = ols.next_weight()
     while not ols.ended() and weight_number <= args.num_weights:
-        w = ols.next_weight()
-        print("New weight: ", w)
         weight_number += 1
         out = train(args, env, w, rng)
         actor_state = out["runner_state"][0]
@@ -597,8 +585,7 @@ if __name__ == "__main__":
             )
         if args.save_policies:
             save_actor(actor_state, w, args)
-
-    print("Ols ended?", ols.ended())
+        w = ols.next_weight()
 
     env.close()
     wandb.finish()
