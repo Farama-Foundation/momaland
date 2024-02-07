@@ -7,10 +7,12 @@ import chex
 import jax
 import jax.numpy as jnp
 import numpy as np
-import orbax
+import orbax.checkpoint as ocp
 import pandas as pd
-from distrax import MultivariateNormalDiag
+from distrax import Distribution
 from etils import epath
+from flax.training import orbax_utils
+from flax.training.train_state import TrainState
 
 
 def _ma_get_pi(actor_module, params, obs: jnp.ndarray, num_agents):
@@ -28,15 +30,15 @@ def _ma_get_pi(actor_module, params, obs: jnp.ndarray, num_agents):
     return [actor_module.apply(params, obs[i]) for i in range(num_agents)]
 
 
-def _ma_sample_and_log_prob_from_pi(pi: List[MultivariateNormalDiag], num_agents: int, key: chex.PRNGKey):
+def _ma_sample_from_pi(pi: List[Distribution], num_agents: int, key: chex.PRNGKey):
     """Samples actions for all agents in all the envs at once. This is done with a for loop because distrax does not like vmapping.
 
     Args:
-        pi (List[MultivariateNormalDiag]): List of distrax distributions for agent actions (batched over envs).
+        pi (List[Distribution]): List of distrax distributions for agent actions (batched over envs).
         num_agents (int): number of agents in environments.
         key (chex.PRNGKey): PRNGKey to use for sampling: size should be (num_agents, 2).
     """
-    return [pi[i].sample_and_log_prob(seed=key[i]) for i in range(num_agents)]
+    return [pi[i].sample(seed=key[i]) for i in range(num_agents)]
 
 
 def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[np.ndarray, np.ndarray]:
@@ -55,14 +57,14 @@ def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[
     obs, _ = env.reset()
     np_obs = np.stack([obs[agent] for agent in env.possible_agents])
     done = False
-    vec_return, disc_vec_return = np.zeros_like(num_obj), np.zeros_like(num_obj)
+    vec_return, disc_vec_return = np.zeros(num_obj, dtype=np.float32), np.zeros(num_obj, dtype=np.float32)
     gamma = 1.0
     key, subkey = jax.random.split(key)
     action_keys = jax.random.split(subkey, len(env.possible_agents))
     while not done:
         pi = _ma_get_pi(actor_module, actor_state.params, jnp.array(np_obs), len(env.possible_agents))
         # for each agent sample an action
-        actions, _ = zip(*_ma_sample_and_log_prob_from_pi(pi, len(env.possible_agents), action_keys))
+        actions = _ma_sample_from_pi(pi, len(env.possible_agents), action_keys)
         actions_dict = dict()
         for i, agent in enumerate(env.possible_agents):
             actions_dict[agent] = np.array(actions[i])
@@ -73,8 +75,8 @@ def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[
         key, subkey = jax.random.split(key)
         action_keys = jax.random.split(subkey, len(env.possible_agents))
 
-        vec_return = np.array(list(rew.values())).sum(axis=0)
-        disc_vec_return = gamma * vec_return
+        vec_return += np.array(list(rew.values())).sum(axis=0)
+        disc_vec_return += gamma * vec_return
         gamma *= gamma_decay
 
     return (
@@ -130,8 +132,19 @@ def save_results(returns, exp_name, seed):
 
 def save_actor(actor_state, weights, args):
     """Saves trained actor."""
-    directory = epath.Path(f"../trained_model_{args.env_id}_{args.exp_name}_{weights}_{args.seed}")
+    cur_dir_path = os.getcwd()
+    directory = epath.Path(f"{cur_dir_path}/trained_model_{args.env_id}_{args.exp_name}_{weights}_{args.seed}")
     actor_dir = directory / "actor"
     print("Saving actor to ", actor_dir)
-    ckptr = orbax.checkpoint.PyTreeCheckpointer()
-    ckptr.save(actor_dir, actor_state, force=True)
+    ckptr = ocp.PyTreeCheckpointer()
+    save_args = orbax_utils.save_args_from_target(actor_state)
+    ckptr.save(actor_dir, actor_state, save_args=save_args, force=True)
+
+
+def load_actor_state(actor_dir_path: str, actor_state: TrainState):
+    """Loads trained actor from actor_dir_path."""
+    directory = epath.Path(actor_dir_path)
+    print("Loading actor from ", directory)
+    ckptr = ocp.PyTreeCheckpointer()
+    actor_state = ckptr.restore(actor_dir_path, item=actor_state)
+    return actor_state

@@ -69,8 +69,8 @@ def parse_args():
 
     # Algorithm specific arguments
     parser.add_argument("--num-steps-per-epoch", type=int, default=1280, help="the number of steps per epoch (higher batch size should be better)")
-    parser.add_argument("--timesteps-per-weight", type=int, default=1e5, help="timesteps per weight vector")
-    parser.add_argument("--num_weights", type=int, default=5, help="Number of different weights to train on")
+    parser.add_argument("--timesteps-per-weight", type=int, default=10e5, help="timesteps per weight vector")
+    parser.add_argument("--num-weights", type=int, default=5, help="Number of different weights to train on")
     parser.add_argument("--update-epochs", type=int, default=2, help="the number epochs to update the policy")
     parser.add_argument("--num-minibatches", type=int, default=2, help="the number of minibatches (keep small in MARL)")
     parser.add_argument("--gamma", type=float, default=0.99,
