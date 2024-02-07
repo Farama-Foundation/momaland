@@ -70,7 +70,7 @@ def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[
             actions_dict[agent] = np.array(actions[i])
         obs, rew, term, trunc, _ = env.step(actions_dict)
         np_obs = np.stack([obs[agent] for agent in env.possible_agents])
-        done = term or trunc
+        done = any(list(term.values())) or any(list(trunc.values()))
 
         key, subkey = jax.random.split(key)
         action_keys = jax.random.split(subkey, len(env.possible_agents))

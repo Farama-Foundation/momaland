@@ -77,7 +77,6 @@ def main():
     # Load the model
     actor_state = load_actor_state(args.model_dir, actor_state)
     # Perform the replay
-    print("reward dim", reward_dim)
     vec_ret, disc_vec_return = eval_mo(actor_module=actor_module, actor_state=actor_state, env=env, num_obj=reward_dim)
     print("Done!!")
     print(vec_ret)
