@@ -57,7 +57,7 @@ learning = [
     "etils >=1.3",
     "supersuit >=3.9",
     "tqdm >=4.66.1",
-    "pandas >=2.1.0",
+    "pandas >=2.0.3",
     "matplotlib >=3.8.0",
     "morl_baselines@git+https://github.com/LucasAlegre/morl-baselines"
 ]
@@ -74,7 +74,7 @@ all = [
     "etils >=1.3",
     "supersuit >=3.9",
     "tqdm >=4.66.1",
-    "pandas >=2.1.0",
+    "pandas >=2.0.3",
     "matplotlib >=3.8.0",
     "morl_baselines@git+https://github.com/LucasAlegre/morl-baselines"
 ]
