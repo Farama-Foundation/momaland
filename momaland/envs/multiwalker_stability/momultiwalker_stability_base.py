@@ -128,7 +128,7 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
     @override
     def _generate_package(self):
         super()._generate_package()
-        self.previous_pkg_angle = 0  # to init this value
+        self.previous_pkg_angle = self.package.angle  # to init this value
 
     @override
     def reset(self):
@@ -220,7 +220,7 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
 
         # package stability obj
         pkg_angle_delta = abs(self.previous_pkg_angle - self.package.angle)
-        rewards[:, 1] = pkg_angle_delta
+        rewards[:, 1] = -pkg_angle_delta
         self.previous_pkg_angle = self.package.angle
 
         return rewards, done, obs
