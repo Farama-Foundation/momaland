@@ -348,7 +348,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
         return args.lr * frac
 
     env = clip_actions_v0(env)
-    env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
+    # env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
     env = agent_indicator_v0(env)
     for agent in env.possible_agents:
         for idx in range(env.unwrapped.reward_space(agent).shape[0]):
@@ -535,7 +535,7 @@ if __name__ == "__main__":
     env: ParallelEnv = env_constructor()
     eval_env: ParallelEnv = env_constructor()
     eval_env = clip_actions_v0(eval_env)
-    eval_env = normalize_obs_v0(eval_env, env_min=-1.0, env_max=1.0)
+    # eval_env = normalize_obs_v0(eval_env, env_min=-1.0, env_max=1.0)
     eval_env = agent_indicator_v0(eval_env)
 
     env.reset()
@@ -564,7 +564,7 @@ if __name__ == "__main__":
         )
 
     ols = LinearSupport(num_objectives=reward_dim, epsilon=0.0, verbose=args.debug)
-    weight_number = 0
+    weight_number = 1
     value = []
     w = ols.next_weight()
     while not ols.ended() and weight_number <= args.num_weights:
