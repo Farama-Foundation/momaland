@@ -7,45 +7,8 @@ import numpy as np
 import numpy.typing as npt
 import pygame
 from gymnasium import spaces
-from OpenGL.GL import (
-    GL_AMBIENT,
-    GL_AMBIENT_AND_DIFFUSE,
-    GL_BLEND,
-    GL_COLOR_BUFFER_BIT,
-    GL_COLOR_MATERIAL,
-    GL_DEPTH_BUFFER_BIT,
-    GL_DEPTH_TEST,
-    GL_DIFFUSE,
-    GL_FRONT_AND_BACK,
-    GL_LIGHT0,
-    GL_LIGHTING,
-    GL_MODELVIEW,
-    GL_MODELVIEW_MATRIX,
-    GL_ONE_MINUS_SRC_ALPHA,
-    GL_POSITION,
-    GL_PROJECTION,
-    GL_SMOOTH,
-    GL_SRC_ALPHA,
-    glBlendFunc,
-    glClear,
-    glColor4f,
-    glColorMaterial,
-    glEnable,
-    glGetFloatv,
-    glLight,
-    glLightfv,
-    glLineWidth,
-    glLoadIdentity,
-    glMatrixMode,
-    glMultMatrixf,
-    glPopMatrix,
-    glPushMatrix,
-    glShadeModel,
-)
-from OpenGL.raw.GLU import gluLookAt, gluPerspective
 from pygame import DOUBLEBUF, OPENGL
 
-from momaland.envs.crazyrl.gl_utils import axes, field, point, target_point
 from momaland.utils.env import MOParallelEnv
 
 
@@ -313,6 +276,44 @@ class CrazyRLBaseParallelEnv(MOParallelEnv):
     @override
     def render(self):
         """Renders the current frame of the environment. Only works in human rendering mode."""
+        from OpenGL.GL import (
+            GL_AMBIENT,
+            GL_AMBIENT_AND_DIFFUSE,
+            GL_BLEND,
+            GL_COLOR_BUFFER_BIT,
+            GL_COLOR_MATERIAL,
+            GL_DEPTH_BUFFER_BIT,
+            GL_DEPTH_TEST,
+            GL_DIFFUSE,
+            GL_FRONT_AND_BACK,
+            GL_LIGHT0,
+            GL_LIGHTING,
+            GL_MODELVIEW,
+            GL_MODELVIEW_MATRIX,
+            GL_ONE_MINUS_SRC_ALPHA,
+            GL_POSITION,
+            GL_PROJECTION,
+            GL_SMOOTH,
+            GL_SRC_ALPHA,
+            glBlendFunc,
+            glClear,
+            glColor4f,
+            glColorMaterial,
+            glEnable,
+            glGetFloatv,
+            glLight,
+            glLightfv,
+            glLineWidth,
+            glLoadIdentity,
+            glMatrixMode,
+            glMultMatrixf,
+            glPopMatrix,
+            glPushMatrix,
+            glShadeModel,
+        )
+        from OpenGL.raw.GLU import gluLookAt, gluPerspective
+
+        from momaland.envs.crazyrl.gl_utils import axes, field, point, target_point
 
         def init_window():
             """Initializes the PyGame window."""
