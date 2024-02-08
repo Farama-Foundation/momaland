@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Surround" href="../surround/" /><link rel="prev" title="MO-Pistonball" href="../mopistonball/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="MO-Pistonball" href="../mopistonball/" /><link rel="prev" title="MO-Multiwalker" href="../momultiwalker/" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>MO-SameGame - MOMAland Documentation</title>
+        <title>MO-MultiwalkerStability - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -177,9 +177,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../moingenious/">MO-Ingenious</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../moitem_gathering/">MO-ItemGathering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../momultiwalker/">MO-Multiwalker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../momultiwalker_stability/">MO-MultiwalkerStability</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">MO-MultiwalkerStability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mopistonball/">MO-Pistonball</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">MO-SameGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mosame_game/">MO-SameGame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../surround/">Surround</a></li>
 </ul>
 </li>
@@ -215,7 +215,7 @@
         </a>
         <div class="content-icon-container">
           <div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/rradules/momaland/edit/main/docs/environments/mosame_game.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/rradules/momaland/edit/main/docs/environments/momultiwalker_stability.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -231,14 +231,17 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="mo-samegame">
-<h1>MO-SameGame<a class="headerlink" href="#mo-samegame" title="Link to this heading">#</a></h1>
+          <section id="mo-multiwalkerstability">
+<h1>MO-MultiwalkerStability<a class="headerlink" href="#mo-multiwalkerstability" title="Link to this heading">#</a></h1>
+<figure class="align-default" id="momultiwalker-stability">
+<a class="reference internal image-reference" href="../../_images/momultiwalker_stability.gif"><img alt="../../_images/momultiwalker_stability.gif" src="../../_images/momultiwalker_stability.gif" style="width: 200px;" /></a>
+</figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -248,24 +251,52 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Agents names</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">agent_i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">[0,</span> <span class="pre">0]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">walker_i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">[0,</span> <span class="pre">2]</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>Action Space</p></td>
-<td><p>Discrete(225)</p></td>
+<td><p>Box(-1.0, 1.0, (4,), float32)</p></td>
 </tr>
 <tr class="row-even"><td><p>Observation Space</p></td>
-<td><p>Dict(‘action_mask’: Box(0, 1, (225,), int8), ‘observation’: Box(0, 1, (15, 15, 5), int8))</p></td>
+<td><p>Box(-inf, inf, (31,), float32)</p></td>
 </tr>
 <tr class="row-odd"><td><p>Reward Space</p></td>
-<td><p>Box(0.0, 50625.0, (5,), float32)</p></td>
+<td><p>Box([-2.100e+02 -1.567e-02], [0.46 0.  ], (2,), float32)</p></td>
 </tr>
 <tr class="row-even"><td><p>Import</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">momaland.envs.mosame_game_v0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">momaland.envs.momultiwalker_stability_v0</span></code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>SameGame environment for multiple agents with multiple objectives.</p>
+<p>A sister environment to <a class="reference external" href="https://momaland.farama.org/environments/momultiwalker">MO-Multiwalker</a>, which is the MO adaptation of the <a class="reference external" href="https://pettingzoo.farama.org/environments/sisl/multiwalker/">Multiwalker</a> environment from PettingZoo.</p>
+<section id="observation-space">
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<p>See <a class="reference external" href="https://pettingzoo.farama.org/environments/sisl/multiwalker/#observation-space">PettingZoo documentation</a>.</p>
+</section>
+<section id="action-space">
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<p>The action space is a vector representing the force exerted at the 4 available joints (hips and knees), giving a continuous action space with a 4 element vector.
+The higher bound is <code class="docutils literal notranslate"><span class="pre">1</span></code>, the lower bound is <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
+</section>
+<section id="reward-space">
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<p>The reward space is a 2D vector where; the first value contains the sum of following rewards:</p>
+<ul class="simple">
+<li><p>Maximizing distance traveled towards the end of the level during one step. <code class="docutils literal notranslate"><span class="pre">[-0.46,</span> <span class="pre">0.46]</span></code></p></li>
+<li><p>Penalty for agent falling. <code class="docutils literal notranslate"><span class="pre">[-110,</span> <span class="pre">0]</span></code></p></li>
+<li><p>Penalty for the package falling. <code class="docutils literal notranslate"><span class="pre">[-100,</span> <span class="pre">0]</span></code>
+and the second value contains:</p></li>
+<li><p>A penalty based on the change of angle of the package, to avoid shaking the package. <code class="docutils literal notranslate"><span class="pre">[-0.01567,</span> <span class="pre">0]</span></code></p></li>
+</ul>
+</section>
+<section id="episode-termination">
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<p>The episode is terminated if the package is dropped. If <code class="docutils literal notranslate"><span class="pre">terminate_on_fall</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), then environment is terminated if a single agent falls even if the package is still alive.</p>
+</section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<p>See <a class="reference external" href="https://pettingzoo.farama.org/environments/sisl/multiwalker/#arguments">PettingZoo documentation</a>.</p>
+</section>
 </section>
 
         </article>
@@ -273,23 +304,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../surround/">
+          <a class="next-page" href="../mopistonball/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Surround</div>
+                <div class="title">MO-Pistonball</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../mopistonball/">
+          <a class="prev-page" href="../momultiwalker/">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">MO-Pistonball</div>
+                <div class="title">MO-Multiwalker</div>
                 
               </div>
             </a>
@@ -311,8 +342,31 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">MO-MultiwalkerStability</a><ul>
+<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
+<li><a class="reference internal" href="#action-space">Action Space</a></li>
+<li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#episode-termination">Episode Termination</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
