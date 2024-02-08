@@ -59,7 +59,7 @@ learning = [
     "tqdm >=4.66.1",
     "pandas >=2.0.3",
     "matplotlib >=3.7.4",
-    "morl_baselines@git+https://github.com/LucasAlegre/morl-baselines"
+    "morl_baselines[all] @ git+https://github.com/LucasAlegre/morl-baselines"
 ]
 all = [
     # All dependencies above except accept-rom-license
@@ -76,7 +76,7 @@ all = [
     "tqdm >=4.66.1",
     "pandas >=2.0.3",
     "matplotlib >=3.7.4",
-    "morl_baselines@git+https://github.com/LucasAlegre/morl-baselines"
+    "morl_baselines[all] @git+https://github.com/LucasAlegre/morl-baselines"
 ]
 testing = ["pytest ==7.1.3"]
 
