@@ -53,8 +53,6 @@ Contribute to the Docs <https://github.com/rradules/momaland/tree/master/docs/>
 An API standard for multi-objective multi-agent reinforcement learning (MOMARL)
 ```
 
-# An API standard for multi-objective multi-agent reinforcement learning (MOMARL)
-
 <!-- ```{figure} _static/img/environments-demo.gif TODO
    :width: 480px
    :name: MOMAland Environments
