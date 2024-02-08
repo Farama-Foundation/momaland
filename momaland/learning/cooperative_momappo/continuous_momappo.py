@@ -105,7 +105,7 @@ class Actor(nn.Module):
     """Actor class for the agent."""
 
     action_dim: Sequence[int]
-    net_arch: np.ndarray
+    net_arch: jnp.ndarray
     activation: str = "tanh"
 
     @nn.compact
@@ -131,7 +131,7 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     """Critic class for the agent."""
 
-    net_arch: np.ndarray
+    net_arch: jnp.ndarray
     activation: str = "tanh"
 
     @nn.compact
@@ -348,7 +348,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
         return args.lr * frac
 
     env = clip_actions_v0(env)
-    # env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
+    env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
     env = agent_indicator_v0(env)
     for agent in env.possible_agents:
         for idx in range(env.unwrapped.reward_space(agent).shape[0]):
@@ -502,6 +502,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
                     f"losses_{weights}/entropy": loss_info[1][2].mean(),
                     f"losses_{weights}/approx_kl": loss_info[1][3].mean(),
                     "global_step": current_timestep,
+                    "charts/SPS": current_timestep / (time.time() - start_time),
                 }
             )
 
@@ -528,6 +529,8 @@ if __name__ == "__main__":
     if args.track and args.auto_tag:
         autotag()
 
+    print("Let's go, running on", jax.devices())
+
     env_constructor = all_environments[args.env_id].parallel_env
     start_time = time.time()
 
@@ -535,7 +538,7 @@ if __name__ == "__main__":
     env: ParallelEnv = env_constructor()
     eval_env: ParallelEnv = env_constructor()
     eval_env = clip_actions_v0(eval_env)
-    # eval_env = normalize_obs_v0(eval_env, env_min=-1.0, env_max=1.0)
+    eval_env = normalize_obs_v0(eval_env, env_min=-1.0, env_max=1.0)
     eval_env = agent_indicator_v0(eval_env)
 
     env.reset()
@@ -568,13 +571,14 @@ if __name__ == "__main__":
     value = []
     w = ols.next_weight()
     while not ols.ended() and weight_number <= args.num_weights:
-        weight_number += 1
         out = train(args, env, w, rng)
         actor_state = out["runner_state"][0]
         _, disc_vec_return = policy_evaluation_mo(
             actor, actor_state, env=eval_env, num_obj=ols.num_objectives, gamma=args.gamma
         )
         value.append(disc_vec_return)
+        print(f"Weight {weight_number}/{args.num_weights} done!")
+        print(f"Value: {disc_vec_return}, weight: {w}")
         ols.add_solution(value[-1], w)
         if args.track:
             log_all_multi_policy_metrics(
@@ -586,6 +590,7 @@ if __name__ == "__main__":
         if args.save_policies:
             save_actor(actor_state, w, args)
         w = ols.next_weight()
+        weight_number += 1
 
     env.close()
     wandb.finish()

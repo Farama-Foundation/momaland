@@ -500,6 +500,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
                     f"losses_{weights}/entropy": loss_info[1][2].mean(),
                     f"losses_{weights}/approx_kl": loss_info[1][3].mean(),
                     "global_step": current_timestep,
+                    "charts/SPS": current_timestep / (time.time() - start_time),
                 }
             )
 
@@ -525,6 +526,8 @@ if __name__ == "__main__":
 
     if args.track and args.auto_tag:
         autotag()
+
+    print("Let's go, running on", jax.devices())
 
     env_constructor = all_environments[args.env_id].parallel_env
     start_time = time.time()
@@ -560,17 +563,18 @@ if __name__ == "__main__":
         )
 
     ols = LinearSupport(num_objectives=reward_dim, epsilon=0.0, verbose=args.debug)
-    weight_number = 0
+    weight_number = 1
     value = []
     w = ols.next_weight()
     while not ols.ended() and weight_number <= args.num_weights:
-        weight_number += 1
         out = train(args, env, w, rng)
         actor_state = out["runner_state"][0]
         _, disc_vec_return = policy_evaluation_mo(
             actor, actor_state, env=eval_env, num_obj=ols.num_objectives, gamma=args.gamma
         )
         value.append(disc_vec_return)
+        print(f"Weight {weight_number}/{args.num_weights} done!")
+        print(f"Value: {disc_vec_return}, weight: {w}")
         ols.add_solution(value[-1], w)
         if args.track:
             log_all_multi_policy_metrics(
@@ -582,6 +586,7 @@ if __name__ == "__main__":
         if args.save_policies:
             save_actor(actor_state, w, args)
         w = ols.next_weight()
+        weight_number += 1
 
     env.close()
     wandb.finish()
