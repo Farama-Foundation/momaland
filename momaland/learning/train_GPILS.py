@@ -1,7 +1,7 @@
 """MO Gymnasium on centralised agents versions of MOMAland."""
 
 import numpy as np
-from morl_baselines.multi_policy.gpi_pd.gpi_pd import GPIPD
+from morl_baselines.multi_policy.gpi_pd.gpi_pd import GPILS
 
 from momaland.envs.item_gathering import item_gathering
 from momaland.utils.parallel_wrappers import CentraliseAgent
@@ -18,9 +18,8 @@ if __name__ == "__main__":
     eval_env = make_single_agent_ig_env()
 
     gpi_pd = False
-    g = 1000
 
-    agent = GPIPD(
+    agent = GPILS(
         env,
         num_nets=2,
         max_grad_norm=None,
@@ -38,7 +37,7 @@ if __name__ == "__main__":
         per=gpi_pd,
         gpi_pd=gpi_pd,
         use_gpi=True,
-        gradient_updates=g,
+        gradient_updates=20,
         target_net_update_freq=200,
         tau=1,
         dyna=gpi_pd,
@@ -51,7 +50,7 @@ if __name__ == "__main__":
         dynamics_rollout_starts=5000,
         dynamics_rollout_len=1,
         real_ratio=0.5,
-        log=False,
+        log=True,
         project_name="MOMAland-Baselines",
         experiment_name="GPI-PD-IG",
     )
