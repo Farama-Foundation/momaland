@@ -1,4 +1,5 @@
 """Various wrappers for Parallel MO environments."""
+from collections import namedtuple
 from typing import Optional
 
 import numpy as np
@@ -163,6 +164,8 @@ class CentraliseAgent(BaseParallelWrapper):
         """
         super().__init__(env)
         self.action_mapping = action_mapping
+        self.unwrapped.spec = namedtuple("Spec", ["id"])
+        self.unwrapped.spec.id = self.env.metadata.get("name")
         if self.env.metadata.get("central_observation"):
             self.observation_space = env.central_observation_space
         else:
@@ -202,7 +205,7 @@ class CentraliseAgent(BaseParallelWrapper):
             joint_reward,
             np.any(list(terminations.values())),
             np.any(list(truncations.values())),
-            list(infos.values()),
+            infos,
         )
 
     def reset(self, seed=None):

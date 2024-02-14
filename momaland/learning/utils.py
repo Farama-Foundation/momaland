@@ -139,6 +139,7 @@ def map_actions(actions, num_actions):
     return sum([actions[i] * num_actions**i for i in range(len(actions))])
 
 
+'''
 def remap_actions(action, num_agents, num_actions):
     """Remap a single number to a list of actions."""
     actions = []
@@ -146,3 +147,9 @@ def remap_actions(action, num_agents, num_actions):
         actions.append(action % num_actions)
         action = action // num_actions
     return actions
+'''
+
+
+def remap_actions(action, num_agents, num_actions):
+    """Remap a single number to a list of actions."""
+    return np.unravel_index(action, (num_actions,) * num_agents)
