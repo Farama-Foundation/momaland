@@ -17,7 +17,6 @@ Central observation:
         - a central observation function: self.state()
 """
 
-import functools
 import random
 from copy import deepcopy
 from os import path
@@ -209,15 +208,11 @@ class MOItemGathering(MOParallelEnv):
         self.map_bg_imgs = []
         self.window = None
 
-    # this cache ensures that same space object is returned for the same agent
-    # allows action space seeding to work as expected
-    @functools.lru_cache(maxsize=None)
     @override
     def observation_space(self, agent):
         # gymnasium spaces are defined and documented here: https://gymnasiuspspom.farama.org/api/spaces/
         return self.observation_spaces[agent]
 
-    @functools.lru_cache(maxsize=None)
     @override
     def action_space(self, agent):
         return self.action_spaces[agent]
