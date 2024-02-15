@@ -167,7 +167,7 @@ class CentraliseAgent(BaseParallelWrapper):
         self.unwrapped.spec = namedtuple("Spec", ["id"])
         self.unwrapped.spec.id = self.env.metadata.get("name")
         if self.env.metadata.get("central_observation"):
-            self.observation_space = env.central_observation_space
+            self.observation_space = env.get_central_observation_space()
         else:
             self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
         # self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})

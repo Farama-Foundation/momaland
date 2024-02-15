@@ -221,7 +221,7 @@ class MOItemGathering(MOParallelEnv):
     def reward_space(self, agent):
         return self.reward_spaces[agent]
 
-    def central_observation_space(self):
+    def get_central_observation_space(self):
         """Returns the central observation space."""
         return self.central_observation_space
 
