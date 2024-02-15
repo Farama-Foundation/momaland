@@ -168,14 +168,17 @@ class CentraliseAgent(BaseParallelWrapper):
         self.unwrapped.spec.id = self.env.metadata.get("name")
         if self.env.metadata.get("central_observation"):
             self.observation_space = env.get_central_observation_space()
+            self.unwrapped.observation_space = env.get_central_observation_space()
         else:
             self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
         # self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
         # For compatibility with MORL baselines
         # Make the action space a Box space with the same bounds as the first agent's action space
         ag0_action_space = env.action_space(self.possible_agents[0])
+        self.num_actions = ag0_action_space.n
         if self.action_mapping:
-            self.action_space = Discrete(ag0_action_space.n ** len(self.possible_agents))
+            self.action_space = Discrete(self.num_actions ** len(self.possible_agents))
+            self.unwrapped.action_space = self.action_space
         elif self.env.metadata.get("central_observation"):
             self.action_space = Box(
                 low=ag0_action_space.start,
@@ -186,12 +189,13 @@ class CentraliseAgent(BaseParallelWrapper):
         else:
             self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
         self.reward_space = self.env.reward_space(self.possible_agents[0])
+        self.unwrapped.reward_space = self.reward_space
 
     def step(self, actions):
         """Steps through the environment, joining the returned values for the central agent."""
         # Remake the action list into a dictionary compatible with MOMAland environments
         if self.action_mapping:
-            remapped_actions = remap_actions(actions, len(self.agents), self.env.action_space(self.agents[0]).n)
+            remapped_actions = remap_actions(actions, len(self.agents), self.num_actions)
             actions = {agent: remapped_actions[i] for i, agent in enumerate(self.agents)}
         elif self.env.metadata.get("central_observation"):
             actions = {agent: actions[num] for num, agent in enumerate(self.possible_agents)}
