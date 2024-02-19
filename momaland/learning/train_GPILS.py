@@ -23,7 +23,7 @@ if __name__ == "__main__":
         learning_rate=3e-4,
         gamma=0.99,
         batch_size=128,
-        net_arch=[64, 64],
+        net_arch=[256, 256],
         buffer_size=int(2e5),
         initial_epsilon=1.0,
         final_epsilon=0.05,
