@@ -40,7 +40,7 @@ def main():
     # Env init
     if args.continuous:
         env = clip_actions_v0(env)
-        # env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
+        env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
     env = agent_indicator_v0(env)
     reward_dim = env.unwrapped.reward_space(env.possible_agents[0]).shape[0]
 
