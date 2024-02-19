@@ -552,6 +552,7 @@ if __name__ == "__main__":
     critic = Critic(net_arch=args.critic_net_arch, activation=args.activation)
     vmapped_get_value = vmap(critic.apply, in_axes=(None, 0))
     critic.apply = jax.jit(critic.apply)
+    actor.apply = jax.jit(actor.apply)
 
     if args.track:
         exp_name = args.exp_name
