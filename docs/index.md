@@ -32,7 +32,7 @@ environments/all-envs
 :caption: Tutorials
 
 tutorials/custom_env
-tutorials/training
+tutorials/learning_algorithms
 ```
 
 ```{toctree}
