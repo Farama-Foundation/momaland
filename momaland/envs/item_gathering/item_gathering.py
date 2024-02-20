@@ -365,7 +365,7 @@ class MOItemGathering(MOParallelEnv):
         # initial collision check, verify all agent pairs
         new_positions, collisions = self._verify_collisions(collisions, new_positions)
 
-        max_collisions = self.num_agents * 10
+        max_collisions = self.num_agents * 50
         while len(collisions) > 0 and max_collisions > 0:
             new_positions, collisions = self._verify_collisions(collisions, new_positions)
             max_collisions -= 1
