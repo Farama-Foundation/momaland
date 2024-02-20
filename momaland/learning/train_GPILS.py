@@ -1,5 +1,7 @@
 """MO Gymnasium on centralised agents versions of MOMAland."""
 
+import argparse
+
 import numpy as np
 from morl_baselines.multi_policy.gpi_pd.gpi_pd import GPILS
 
@@ -14,6 +16,11 @@ def make_single_agent_ig_env():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
+    args = parser.parse_args()
+    seed = args.seed
+
     env = make_single_agent_ig_env()
     eval_env = make_single_agent_ig_env()
 
@@ -38,7 +45,7 @@ if __name__ == "__main__":
         tau=1,
         log=True,
         project_name="MOMAland-Baselines",
-        seed=42,
+        seed=seed,
     )
 
     timesteps_per_iter = 10000
