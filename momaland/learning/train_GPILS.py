@@ -63,7 +63,7 @@ if __name__ == "__main__":
         gradient_updates=10,
         target_net_update_freq=200,
         tau=1,
-        log=False,
+        log=True,
         project_name="MOMAland-Baselines",
         seed=seed,
     )
