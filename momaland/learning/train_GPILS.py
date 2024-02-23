@@ -28,8 +28,7 @@ def make_single_agent_ig_env(objectives=3):
         map = get_map_4_O()
     else:
         map = DEFAULT_MAP
-    print(map)
-    ig_env = item_gathering.parallel_env(initial_map=map, num_timesteps=100, randomise=False, render_mode=None)
+    ig_env = item_gathering.parallel_env(initial_map=map, num_timesteps=50, randomise=False, render_mode=None)
     return CentraliseAgent(ig_env, action_mapping=True)
 
 
@@ -43,6 +42,9 @@ if __name__ == "__main__":
 
     env = make_single_agent_ig_env(objectives=obj)
     eval_env = make_single_agent_ig_env(objectives=obj)
+
+    ref_point = np.zeros(obj)
+    print(ref_point)
 
     agent = GPILS(
         env,
@@ -74,7 +76,7 @@ if __name__ == "__main__":
     agent.train(
         total_timesteps=15 * timesteps_per_iter,
         eval_env=eval_env,
-        ref_point=np.array([0.0, 0.0, 0.0]),
+        ref_point=ref_point,
         weight_selection_algo=algo,
         timesteps_per_iter=timesteps_per_iter,
     )
