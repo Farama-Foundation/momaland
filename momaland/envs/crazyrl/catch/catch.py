@@ -3,6 +3,7 @@
 from typing_extensions import override
 
 import numpy as np
+from gymnasium.utils import EzPickle
 from pettingzoo.utils.wrappers import AssertOutOfBoundsWrapper
 
 from momaland.envs.crazyrl.crazyRL_base import FPS, CrazyRLBaseParallelEnv
@@ -49,7 +50,7 @@ def raw_env(*args, **kwargs):
     return Catch(*args, **kwargs)
 
 
-class Catch(CrazyRLBaseParallelEnv):
+class Catch(CrazyRLBaseParallelEnv, EzPickle):
     """A `Parallel` environment where drones learn how to surround a moving target trying to escape.
 
     ## Observation Space
@@ -108,7 +109,7 @@ class Catch(CrazyRLBaseParallelEnv):
             init_target_location (nparray, optional): Array of the initial position of the moving target
             target_speed (float, optional): Distance traveled by the target at each timestep
         """
-
+        EzPickle.__init__(self, *args, target_speed=0.1, **kwargs)
         super().__init__(*args, **kwargs)
         self.target_speed = target_speed
 

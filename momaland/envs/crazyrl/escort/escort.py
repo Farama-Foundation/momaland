@@ -3,6 +3,7 @@
 from typing_extensions import override
 
 import numpy as np
+from gymnasium.utils import EzPickle
 from pettingzoo.utils.wrappers import AssertOutOfBoundsWrapper
 
 from momaland.envs.crazyrl.crazyRL_base import FPS, CrazyRLBaseParallelEnv
@@ -49,7 +50,7 @@ def raw_env(*args, **kwargs):
     return Escort(*args, **kwargs)
 
 
-class Escort(CrazyRLBaseParallelEnv):
+class Escort(CrazyRLBaseParallelEnv, EzPickle):
     """A `Parallel` environment where drones learn how to escort a moving target.
 
     ## Observation Space
@@ -110,6 +111,7 @@ class Escort(CrazyRLBaseParallelEnv):
             final_target_location (nparray[float], optional): Array of the final position of the moving target
             num_intermediate_points (int, optional): Number of intermediate points in the target trajectory
         """
+        EzPickle.__init__(self, *args, num_intermediate_points, final_target_location, **kwargs)
         self.final_target_location = final_target_location
 
         super().__init__(*args, **kwargs)

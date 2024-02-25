@@ -86,6 +86,7 @@ from typing_extensions import override
 import numpy as np
 from gymnasium import spaces
 from gymnasium.logger import warn
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import agent_selector, wrappers
 
 from momaland.utils.env import MOAECEnv
@@ -122,7 +123,7 @@ def raw_env(**kwargs):
     return MOSameGame(**kwargs)
 
 
-class MOSameGame(MOAECEnv):
+class MOSameGame(MOAECEnv, EzPickle):
     """SameGame environment for multiple agents with multiple objectives."""
 
     metadata = {"render_modes": ["ansi"], "name": "mosame_game_v0", "is_parallelizable": False}
@@ -150,6 +151,16 @@ class MOSameGame(MOAECEnv):
             color_rewards: True = agents get separate rewards for each color, False = agents get a single reward accumulating all colors
             render_mode: The render mode
         """
+        EzPickle.__init__(
+            self,
+            board_width,
+            board_height,
+            num_colors,
+            num_agents,
+            team_rewards,
+            color_rewards,
+            render_mode,
+        )
         self.env = super().__init__()
 
         self.rng = np.random.default_rng()

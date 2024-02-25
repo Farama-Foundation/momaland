@@ -29,6 +29,7 @@ import numpy as np
 import pygame
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete, Tuple
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 
 from momaland.envs.item_gathering.asset_utils import del_colored, get_colored
@@ -73,7 +74,7 @@ def raw_env(**kwargs):
     return MOItemGathering(**kwargs)
 
 
-class MOItemGathering(MOParallelEnv):
+class MOItemGathering(MOParallelEnv, EzPickle):
     """Environment for the MO-ItemGathering problem.
 
     The init method takes in environment arguments and should define the following attributes:
@@ -105,6 +106,13 @@ class MOItemGathering(MOParallelEnv):
             randomise: whether to randomise the map, at each episode
             render_mode: render mode for the environment
         """
+        EzPickle.__init__(
+            self,
+            num_timesteps,
+            initial_map,
+            randomise,
+            render_mode,
+        )
         self.num_timesteps = num_timesteps
         self.current_timestep = 0
         self.render_mode = render_mode
