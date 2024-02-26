@@ -25,8 +25,8 @@ import momaland  # noqa: E402
 
 
 project = "MOMAland"
-copyright = "2023"
-author = ""
+copyright = "2024"
+author = "Farama Foundation"
 
 # The full version, including alpha/beta/rc tags
 release = momaland.__version__
@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.githubpages",
     "sphinx.ext.viewcode",
+    "sphinx_github_changelog",
     "myst_parser",
 ]
 
@@ -68,6 +69,7 @@ napoleon_custom_sections = [("Returns", "params_style")]
 #
 html_theme = "furo"
 html_title = "MOMAland Documentation"
+html_baseurl = "https://momaland.farama.org"
 html_copy_source = False
 # html_favicon = "_static/img/favicon.png"
 html_theme_options = {
@@ -75,7 +77,8 @@ html_theme_options = {
     # "dark_logo": "img/PettingZoo_White.svg",
     # "gtag": "G-Q4EGMJ3R24",
     "versioning": True,
-    "source_repository": "https://github.com/rradules/momaland/",
+    "source_repository": "https://github.com/Farama-Foundation/momaland",
+    "description": "MOMAland is a standardized API and a suite of environments for multi-objective multi-agent reinforcement learning (MOMARL)",
     "source_branch": "main",
     "source_directory": "docs/",
 }
@@ -86,3 +89,6 @@ html_css_files = []
 
 # Include both the class and __init__ docstrings when describing the class
 autoclass_content = "both"
+
+# -- Generate Changelog -------------------------------------------------
+sphinx_github_changelog_token = os.environ.get("SPHINX_GITHUB_CHANGELOG_TOKEN")
