@@ -46,29 +46,37 @@ class MOIngenious(MOAECEnv):
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=18, render_mode=None):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=0, reward_sharing=None, fully_obs=False, render_mode=None,):
         """Initializes the multi-objective Ingenious game.
 
         Args:
             num_players (int): The number of players in the environment. Default: 2
             init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
             num_colors (int): The number of colors in the game. Default: 4
-            board_size (int): The size of the board. Default: 8
-            limitation_score(int): Limitation to refresh the score board for any color. Default: 20
+            board_size (int): The size of the board. Default: 0 (0 means the board size id dependent on num_players like { 2:6, 3:7 , 4:8}; otherwise, set the board_size freely between 3 and 8)
+            #limitation_score(int): Limitation to refresh the score board for any color. Default: 20
+            reward_sharing: Partnership Game.It should be a set like {'agent_0':0, 'agent_1':0,'agent_2':1, 'agent_3':1} where teammates will share the reward. Default: None
+            fully_obs: Fully observable or not. Default:False
             render_mode (str): The rendering mode. Default: None
         """
-        self.board_size = board_size
+
         self.num_colors = num_colors
         self.init_draw = init_draw
         self.num_players = num_players
-        self.limitation_score = limitation_score
+        self.limitation_score = 18 # max score in score board for one certain color.
+        self.reward_sharing = reward_sharing
+        self.fully_obs = fully_obs
+        if board_size == 0:
+            self.board_size = { 2:6, 3:7, 4:8}.get(self.num_players)
+        else:
+            self.board_size = board_size
 
         self.game = IngeniousBase(
-            num_players=num_players,
-            init_draw=init_draw,
-            num_colors=num_colors,
-            board_size=board_size,
-            limitation_score=limitation_score,
+            num_players=self.num_players,
+            init_draw=self.init_draw,
+            num_colors=self.num_colors,
+            board_size=self.board_size,
+            limitation_score=self.limitation_score,
         )
 
         self.possible_agents = ["agent_" + str(r) for r in range(num_players)]
@@ -93,7 +101,7 @@ class MOIngenious(MOAECEnv):
                             "board": Box(
                                 0, len(ALL_COLORS), shape=(2 * self.board_size - 1, 2 * self.board_size - 1), dtype=np.float32
                             ),
-                            "tiles": Box(0, self.num_colors, shape=(self.init_draw, 2), dtype=np.int32),
+                            "tiles": Box(0, self.num_colors, shape=(self.init_draw, ), dtype=np.int32),
                             "scores": Box(0, self.game.limitation_score, shape=(self.num_colors,), dtype=np.int32),
                         }
                     ),
@@ -186,6 +194,14 @@ class MOIngenious(MOAECEnv):
         # update accumulate_rewards
         self._accumulate_rewards()
 
+        # update teammate score(copy current agent score to the teammate)
+        if self.reward_sharing is not None:
+            index=self.reward_sharing[current_agent]
+            for agent in self.agents:
+                if agent != current_agent and self.reward_sharing[agent]==index:
+                    self.game.score[agent]=self.game.score[current_agent]
+
+
         # update to next agent
         self.agent_selection = self.agents[self.game.agent_selector]
 
@@ -194,12 +210,22 @@ class MOIngenious(MOAECEnv):
         else:
             self.refresh_cumulative_reward = False
 
+
+
     @override
     def observe(self, agent):
         board_vals = np.array(self.game.board_array, dtype=np.float32)
-        p_tiles = np.array(self.game.p_tiles[agent], dtype=np.int32)
-        p_score = np.array(list(self.game.score[agent].values()), dtype=np.int32)
+        if self.fully_obs:
+            p_tiles = np.array([item for item in self.game.p_tiles.values()], dtype=np.int32)
+            tmp=[]
+            for agent_score in self.game.score.values():
+                tmp.append([score for score in agent_score.values()])
+            p_score = np.array(tmp, dtype=np.int32)
+        else:
+            # print(self.game.p_tiles[agent])
+            p_tiles = np.array(self.game.p_tiles[agent], dtype=np.int32)
 
+            p_score = np.array(list(self.game.score[agent].values()), dtype=np.int32)
         observation = {"board": board_vals, "tiles": p_tiles, "scores": p_score}
         action_mask = np.array(self.game.return_action_list(), dtype=np.int8)
 

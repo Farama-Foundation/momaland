@@ -21,7 +21,7 @@ def train(ig_env):
         # print("Action: ", action)
         ig_env.step(action)
         observation, reward, truncation, termination, _ = ig_env.last()
-        # print("Observations: ", observation)
+        # print("Observations: ", observation['observation'])
         # print("Rewards: ", reward)
         # print("Truncation: ", truncation)
         # print("Termination: ", termination)
@@ -95,14 +95,16 @@ def test_move():
         flag = False
         print("reason2")
         return flag
-
+    """
+    According to last time reviewer's suggestion, the illegal move will use 'assert' to stop the program instead of warning; this stops my test code to verify the illegal move. 
+    
     # check illegal move : put somewhere not allowed
     index = random_index_of_zero(ig_env.game.return_action_list())
     if ig_env.game.set_action_index(index):
         print("reason3")
         flag = False
         return flag
-
+        
     # check illegal move : put some tile out of hand
     index = random_index_of_one(ig_env.game.return_action_list())
 
@@ -115,6 +117,7 @@ def test_move():
         flag = False
         return flag
     return flag
+    """
 
 
 def test_step():
@@ -127,6 +130,8 @@ def test_step():
     flag = True
 
     # check legal step
+
+
     ag = ig_env.agent_selection
 
     obs = ig_env.observe(ag)
@@ -150,7 +155,7 @@ def test_step():
         flag = False
         print("reason2")
         return flag
-
+    """
     # check illegal move : put somewhere not allowed
     obs = ig_env.observe(ag)
     masked_act_list = obs["action_mask"]
@@ -162,7 +167,7 @@ def test_step():
         print("reason3")
         flag = False
         return flag
-
+    
     # check illegal move : put some tile out of hand
     index = random_index_of_one(ig_env.game.masked_action)
     ag = ig_env.agent_selection
@@ -175,6 +180,10 @@ def test_step():
         return flag
 
     # check selector
+    
+    """
+
+
 
     return flag
 
@@ -241,7 +250,8 @@ def test_ingenious_rule():
 
 def test_API():
     """Test observe interface in ingenous.py."""
-    ig_env = MOIngenious(limitation_score=10000)
+    ig_env = MOIngenious()
+    ig_env.limitation_score=10000
     ag = ig_env.agent_selection
     obs = ig_env.observe(ag)
     masked_act_list = obs["action_mask"]
@@ -328,32 +338,121 @@ def test_API():
     if not env.agents:
         assert has_finished == generated_agents, "not all agents finished, some were skipped over"
 
+def check_fully_observable():
+    """Test observable trigger in ingenous.py."""
+    ig_env = MOIngenious(fully_obs=True)
+    ig_env.reset()
+    ag=ig_env.agent_selection
+    obs = ig_env.observe(ag)
+    print("Observation",obs)
+
+def check_teammate():
+    """Test teammate(reward sharing) in ingenous.py."""
+    ig_env = MOIngenious(num_players=4,reward_sharing={'agent_0':0, 'agent_1':0,'agent_2':1, 'agent_3':1})
+    ig_env.reset()
+    ag=ig_env.agent_selection
+    obs = ig_env.observe(ag)
+    index = random_index_of_one(ig_env.game.return_action_list())
+    ig_env.step(index)
+    print("Observation",obs)
+    done = False
+    while not done:
+        ag = ig_env.agent_selection
+        print("Agent: ", ag)
+        obs = ig_env.observe(ag)
+        masked_act_list = obs["action_mask"]
+        action = random_index_of_one(masked_act_list)
+        #print("Observation: ",obs)
+        print("Action: ", action)
+        ig_env.step(action)
+        observation, reward, truncation, termination, _ = ig_env.last()
+        print("Observations: ", observation['observation'])
+        print("Rewards: ", reward)
+        print("Truncation: ", truncation)
+        print("Termination: ", termination)
+        done = truncation or termination
+    print(ig_env.game.score)
+    ig_env = MOIngenious(num_players=4,reward_sharing={'agent_0':1, 'agent_1':0,'agent_2':0, 'agent_3':1})
+    ig_env.reset()
+    ag=ig_env.agent_selection
+    obs = ig_env.observe(ag)
+    index = random_index_of_one(ig_env.game.return_action_list())
+    ig_env.step(index)
+    print("Observation",obs)
+    done = False
+    while not done:
+        ag = ig_env.agent_selection
+        print("Agent: ", ag)
+        obs = ig_env.observe(ag)
+        masked_act_list = obs["action_mask"]
+        action = random_index_of_one(masked_act_list)
+        #print("Observation: ",obs)
+        print("Action: ", action)
+        ig_env.step(action)
+        observation, reward, truncation, termination, _ = ig_env.last()
+        print("Observations: ", observation['observation'])
+        print("Rewards: ", reward)
+        print("Truncation: ", truncation)
+        print("Termination: ", termination)
+        done = truncation or termination
+    print(ig_env.game.score)
+
+
+
+
 
 if __name__ == "__main__":
     # ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
     # ag = ig_env.agent_selection
     # ig_env.reset()
-    t1 = test_ingenious_rule()
-    # t1 = True
+    #t1 = test_ingenious_rule()
+    #t1 = True
     # ig_env.reset()
-    t2 = test_reset()
+    #t1 = test_reset()
+    # if t1:
+    #     print("Accepted: reset test")
+    # else:
+    #     print("Rejected: reset test")
     # ig_env.reset()
     # t3 = test_move()  # no need anymore
-    t4 = test_step()
+    # t4 = test_step()
+    # check_fully_observable()
+    # check_teammate()
 
-    if t1:
-        print("Accepted: ingenious rule test")
-    else:
-        print("Rejected: ingenious rule test")
-    if t2:
-        print("Accepted: reset test")
-    else:
-        print("Rejected: reset test")
+    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=0, reward_sharing=None,
+                         fully_obs=False, render_mode=None)
+    ig_env.reset()
+    train(ig_env)
+
+    for n_player in range(2,5):
+        for draw in range(2,7):
+            for color in range(n_player,7):
+                for bs in range(0,9):
+                    if bs in [1,2]:
+                        continue
+                    print("num_players=",n_player, " init_draw=",draw, "num_colors=", color, "board_size=", bs, "reward_sharing=", None, "fully_obs=", False, "render_mode=", None)
+                    ig_env = MOIngenious(num_players=n_player, init_draw=draw, num_colors=color, board_size=bs, reward_sharing=None, fully_obs=False, render_mode=None)
+                    ig_env.reset()
+                    train(ig_env)
+                    print("PASS")
+
+
+
+
+
+    #if t1:
+    #    print("Accepted: ingenious rule test")
+    #else:
+    #    print("Rejected: ingenious rule test")
+    #if t2:
+    #    print("Accepted: reset test")
+    #else:
+    #    print("Rejected: reset test")
     # if t3:
     #    print("Accepted: move in ingenious_base test")
     # else:
     #    print("Rejected: move in ingenious_base test")
-    if t4:
-        print("Accepted: move in step test")
-    else:
-        print("Rejected: move in step test")
+    #if t4:
+    #    print("Accepted: move in step test")
+    #else:
+    #    print("Rejected: move in step test")

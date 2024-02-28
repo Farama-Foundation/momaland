@@ -100,7 +100,7 @@ def generate_board(board_size):
 class IngeniousBase:
     """Base class for Ingenious environment."""
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=18):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=6, limitation_score=18):
         """Initialize the Ingenious environment.
 
         Args:
@@ -110,10 +110,11 @@ class IngeniousBase:
             board_size (int): Size of the board.
             limitation_score(int): Limitation to refresh the score board for any color. Default: 20
         """
-        assert 2 <= num_players <= 5, "Number of players must be between 2 and 5."
+        assert 2 <= num_players <= 6, "Number of players must be between 2 and 6."
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
         assert 2 <= init_draw <= 6, "Number of tiles in hand must be between 2 and 6."
-        assert 3 <= board_size <= 10, "Board size must be between 3 and 10."
+        assert 3 <= board_size <= 8, "Board size must be between 3 and 8."
+        assert num_players<=num_colors,"Number of players should be smaller than number of colors. "
 
         self.board_size = board_size
         self.num_player = num_players
@@ -276,9 +277,9 @@ class IngeniousBase:
         self.board_array[x2][y2] = c2
         self.exclude_action(h1)
         self.exclude_action(h2)
-        # Flag to signal if ingenious is called
+        """Flag to signal if ingenious is called """
         skip_flag = False
-        # flags to avoid calling ingenious on colour that was already maxed out
+        """flags to avoid calling ingenious on colour that was already maxed out """
         ingenious_possible = [True, True]
         if self.score[agent][c1] == self.limitation_score:
             ingenious_possible[0] = False
@@ -301,7 +302,7 @@ class IngeniousBase:
             self.end_flag = True
             # Preserve the number of tiles in hand for each player to comply with observation dimensions
             while len(self.p_tiles[agent]) < self.init_draw:
-                self.p_tiles[agent].append([0, 0])
+                self.p_tiles[agent].append((0, 0))
             return True
 
         """All tiles in hand has been played"""
@@ -309,7 +310,7 @@ class IngeniousBase:
             self.end_flag = True  # The player should win instantly if he plays out all the tiles in hand.
             # Preserve the number of tiles in hand for each player to comply with observation dimensions
             while len(self.p_tiles[agent]) < self.init_draw:
-                self.p_tiles[agent].append([0, 0])
+                self.p_tiles[agent].append((0, 0))
             return True
 
         """In the original rules of the game, when a player calls ingenious, they can play a bonus round without
@@ -368,6 +369,7 @@ class IngeniousBase:
         flag_lowest_score = False
         for item in self.p_tiles[player]:
             for col in item:
+                # print(player,self.p_tiles[player],item, col, self.score[player])
                 if self.score[player][col] == minval:
                     flag_lowest_score = True
             if flag_lowest_score:
@@ -381,7 +383,9 @@ class IngeniousBase:
             # draw new tiles
             self.get_tile(player)
             # add unused tiles back to the tiles bag
-            self.tiles_bag.append(back_up)
+            # self.tiles_bag.append(back_up)  # This could be wrong for append a list of tuple into a list
+            for item in back_up:
+                self.tiles_bag.append(item)
 
     def return_action_list(self):
         """Return the legal action list."""
