@@ -113,7 +113,7 @@ class IngeniousBase:
         assert 2 <= num_players <= 6, "Number of players must be between 2 and 6."
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
         assert 2 <= init_draw <= 6, "Number of tiles in hand must be between 2 and 6."
-        assert 3 <= board_size <= 8, "Board size must be between 3 and 8."
+        assert 3 <= board_size <= 10, "Board size must be between 3 and 8."
         assert num_players<=num_colors,"Number of players should be smaller than number of colors. "
 
         self.board_size = board_size
@@ -239,6 +239,13 @@ class IngeniousBase:
             self.tiles_bag = int(NUM_TILES / len(diff_color_combinations + same_color_combinations)) * (
                 diff_color_combinations + same_color_combinations
             )
+        #print(len(self.tiles_bag))
+        if self.board_size in [9,10]:
+            # cannot fill the board for 9 or 10(complement rule)
+            self.tiles_bag*=2
+
+
+
         # Shuffle the tiles bag
         self.random.shuffle(self.tiles_bag)
 

@@ -67,7 +67,7 @@ class MOIngenious(MOAECEnv):
         self.reward_sharing = reward_sharing
         self.fully_obs = fully_obs
         if board_size == 0:
-            self.board_size = { 2:6, 3:7, 4:8}.get(self.num_players)
+            self.board_size = { 2:6, 3:7, 4:8, 5:9, 6:10}.get(self.num_players)
         else:
             self.board_size = board_size
 
@@ -217,16 +217,16 @@ class MOIngenious(MOAECEnv):
         board_vals = np.array(self.game.board_array, dtype=np.float32)
         if self.fully_obs:
             p_tiles = np.array([item for item in self.game.p_tiles.values()], dtype=np.int32)
-            tmp=[]
-            for agent_score in self.game.score.values():
-                tmp.append([score for score in agent_score.values()])
-            p_score = np.array(tmp, dtype=np.int32)
         else:
             # print(self.game.p_tiles[agent])
             p_tiles = np.array(self.game.p_tiles[agent], dtype=np.int32)
+            # p_score = np.array(list(self.game.score[agent].values()), dtype=np.int32)
+        # show all score board
+        tmp = []
+        for agent_score in self.game.score.values():
+            tmp.append([score for score in agent_score.values()])
+        p_score = np.array(tmp, dtype=np.int32)
 
-            p_score = np.array(list(self.game.score[agent].values()), dtype=np.int32)
         observation = {"board": board_vals, "tiles": p_tiles, "scores": p_score}
         action_mask = np.array(self.game.return_action_list(), dtype=np.int8)
-
         return {"observation": observation, "action_mask": action_mask}

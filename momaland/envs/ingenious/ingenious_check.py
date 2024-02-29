@@ -348,7 +348,7 @@ def check_fully_observable():
 
 def check_teammate():
     """Test teammate(reward sharing) in ingenous.py."""
-    ig_env = MOIngenious(num_players=4,reward_sharing={'agent_0':0, 'agent_1':0,'agent_2':1, 'agent_3':1})
+    ig_env = MOIngenious(num_players=4,reward_sharing={'agent_0':0, 'agent_1':1,'agent_2':1, 'agent_3':1})
     ig_env.reset()
     ag=ig_env.agent_selection
     obs = ig_env.observe(ag)
@@ -423,18 +423,22 @@ if __name__ == "__main__":
                          fully_obs=False, render_mode=None)
     ig_env.reset()
     train(ig_env)
-
-    for n_player in range(2,5):
+    #print(ig_env.last())
+    for n_player in range(5,7):
         for draw in range(2,7):
             for color in range(n_player,7):
-                for bs in range(0,9):
+                for bs in range(0,10):
                     if bs in [1,2]:
                         continue
+                    if n_player in range(5,7):
+                        bs=0
                     print("num_players=",n_player, " init_draw=",draw, "num_colors=", color, "board_size=", bs, "reward_sharing=", None, "fully_obs=", False, "render_mode=", None)
                     ig_env = MOIngenious(num_players=n_player, init_draw=draw, num_colors=color, board_size=bs, reward_sharing=None, fully_obs=False, render_mode=None)
                     ig_env.reset()
                     train(ig_env)
+
                     print("PASS")
+
 
 
 
