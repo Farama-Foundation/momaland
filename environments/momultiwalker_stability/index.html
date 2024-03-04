@@ -317,7 +317,7 @@
 <td><p>Box(-inf, inf, (31,), float32)</p></td>
 </tr>
 <tr class="row-odd"><td><p>Reward Space</p></td>
-<td><p>Box([-2.100e+02 -1.567e-02], [0.46 0.  ], (2,), float32)</p></td>
+<td><p>Box([-2.100e+02 -1.567e-02], [-209.54    0.  ], (2,), float32)</p></td>
 </tr>
 <tr class="row-even"><td><p>Import</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">momaland.envs.momultiwalker_stability_v0</span></code></p></td>
@@ -337,13 +337,18 @@ The higher bound is <code class="docutils literal notranslate"><span class="pre"
 </section>
 <section id="reward-space">
 <h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
-<p>The reward space is a 2D vector where; the first value contains the sum of following rewards:</p>
+<p>The reward space is a 2D vector where; the first value contains the following reward:</p>
 <ul class="simple">
 <li><p>Maximizing distance traveled towards the end of the level during one step. <code class="docutils literal notranslate"><span class="pre">[-0.46,</span> <span class="pre">0.46]</span></code></p></li>
-<li><p>Penalty for agent falling. <code class="docutils literal notranslate"><span class="pre">[-110,</span> <span class="pre">0]</span></code></p></li>
-<li><p>Penalty for the package falling. <code class="docutils literal notranslate"><span class="pre">[-100,</span> <span class="pre">0]</span></code>
-and the second value contains:</p></li>
+</ul>
+<p>and the second value contains:</p>
+<ul class="simple">
 <li><p>A penalty based on the change of angle of the package, to avoid shaking the package. <code class="docutils literal notranslate"><span class="pre">[-0.01567,</span> <span class="pre">0]</span></code></p></li>
+</ul>
+<p>Both these objectives are penalized with:</p>
+<ul class="simple">
+<li><p>Penalty for agent falling. <code class="docutils literal notranslate"><span class="pre">[-110,</span> <span class="pre">0]</span></code></p></li>
+<li><p>Penalty for the package falling. <code class="docutils literal notranslate"><span class="pre">[-100,</span> <span class="pre">0]</span></code></p></li>
 </ul>
 </section>
 <section id="episode-termination">
