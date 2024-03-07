@@ -3,7 +3,55 @@
 This environment is based on the Ingenious game: https://boardgamegeek.com/boardgame/9674/ingenious
 Every color is a different objective. The goal in the original game is to maximize the minimum score over all colors,
 however we leave the utility wrapper up to the users and only return the vectorial score on each color dimension.
+|---|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Agents names | `agent_i for i in [0, 5]`                                                                                                                                                           |
+| Action Space | Discrete(5544)                                                                                                                                                                      |
+| Observation Space | Dict('action_mask': Box(0, 1, (5544,), int8), 'observation': Dict('board': Box(0.0, 6.0, (15, 15), float32), 'scores': Box(0, 18, (6,), int32), 'tiles': Box(0, 6, (6, 2), int32))) |
+| Reward Space | Box(0.0, 18.0, (6,), float32)                                                                                                                                                       |
+| Import | `momaland.envs.moingenious_v0`
+
+## Observation Space
+
+Non Fixed size of the board?????
+
+The observation space is a continuous box with the length `(num_drones + 1) * 3` where each 3 values represent the XYZ coordinates of the drones in this order:
+- the agent.
+- the target.
+- the other agents.
+
+Example:
+
+
+## Action Space
+The action space is a discrete index representing the move that put tile with color(c1,c2) to the position (h1,h2).
+
+## Reward Space
+The reward space is a 2D vector containing rewards for:
+- After certain action, for the current player i, the difference between the old score and the new score for each color in the score board.
+
+## Starting State
+TODO
+
+## Episode Termination
+The episode is terminated if one of the following conditions are met:
+- The board is filled.
+- Sequential "ingenious" move until using up the tiles.(Complemented rule for winning).
+
+## Episode Truncation
+TODO
+
+##  Init Function
+def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=0, reward_sharing=None, fully_obs=False, render_mode=None,)
+- num_players (int): The number of players in the environment. Default: 2
+- init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
+- num_colors (int): The number of colors in the game. Default: 4
+- board_size (int): The size of the board. Default: 0 (0 means the board size id dependent on num_players like { 2:6, 3:7 , 4:8}; otherwise, set the board_size freely between 3 and 8)
+- reward_sharing: Partnership Game.It should be a set like {'agent_0':0, 'agent_1':0,'agent_2':1, 'agent_3':1} where teammates will share the reward. Default: None
+- fully_obs: Fully observable or not. Default:False
+- render_mode (str): The rendering mode. Default: None
+
 """
+
 
 import functools
 import random
