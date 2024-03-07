@@ -182,6 +182,7 @@ def train(args, weights):
     alpha_decay = args.alpha_decay
     alpha_min = args.alpha_min
     gamma = args.gamma
+    start_time = args.time
 
     episode_returns = []
 
