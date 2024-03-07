@@ -35,7 +35,7 @@ def make_single_agent_ig_env(objectives=3):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
-    parser.add_argument("-objectives", type=int, default=3, help="Seed for the agent.")
+    parser.add_argument("-objectives", type=int, default=3, help="Number of objectives/item types for the IG problem.")
     args = parser.parse_args()
     seed = args.seed
     obj = args.objectives
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     eval_env = make_single_agent_ig_env(objectives=obj)
 
     ref_point = np.zeros(obj)
-    print(ref_point)
+    print("Reference point: ", ref_point)
 
     agent = GPILS(
         env,

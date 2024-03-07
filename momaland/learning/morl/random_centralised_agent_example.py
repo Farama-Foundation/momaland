@@ -1,5 +1,5 @@
 """Example script for environment interaction and centralised agent wrapper."""
-from momaland.envs.beach_domain import beach_domain
+from momaland.envs.beach import beach
 from momaland.envs.item_gathering import item_gathering
 from momaland.envs.item_gathering.map_utils import generate_map
 from momaland.utils.parallel_wrappers import CentraliseAgent
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         render_mode=None,
     )
 
-    mobpd_env = beach_domain.parallel_env(
+    mobpd_env = beach.parallel_env(
         sections=2,
         capacity=3,
         num_agents=10,
