@@ -284,6 +284,12 @@ class IngeniousBase:
         self.board_array[x2][y2] = c2
         self.exclude_action(h1)
         self.exclude_action(h2)
+        if self.first_round:
+            #if first round, each player should take different corner
+            print(h1,h2)
+            self.exclude_position_first_round(h1)
+            self.exclude_position_first_round(h2)
+
         """Flag to signal if ingenious is called """
         skip_flag = False
         """flags to avoid calling ingenious on colour that was already maxed out """
@@ -409,3 +415,29 @@ class IngeniousBase:
         print(self.board_array)
         print(self.score)
         print(self.p_tiles)
+    def exclude_position_first_round(self, pos):
+        """Exclude available position in self.first_round_pos to ensure that each player begins with a different corner ( each corner is taken once). """
+        for i in range(0, 6):
+            corner = hex_scale(hex_directions[i], self.board_size - 1)
+        for i in range(0, 6):
+            neighbor_hex = hex_neighbor(pos, i)
+            if hex_scale(neighbor_hex, 1.0/(self.board_size-1)) in hex_directions:
+                #neighbor_hex is corner
+                a=neighbor_hex
+                print("find the corner to remove in first round",a,pos)
+                for k in range(0, 6):
+                    hx1 = hex_neighbor(a, k)
+                    for j in range(0, 6):
+                        hx2 = hex_neighbor(hx1, j)
+                        if (hx2 not in self.board_hex) or (hx1 not in self.board_hex) or (hx2 == a):
+                            continue
+                        for card in range(0, self.init_draw):
+                            c1 = self.action_map[(hx1, hx2, card)]
+                            c2 = self.action_map[(hx2, hx1, card)]
+                            if c1 in self.first_round_pos:
+                                self.first_round_pos.remove(c1)
+                            if c2 in self.first_round_pos:
+                                self.first_round_pos.remove(c2)
+                break
+
+
