@@ -5,13 +5,12 @@ From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping 
 
 import functools
 import random
-
-# from gymnasium.utils import EzPickle
 from typing_extensions import override
 
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 
 from momaland.utils.conversions import mo_parallel_to_aec
@@ -52,7 +51,7 @@ def raw_env(**kwargs):
     return MOBeachDomain(**kwargs)
 
 
-class MOBeachDomain(MOParallelEnv):
+class MOBeachDomain(MOParallelEnv, EzPickle):
     """Environment for MO-BeachDomain problem.
 
     The init method takes in environment arguments and should define the following attributes:
@@ -88,6 +87,17 @@ class MOBeachDomain(MOParallelEnv):
             render_mode: render mode
             reward_scheme: the reward scheme to use ('local', or 'global'). Default: local
         """
+        EzPickle.__init__(
+            self,
+            num_timesteps,
+            num_agents,
+            reward_scheme,
+            sections,
+            capacity,
+            type_distribution,
+            position_distribution,
+            render_mode,
+        )
         self.reward_scheme = reward_scheme
         self.sections = sections
         # TODO Extend to distinct capacities per section?

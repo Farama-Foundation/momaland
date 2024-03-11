@@ -14,6 +14,7 @@ import networkx as nx
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 from sympy import diff, lambdify, sympify
 
@@ -49,7 +50,7 @@ def raw_env(**kwargs):
     return MOCongestion(**kwargs)
 
 
-class MOCongestion(MOParallelEnv):
+class MOCongestion(MOParallelEnv, EzPickle):
     """Environment for MO-Congestion problem.
 
     The init method takes in environment arguments and should define the following attributes:
@@ -78,6 +79,15 @@ class MOCongestion(MOParallelEnv):
             num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
         """
+        EzPickle.__init__(
+            self,
+            problem_name,
+            num_agents,
+            toll_mode,
+            random_toll_percentage,
+            num_timesteps,
+            render_mode,
+        )
         # Read in the problem from the corresponding .json file in the networks directory
         self.graph, self.od, self.routes, self._max_route_length = self._read_problem(problem_name)
         # Keep track of the current flow on each link the network

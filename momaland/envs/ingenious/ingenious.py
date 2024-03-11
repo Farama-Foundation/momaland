@@ -14,6 +14,7 @@ from typing_extensions import override
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Dict, Discrete
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 
 from momaland.envs.ingenious.ingenious_base import ALL_COLORS, IngeniousBase
@@ -41,7 +42,7 @@ def raw_env(**kwargs):
     return MOIngenious(**kwargs)
 
 
-class MOIngenious(MOAECEnv):
+class MOIngenious(MOAECEnv, EzPickle):
     """Environment for the multi-objective Ingenious game."""
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
@@ -57,6 +58,15 @@ class MOIngenious(MOAECEnv):
             limitation_score(int): Limitation to refresh the score board for any color. Default: 20
             render_mode (str): The rendering mode. Default: None
         """
+        EzPickle.__init__(
+            self,
+            num_players,
+            init_draw,
+            num_colors,
+            board_size,
+            limitation_score,
+            render_mode,
+        )
         self.board_size = board_size
         self.num_colors = num_colors
         self.init_draw = init_draw
