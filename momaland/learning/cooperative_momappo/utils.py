@@ -75,8 +75,9 @@ def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[
         key, subkey = jax.random.split(key)
         action_keys = jax.random.split(subkey, len(env.possible_agents))
 
-        vec_return += np.array(list(rew.values())).sum(axis=0)
-        disc_vec_return += gamma * vec_return
+        rewards = np.array(list(rew.values())).sum(axis=0)
+        vec_return += rewards
+        disc_vec_return += gamma * rewards
         gamma *= gamma_decay
 
     return (
@@ -100,6 +101,7 @@ def policy_evaluation_mo(
     Returns:
         (float, float, np.ndarray, np.ndarray): Avg scalarized return, Avg scalarized discounted return, Avg vectorized return, Avg vectorized discounted return
     """
+    env.reset(seed=42)
     evals = [
         eval_mo(actor_module=actor_module, actor_state=actor_state, env=env, num_obj=num_obj, gamma_decay=gamma)
         for _ in range(rep)

@@ -541,8 +541,8 @@ if __name__ == "__main__":
     eval_env = normalize_obs_v0(eval_env, env_min=-1.0, env_max=1.0)
     eval_env = agent_indicator_v0(eval_env)
 
-    env.reset()
-    eval_env.reset()
+    env.reset(seed=args.seed)
+    eval_env.reset(seed=args.seed)
     current_timestep = 0
     reward_dim = env.unwrapped.reward_space(env.possible_agents[0]).shape[0]
 

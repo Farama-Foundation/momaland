@@ -48,6 +48,7 @@ def main():
     single_obs_space = env.observation_space(env.possible_agents[0])
     single_action_space = env.action_space(env.possible_agents[0])
     dummy_local_obs_and_id = jnp.zeros(single_obs_space.shape)
+    env.reset(seed=args.seed)
     key, actor_key = jax.random.split(key, 2)
     if args.continuous:
         from momaland.learning.cooperative_momappo.continuous_momappo import Actor
@@ -76,6 +77,7 @@ def main():
 
     # Load the model
     actor_state = load_actor_state(args.model_dir, actor_state)
+    # actor_module.apply = jax.jit(actor_module.apply)
     # Perform the replay
     vec_ret, disc_vec_return = eval_mo(actor_module=actor_module, actor_state=actor_state, env=env, num_obj=reward_dim)
     print("Done!!")
