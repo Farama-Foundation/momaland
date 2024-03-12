@@ -578,7 +578,7 @@ if __name__ == "__main__":
         w = all_weights[weight_number - 1]
     else:
         raise ValueError("Weights generation method not recognized")
-    while (args.weight_generation != "OLS" or not ols.ended()) and weight_number <= args.num_weights:
+    while (args.weights_generation != "OLS" or not ols.ended()) and weight_number <= args.num_weights:
         out = train(args, env, w, rng)
         actor_state = out["runner_state"][0]
         _, disc_vec_return = policy_evaluation_mo(
