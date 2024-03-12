@@ -14,7 +14,7 @@ import distrax
 import flax.linen as nn
 import jax
 import jax.numpy as jnp
-import morl_baselines
+import morl_baselines.common.weights
 import numpy as np
 import optax
 import wandb
