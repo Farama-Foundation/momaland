@@ -559,7 +559,7 @@ if __name__ == "__main__":
         exp_name = args.exp_name
         args_dict = vars(args)
         args_dict["algo"] = exp_name
-        run_name = f"{args.env_id}__{exp_name}__{args.seed}__{int(time.time())}"
+        run_name = f"{args.env_id}__{exp_name}({args.weights_generation})__{args.seed}__{int(time.time())}"
         wandb.init(
             project=args.wandb_project,
             entity=args.wandb_entity,
