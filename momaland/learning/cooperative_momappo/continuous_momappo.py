@@ -14,6 +14,7 @@ import distrax
 import flax.linen as nn
 import jax
 import jax.numpy as jnp
+import morl_baselines.common.weights
 import numpy as np
 import optax
 import wandb
@@ -68,9 +69,10 @@ def parse_args():
     )
 
     # Algorithm specific arguments
+    parser.add_argument("--num-weights", type=int, default=5, help="Number of different weights to train on")
+    parser.add_argument("--weights-generation", type=str, default="OLS", help="The method to generate the weights - 'OLS' or 'uniform'")
     parser.add_argument("--num-steps-per-epoch", type=int, default=1280, help="the number of steps per epoch (higher batch size should be better)")
     parser.add_argument("--timesteps-per-weight", type=int, default=10e5, help="timesteps per weight vector")
-    parser.add_argument("--num-weights", type=int, default=5, help="Number of different weights to train on")
     parser.add_argument("--update-epochs", type=int, default=2, help="the number epochs to update the policy")
     parser.add_argument("--num-minibatches", type=int, default=2, help="the number of minibatches (keep small in MARL)")
     parser.add_argument("--gamma", type=float, default=0.99,
@@ -569,8 +571,14 @@ if __name__ == "__main__":
     ols = LinearSupport(num_objectives=reward_dim, epsilon=0.0, verbose=args.debug)
     weight_number = 1
     value = []
-    w = ols.next_weight()
-    while not ols.ended() and weight_number <= args.num_weights:
+    if args.weights_generation == "OLS":
+        w = ols.next_weight()
+    elif args.weights_generation == "uniform":
+        all_weights = morl_baselines.common.weights.equally_spaced_weights(reward_dim, args.num_weights)
+        w = all_weights[weight_number - 1]
+    else:
+        raise ValueError("Weights generation method not recognized")
+    while (args.weight_generation != "OLS" or not ols.ended()) and weight_number <= args.num_weights:
         out = train(args, env, w, rng)
         actor_state = out["runner_state"][0]
         _, disc_vec_return = policy_evaluation_mo(
@@ -589,8 +597,11 @@ if __name__ == "__main__":
             )
         if args.save_policies:
             save_actor(actor_state, w, args)
-        w = ols.next_weight()
         weight_number += 1
+        if args.weights_generation == "OLS":
+            w = ols.next_weight()
+        elif args.weights_generation == "uniform":
+            w = all_weights[weight_number - 1]
 
     env.close()
     wandb.finish()
