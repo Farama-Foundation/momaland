@@ -113,7 +113,7 @@ class IngeniousBase:
         assert 2 <= num_players <= 6, "Number of players must be between 2 and 6."
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
         assert 2 <= init_draw <= 6, "Number of tiles in hand must be between 2 and 6."
-        assert 3 <= board_size <= 10, "Board size must be between 3 and 8."
+        assert 3 <= board_size <= 10, "Board size must be between 3 and 10."
         assert num_players<=num_colors,"Number of players should be smaller than number of colors. "
 
         self.board_size = board_size
@@ -417,8 +417,6 @@ class IngeniousBase:
         print(self.p_tiles)
     def exclude_position_first_round(self, pos):
         """Exclude available position in self.first_round_pos to ensure that each player begins with a different corner ( each corner is taken once). """
-        for i in range(0, 6):
-            corner = hex_scale(hex_directions[i], self.board_size - 1)
         for i in range(0, 6):
             neighbor_hex = hex_neighbor(pos, i)
             if hex_scale(neighbor_hex, 1.0/(self.board_size-1)) in hex_directions:

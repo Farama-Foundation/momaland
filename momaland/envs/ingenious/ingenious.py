@@ -94,7 +94,7 @@ class MOIngenious(MOAECEnv):
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=0, reward_sharing=None, fully_obs=False, render_mode=None,):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=0, teammate_mode=False, fully_obs=False, render_mode=None,):
         """Initializes the multi-objective Ingenious game.
 
         Args:
@@ -102,8 +102,7 @@ class MOIngenious(MOAECEnv):
             init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
             num_colors (int): The number of colors in the game. Default: 4
             board_size (int): The size of the board. Default: 0 (0 means the board size id dependent on num_players like { 2:6, 3:7 , 4:8}; otherwise, set the board_size freely between 3 and 8)
-            #limitation_score(int): Limitation to refresh the score board for any color. Default: 20
-            reward_sharing: Partnership Game.It should be a set like {'agent_0':0, 'agent_1':0,'agent_2':1, 'agent_3':1} where teammates will share the reward. Default: None
+            teammate_mode: Partnership Game or not. Default:False
             fully_obs: Fully observable or not. Default:False
             render_mode (str): The rendering mode. Default: None
         """
@@ -112,7 +111,11 @@ class MOIngenious(MOAECEnv):
         self.init_draw = init_draw
         self.num_players = num_players
         self.limitation_score = 18 # max score in score board for one certain color.
-        self.reward_sharing = reward_sharing
+        self.teammate_mode=teammate_mode
+        if self.teammate_mode is True:
+            assert num_players%2 == 0, "Number of players must be even if teammate_mode is on."
+            self.limitation_score=self.limitation_score*(num_players/2)
+
         self.fully_obs = fully_obs
         if board_size == 0:
             self.board_size = { 2:6, 3:7, 4:8, 5:9, 6:10}.get(self.num_players)
@@ -230,6 +233,7 @@ class MOIngenious(MOAECEnv):
         if self.refresh_cumulative_reward:
             self._cumulative_rewards[current_agent] = np.zeros(self.num_colors, dtype="float64")
 
+        #update current agent
         if not self.game.end_flag:
             prev_rewards = np.array(list(self.game.score[current_agent].values()))
             self.game.set_action_index(action)
@@ -239,16 +243,17 @@ class MOIngenious(MOAECEnv):
         if self.game.end_flag:
             self.terminations = {agent: True for agent in self.agents}
 
+        # update teammate score(copy current agent score to the teammate)
+        if self.teammate_mode is True:
+            index_current_agent=self.agents.index(current_agent)
+            for i in range(0,self.num_players):
+                if i!=index_current_agent and i%2==index_current_agent%2:
+                    agent=self.agents[i]
+                    self.game.score[agent]=self.game.score[current_agent]
+                    self.rewards[agent]= self.rewards[current_agent]
+
         # update accumulate_rewards
         self._accumulate_rewards()
-
-        # update teammate score(copy current agent score to the teammate)
-        if self.reward_sharing is not None:
-            index=self.reward_sharing[current_agent]
-            for agent in self.agents:
-                if agent != current_agent and self.reward_sharing[agent]==index:
-                    self.game.score[agent]=self.game.score[current_agent]
-
 
         # update to next agent
         self.agent_selection = self.agents[self.game.agent_selector]

@@ -348,7 +348,9 @@ def check_fully_observable():
 
 def check_teammate():
     """Test teammate(reward sharing) in ingenous.py."""
-    ig_env = MOIngenious(num_players=4,reward_sharing={'agent_0':0, 'agent_1':1,'agent_2':1, 'agent_3':1})
+
+    ig_env = MOIngenious(num_players=4
+                         ,teammate_mode=True)
     ig_env.reset()
     ag=ig_env.agent_selection
     obs = ig_env.observe(ag)
@@ -362,101 +364,66 @@ def check_teammate():
         obs = ig_env.observe(ag)
         masked_act_list = obs["action_mask"]
         action = random_index_of_one(masked_act_list)
-        #print("Observation: ",obs)
         print("Action: ", action)
         ig_env.step(action)
-        observation, reward, truncation, termination, _ = ig_env.last()
+        observation, reward, termination, truncation, _ = ig_env.last()
         print("Observations: ", observation['observation'])
-        print("Rewards: ", reward)
-        print("Truncation: ", truncation)
-        print("Termination: ", termination)
-        done = truncation or termination
-    print(ig_env.game.score)
-    ig_env = MOIngenious(num_players=4,reward_sharing={'agent_0':1, 'agent_1':0,'agent_2':0, 'agent_3':1})
-    ig_env.reset()
-    ag=ig_env.agent_selection
-    obs = ig_env.observe(ag)
-    index = random_index_of_one(ig_env.game.return_action_list())
-    ig_env.step(index)
-    print("Observation",obs)
-    done = False
-    while not done:
-        ag = ig_env.agent_selection
-        print("Agent: ", ag)
-        obs = ig_env.observe(ag)
-        masked_act_list = obs["action_mask"]
-        action = random_index_of_one(masked_act_list)
-        #print("Observation: ",obs)
-        print("Action: ", action)
-        ig_env.step(action)
-        observation, reward, truncation, termination, _ = ig_env.last()
-        print("Observations: ", observation['observation'])
-        print("Rewards: ", reward)
+        print("Rewards: ", reward, "_accumulate_reward(from gymnasium code)",ig_env._cumulative_rewards)
         print("Truncation: ", truncation)
         print("Termination: ", termination)
         done = truncation or termination
     print(ig_env.game.score)
 
 
-
+def check_parameter_range():
+    for n_player in range(5, 7):
+        for draw in range(2, 7):
+            for color in range(n_player, 7):
+                for bs in range(0, 10):
+                    # if bs in [1, 2]:
+                    #     continue
+                    # if n_player in range(5, 7):
+                    #     bs = 0
+                    for teammate in [True, False]:
+                        for fully_obs in [True, False]:
+                            print("num_players=", n_player, " init_draw=", draw, "num_colors=", color, "board_size=", bs,
+                                  "teammate_mode=",teammate , "fully_obs=", fully_obs, "render_mode=", None)
+                            ig_env = MOIngenious(num_players=n_player, init_draw=draw, num_colors=color, board_size=bs,
+                                         teammate_mode=teammate, fully_obs=fully_obs, render_mode=None)
+                            ig_env.reset()
+                            try:
+                                train(ig_env)
+                                print("PASS")
+                            except AssertionError as e:
+                                print(e)
 
 
 if __name__ == "__main__":
-    # ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
-    # ag = ig_env.agent_selection
-    # ig_env.reset()
-    #t1 = test_ingenious_rule()
-    #t1 = True
-    # ig_env.reset()
-    #t1 = test_reset()
-    # if t1:
-    #     print("Accepted: reset test")
-    # else:
-    #     print("Rejected: reset test")
-    # ig_env.reset()
-    # t3 = test_move()  # no need anymore
-    # t4 = test_step()
-    # check_fully_observable()
-    # check_teammate()
+    # run this function, you could always find opponents' tiles in observation space
+    check_fully_observable()
 
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=0, reward_sharing=None,
+    #check teammate_mode through simulation, it could be found that teammates always share the same score in score board.
+    check_teammate()
+
+    #check parameter range by ramdom choose.
+    check_parameter_range()
+
+
+    """
+     ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=0, teammate_mode=False,
                          fully_obs=False, render_mode=None)
     ig_env.reset()
     train(ig_env)
+    try:
+        assert False, "this code runs, fails, and the exception is caught"
+    except AssertionError as e:
+        print(repr(e))
+
+    ig_env.reset()
+    train(ig_env)
     #print(ig_env.last())
-    for n_player in range(5,7):
-        for draw in range(2,7):
-            for color in range(n_player,7):
-                for bs in range(0,10):
-                    if bs in [1,2]:
-                        continue
-                    if n_player in range(5,7):
-                        bs=0
-                    print("num_players=",n_player, " init_draw=",draw, "num_colors=", color, "board_size=", bs, "reward_sharing=", None, "fully_obs=", False, "render_mode=", None)
-                    ig_env = MOIngenious(num_players=n_player, init_draw=draw, num_colors=color, board_size=bs, reward_sharing=None, fully_obs=False, render_mode=None)
-                    ig_env.reset()
-                    train(ig_env)
+    
 
                     print("PASS")
 
-
-
-
-
-
-    #if t1:
-    #    print("Accepted: ingenious rule test")
-    #else:
-    #    print("Rejected: ingenious rule test")
-    #if t2:
-    #    print("Accepted: reset test")
-    #else:
-    #    print("Rejected: reset test")
-    # if t3:
-    #    print("Accepted: move in ingenious_base test")
-    # else:
-    #    print("Rejected: move in ingenious_base test")
-    #if t4:
-    #    print("Accepted: move in step test")
-    #else:
-    #    print("Rejected: move in step test")
+    """
