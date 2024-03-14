@@ -6,12 +6,12 @@
 <!-- start elevator-pitch -->
 MOMAland is an open source Python library for developing and comparing multi-objective multi-agent reinforcement learning algorithms by providing a standard API to communicate between learning algorithms and environments, as well as a standard set of environments compliant with that API. Essentially, the environments follow the standard [PettingZoo APIs](https://github.com/Farama-Foundation/PettingZoo), but return vectorized rewards as numpy arrays instead of scalar values.
 
-The documentation website is at TODO, and we have a public discord server (which we also use to coordinate development work) that you can join [here](https://discord.gg/bnJ6kubTg6).
+The documentation website is at https://momaland.farama.org/, and we have a public discord server (which we also use to coordinate development work) that you can join [here](https://discord.gg/bnJ6kubTg6).
 <!-- end elevator-pitch -->
 
 ## Environments
 MOMAland includes environments taken from the MOMARL literature, as well as multi-objective version of classical environments, such as SISL or Butterfly.
-The full list of environments is available at TODO.
+The full list of environments is available at https://momaland.farama.org/environments/all-envs/.
 
 ## Installation
 <!-- start install -->
