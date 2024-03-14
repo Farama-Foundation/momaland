@@ -114,7 +114,7 @@ class IngeniousBase:
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
         assert 2 <= init_draw <= 6, "Number of tiles in hand must be between 2 and 6."
         assert 3 <= board_size <= 10, "Board size must be between 3 and 10."
-        assert num_players<=num_colors,"Number of players should be smaller than number of colors. "
+        assert num_players <= num_colors, "Number of players should be smaller than number of colors. "
 
         self.board_size = board_size
         self.num_player = num_players
@@ -239,12 +239,10 @@ class IngeniousBase:
             self.tiles_bag = int(NUM_TILES / len(diff_color_combinations + same_color_combinations)) * (
                 diff_color_combinations + same_color_combinations
             )
-        #print(len(self.tiles_bag))
-        if self.board_size in [9,10]:
+        # print(len(self.tiles_bag))
+        if self.board_size in [9, 10]:
             # cannot fill the board for 9 or 10(complement rule)
-            self.tiles_bag*=2
-
-
+            self.tiles_bag *= 2
 
         # Shuffle the tiles bag
         self.random.shuffle(self.tiles_bag)
@@ -285,7 +283,7 @@ class IngeniousBase:
         self.exclude_action(h1)
         self.exclude_action(h2)
         if self.first_round:
-            #if first round, each player should take different corner
+            # if first round, each player should take different corner
             # print('first round', h1,h2)
             self.exclude_position_first_round(h1)
             self.exclude_position_first_round(h2)
@@ -415,13 +413,14 @@ class IngeniousBase:
         print(self.board_array)
         print(self.score)
         print(self.p_tiles)
+
     def exclude_position_first_round(self, pos):
-        """Exclude available position in self.first_round_pos to ensure that each player begins with a different corner ( each corner is taken once). """
+        """Exclude available position in self.first_round_pos to ensure that each player begins with a different corner ( each corner is taken once)."""
         for i in range(0, 6):
             neighbor_hex = hex_neighbor(pos, i)
-            if hex_scale(neighbor_hex, 1.0/(self.board_size-1)) in hex_directions:
-                #neighbor_hex is corner
-                a=neighbor_hex
+            if hex_scale(neighbor_hex, 1.0 / (self.board_size - 1)) in hex_directions:
+                # neighbor_hex is corner
+                a = neighbor_hex
                 # print("find the corner to remove in first round",a,pos)
                 for k in range(0, 6):
                     hx1 = hex_neighbor(a, k)
@@ -437,5 +436,3 @@ class IngeniousBase:
                             if c2 in self.first_round_pos:
                                 self.first_round_pos.remove(c2)
                 break
-
-
