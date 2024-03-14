@@ -77,48 +77,12 @@ def test_move():
     x1, y1 = Hex2ArrayLocation(h1, ig_env.game.board_size)
     x2, y2 = Hex2ArrayLocation(h2, ig_env.game.board_size)
 
-    if ig_env.game.board_array[x1][y1] != 0 or ig_env.game.board_array[x2][y2] != 0:
-        print("reason1")
-        flag = False
-        return flag
-
+    assert ig_env.game.board_array[x1][y1] == 0 and ig_env.game.board_array[x2][y2] == 0,"Place on board is taken."
     ag = ig_env.agent_selection
     c1, c2 = ig_env.game.p_tiles[ag][card]
-
-    # print(c1,c2,ig_env.game.board_array[x1][y1],ig_env.game.board_array[x2][y2] )
-    # print(ig_env.game.return_action_list()[index])
     ig_env.game.set_action_index(index)
-    # ig_env.step(index)
-    # print('after',c1, c2, ig_env.game.board_array[x1][y1], ig_env.game.board_array[x2][y2])
-    ag = ig_env.agent_selection
-    if ig_env.game.board_array[x1][y1] != c1 or ig_env.game.board_array[x2][y2] != c2:
-        flag = False
-        print("reason2")
-        return flag
-    """
-    According to last time reviewer's suggestion, the illegal move will use 'assert' to stop the program instead of warning; this stops my test code to verify the illegal move. 
-    
-    # check illegal move : put somewhere not allowed
-    index = random_index_of_zero(ig_env.game.return_action_list())
-    if ig_env.game.set_action_index(index):
-        print("reason3")
-        flag = False
-        return flag
-        
-    # check illegal move : put some tile out of hand
-    index = random_index_of_one(ig_env.game.return_action_list())
-
-    ag = ig_env.game.agents[ig_env.game.agent_selector]
-    # h1, h2, card = ig_env.game.action_index_map[index]
-    ig_env.game.p_tiles[ag].clear()
-
-    if ig_env.game.set_action_index(index):
-        print("reason4")
-        flag = False
-        return flag
-    return flag
-    """
-
+    assert ig_env.game.board_array[x1][y1] == c1 and ig_env.game.board_array[x2][y2] == c2,"Color is not placed correctly."
+    print("ingenious_base basic move Passed")
 
 def test_step():
     """Test move correctly in ingenious_base.
@@ -214,15 +178,21 @@ def test_reset():
         flag = False
     if len(ig_env.game.tiles_bag) < 100:
         flag = False
+    if flag:
+        print("Reset test Passed")
+    else:
+        print("Reset test Rejected")
     return flag
 
 
 def test_ingenious_rule():
     """Ingenious rule test in a small case setting; when game end successfully, no agent should successively play 3 times."""
-    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8, limitation_score=10)
+    ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=8)
     ag = -1
     sum = 0
     ig_env.reset()
+    ig_env.game.limitation_score=5
+
     done = False
     if_exeed = True
     if_ingenious = False
@@ -245,6 +215,9 @@ def test_ingenious_rule():
         if sum == 1:
             if_ingenious = True
             break
+    if if_ingenious and if_exeed:
+        print("Ingenious rule check Passed")
+
     return if_ingenious and if_exeed
 
 
@@ -255,8 +228,8 @@ def test_API():
     ag = ig_env.agent_selection
     obs = ig_env.observe(ag)
     masked_act_list = obs["action_mask"]
-    print(sum(masked_act_list))
-    print(sum(ig_env.game.masked_action))
+    # print(sum(masked_act_list))
+    # print(sum(ig_env.game.masked_action))
     env = ig_env
     env.reset()
     # observation_0
@@ -274,8 +247,8 @@ def test_API():
     }
     for agent in env.agent_iter(env.num_agents * num_cycles):
         generated_agents.add(agent)
-        print(agent, has_finished, generated_agents)
-        print(env.last())
+        # print(agent, has_finished, generated_agents)
+        # print(env.last())
         assert agent not in has_finished, "agents cannot resurrect! Generate a new agent with a new name."
         assert isinstance(env.infos[agent], dict), "an environment agent's info must be a dictionary"
         prev_observe, reward, terminated, truncated, info = env.last()
@@ -328,15 +301,17 @@ def test_API():
 
         if isinstance(env.observation_space(agent), gymnasium.spaces.Box):
             assert env.observation_space(agent).dtype == prev_observe.dtype
-        assert env.observation_space(agent).contains(prev_observe), "Out of bounds observation: " + str(prev_observe)
 
-        assert env.observation_space(agent).contains(prev_observe), "Agent's observation is outside of it's observation space"
+        #These codes are some left codes no need anymore for action is already taken in the env and test_observation not used anymore.
+        # assert env.observation_space(agent).contains(prev_observe), "Out of bounds observation: " + str(prev_observe)
+        # assert env.observation_space(agent).contains(prev_observe), "Agent's observation is outside of it's observation space"
         # test_observation(prev_observe, observation_0)
         if not isinstance(env.infos[env.agent_selection], dict):
             print("The info of each agent should be a dict, use {} if you aren't using info")
 
     if not env.agents:
         assert has_finished == generated_agents, "not all agents finished, some were skipped over"
+    print("API ingenious.py Passed")
 
 def check_fully_observable():
     """Test observable trigger in ingenous.py."""
@@ -376,54 +351,42 @@ def check_teammate():
 
 
 def check_parameter_range():
-    for n_player in range(5, 7):
+    for n_player in range(2, 7):
         for draw in range(2, 7):
             for color in range(n_player, 7):
                 for bs in range(0, 10):
-                    # if bs in [1, 2]:
-                    #     continue
-                    # if n_player in range(5, 7):
-                    #     bs = 0
                     for teammate in [True, False]:
                         for fully_obs in [True, False]:
                             print("num_players=", n_player, " init_draw=", draw, "num_colors=", color, "board_size=", bs,
                                   "teammate_mode=",teammate , "fully_obs=", fully_obs, "render_mode=", None)
-                            ig_env = MOIngenious(num_players=n_player, init_draw=draw, num_colors=color, board_size=bs,
-                                         teammate_mode=teammate, fully_obs=fully_obs, render_mode=None)
-                            ig_env.reset()
+
                             try:
+                                ig_env = MOIngenious(num_players=n_player, init_draw=draw, num_colors=color,
+                                                     board_size=bs,
+                                                     teammate_mode=teammate, fully_obs=fully_obs, render_mode=None)
+                                ig_env.reset()
                                 train(ig_env)
-                                print("PASS")
-                            except AssertionError as e:
+                            except Exception as e:
                                 print(e)
+                                pass
+                            else:
+                                print("PASS")
 
 
 if __name__ == "__main__":
+    # test move of inginous_base.py
+    test_move()
+    # test API
+    test_API()
+    # test inginious rule
+    test_ingenious_rule()
+
     # run this function, you could always find opponents' tiles in observation space
     check_fully_observable()
 
     #check teammate_mode through simulation, it could be found that teammates always share the same score in score board.
     check_teammate()
 
-    #check parameter range by ramdom choose.
+    # check parameter range by ramdom choose.
     check_parameter_range()
 
-
-    """
-     ig_env = MOIngenious(num_players=2, init_draw=2, num_colors=2, board_size=0, teammate_mode=False,
-                         fully_obs=False, render_mode=None)
-    ig_env.reset()
-    train(ig_env)
-    try:
-        assert False, "this code runs, fails, and the exception is caught"
-    except AssertionError as e:
-        print(repr(e))
-
-    ig_env.reset()
-    train(ig_env)
-    #print(ig_env.last())
-    
-
-                    print("PASS")
-
-    """

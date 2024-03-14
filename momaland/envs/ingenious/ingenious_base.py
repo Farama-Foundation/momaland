@@ -286,7 +286,7 @@ class IngeniousBase:
         self.exclude_action(h2)
         if self.first_round:
             #if first round, each player should take different corner
-            print(h1,h2)
+            # print('first round', h1,h2)
             self.exclude_position_first_round(h1)
             self.exclude_position_first_round(h2)
 
@@ -422,7 +422,7 @@ class IngeniousBase:
             if hex_scale(neighbor_hex, 1.0/(self.board_size-1)) in hex_directions:
                 #neighbor_hex is corner
                 a=neighbor_hex
-                print("find the corner to remove in first round",a,pos)
+                # print("find the corner to remove in first round",a,pos)
                 for k in range(0, 6):
                     hx1 = hex_neighbor(a, k)
                     for j in range(0, 6):
