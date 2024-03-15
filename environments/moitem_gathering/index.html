@@ -189,7 +189,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -285,7 +285,7 @@
                 </svg>
               </button>
             </div>
-            <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
               <div class="visually-hidden">Toggle table of contents sidebar</div>
               <i class="icon"><svg>
                   <use href="#svg-toc"></use>
@@ -325,14 +325,48 @@
 </tbody>
 </table>
 </div>
-<p>Environment for the MO-ItemGathering problem.</p>
-<p>The init method takes in environment arguments and should define the following attributes:</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Parallel</span></code> multi-objective environment of the Item Gathering problem.</p>
+<section id="observation-space">
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<p>The observation space is a tuple containing the agent id (a negative integer) and the 2D map observation, where
+0 is an empty cell, negative integers represent agent IDs, and positive integers represent items</p>
+</section>
+<section id="action-space">
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<p>The action space is a Discrete space, where:</p>
 <ul class="simple">
-<li><p>possible_agents</p></li>
-<li><p>action_spaces</p></li>
-<li><p>observation_spaces
-These attributes should not be changed after initialization.</p></li>
+<li><p>0: stay</p></li>
+<li><p>1: up</p></li>
+<li><p>2: down</p></li>
+<li><p>3: left</p></li>
+<li><p>4: right</p></li>
 </ul>
+</section>
+<section id="reward-space">
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<p>The reward space is a vector containing rewards for each type of items available in the environment</p>
+</section>
+<section id="starting-state">
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<p>The initial position of the agent is determined by the 1 entries of the initial map.</p>
+</section>
+<section id="episode-termination">
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<p>The episode is terminated if all the items have been gathered.</p>
+</section>
+<section id="episode-truncation">
+<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">#</a></h2>
+<p>The episode termination occurs if the maximum number of timesteps is reached.</p>
+</section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>‘num_timesteps’: number of timesteps to run the environment for. Default: 10</p></li>
+<li><p>‘initial_map’: map of the environment. Default: 8x8 grid, 2 agents, 3 objectives (Källström and Heintz, 2019)</p></li>
+<li><p>‘randomise’: whether to randomise the map, at each episode. Default: False</p></li>
+<li><p>‘render_mode’: render mode for the environment. Default: None</p></li>
+</ul>
+</section>
 </section>
 
           </article>
@@ -380,8 +414,33 @@ These attributes should not be changed after initialization.</p></li>
           
         </footer>
       </div>
-      <aside class="toc-drawer no-toc">
+      <aside class="toc-drawer">
         
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">MO-ItemGathering</a><ul>
+<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
+<li><a class="reference internal" href="#action-space">Action Space</a></li>
+<li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#starting-state">Starting State</a></li>
+<li><a class="reference internal" href="#episode-termination">Episode Termination</a></li>
+<li><a class="reference internal" href="#episode-truncation">Episode Truncation</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
         
         
       </aside>

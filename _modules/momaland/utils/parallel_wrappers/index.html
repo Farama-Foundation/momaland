@@ -295,11 +295,16 @@
             
             <h1>Source code for momaland.utils.parallel_wrappers</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Various wrappers for Parallel MO environments.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gymnasium.spaces</span> <span class="kn">import</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Discrete</span>
 <span class="kn">from</span> <span class="nn">gymnasium.wrappers.normalize</span> <span class="kn">import</span> <span class="n">RunningMeanStd</span>
 <span class="kn">from</span> <span class="nn">pettingzoo.utils.wrappers.base_parallel</span> <span class="kn">import</span> <span class="n">BaseParallelWrapper</span>
+
+<span class="kn">from</span> <span class="nn">momaland.learning.utils</span> <span class="kn">import</span> <span class="n">remap_actions</span>
+<span class="kn">from</span> <span class="nn">momaland.utils.env</span> <span class="kn">import</span> <span class="n">MOParallelEnv</span>
 
 
 <div class="viewcode-block" id="RecordEpisodeStatistics">
@@ -444,6 +449,80 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">return_rms</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">returns</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rews</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_rms</span><span class="o">.</span><span class="n">var</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span></div>
 
+
+
+<span class="k">class</span> <span class="nc">CentraliseAgent</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This wrapper will create a central agent that observes the full state of the environment.</span>
+
+<span class="sd">    The central agent will receive the concatenation of all agents&#39; observations as its own observation (or a global</span>
+<span class="sd">    state, if available in the environment), and a multi-objective reward vector (representing the component-wise sum of</span>
+<span class="sd">    the individual agent rewards) as its own reward. The central agent is expected to return a vector of actions, one</span>
+<span class="sd">    for each agent in the original environment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">MOParallelEnv</span><span class="p">,</span> <span class="n">action_mapping</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Central agent wrapper class initializer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            env: The parallel environment to apply the wrapper</span>
+<span class="sd">            action_mapping: Whether to use an action mapping to Discrete spaces of not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_mapping</span> <span class="o">=</span> <span class="n">action_mapping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">spec</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Spec&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;central_observation&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_central_observation_space</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_central_observation_space</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">({</span><span class="n">agentID</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="p">(</span><span class="n">agentID</span><span class="p">)</span> <span class="k">for</span> <span class="n">agentID</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">})</span>
+        <span class="c1"># self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})</span>
+        <span class="c1"># For compatibility with MORL baselines</span>
+        <span class="c1"># Make the action space a Box space with the same bounds as the first agent&#39;s action space</span>
+        <span class="n">ag0_action_space</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_actions</span> <span class="o">=</span> <span class="n">ag0_action_space</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_mapping</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">Discrete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_actions</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;central_observation&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">Box</span><span class="p">(</span>
+                <span class="n">low</span><span class="o">=</span><span class="n">ag0_action_space</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+                <span class="n">high</span><span class="o">=</span><span class="p">(</span><span class="n">ag0_action_space</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">),),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">ag0_action_space</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">({</span><span class="n">agentID</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">agentID</span><span class="p">)</span> <span class="k">for</span> <span class="n">agentID</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reward_space</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">reward_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span>
+
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Steps through the environment, joining the returned values for the central agent.&quot;&quot;&quot;</span>
+        <span class="c1"># Remake the action list into a dictionary compatible with MOMAland environments</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_mapping</span><span class="p">:</span>
+            <span class="n">remapped_actions</span> <span class="o">=</span> <span class="n">remap_actions</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_actions</span><span class="p">)</span>
+            <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span><span class="n">agent</span><span class="p">:</span> <span class="n">remapped_actions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">agent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">)}</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;central_observation&quot;</span><span class="p">):</span>
+            <span class="n">actions</span> <span class="o">=</span> <span class="p">{</span><span class="n">agent</span><span class="p">:</span> <span class="n">actions</span><span class="p">[</span><span class="n">num</span><span class="p">]</span> <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">agent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">)}</span>
+
+        <span class="n">observations</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;central_observation&quot;</span><span class="p">):</span>
+            <span class="n">observations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">state</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">joint_reward</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rewards</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">observations</span><span class="p">,</span>
+            <span class="n">joint_reward</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">terminations</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">truncations</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
+            <span class="n">infos</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the environment, joining the returned values for the central agent.&quot;&quot;&quot;</span>
+        <span class="n">observations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;central_observation&quot;</span><span class="p">):</span>
+            <span class="n">observations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">state</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">observations</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">infos</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 </pre></div>
           </article>
         </div>

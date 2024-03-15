@@ -189,7 +189,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -285,7 +285,7 @@
                 </svg>
               </button>
             </div>
-            <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
               <div class="visually-hidden">Toggle table of contents sidebar</div>
               <i class="icon"><svg>
                   <use href="#svg-toc"></use>
@@ -322,14 +322,67 @@
 </tbody>
 </table>
 </div>
-<p>Environment for MO-BeachDomain problem.</p>
-<p>The init method takes in environment arguments and should define the following attributes:</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Parallel</span></code> 2-objective environment of the Beach problem domain.</p>
+<section id="observation-space">
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<p>The observation space is a continuous box with the length <code class="docutils literal notranslate"><span class="pre">5</span></code> containing:</p>
 <ul class="simple">
-<li><p>possible_agents</p></li>
-<li><p>action_spaces</p></li>
-<li><p>observation_spaces
-These attributes should not be changed after initialization.</p></li>
+<li><p>agent type</p></li>
+<li><p>section id (where the agent is)</p></li>
+<li><p>section capacity</p></li>
+<li><p>section consumption</p></li>
+<li><p>percentage of agents of the agent’s type in the section</p></li>
 </ul>
+<p>Example:
+<code class="docutils literal notranslate"><span class="pre">[a_type,</span> <span class="pre">section_id,</span> <span class="pre">section_capacity,</span> <span class="pre">section_consumption,</span> <span class="pre">%_of_a_of_current_type]</span></code></p>
+</section>
+<section id="action-space">
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<p>The action space is a Discrete space, where:</p>
+<ul class="simple">
+<li><p>moving left is -1</p></li>
+<li><p>moving right is +1</p></li>
+<li><p>staying is 0</p></li>
+</ul>
+</section>
+<section id="reward-space">
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<p>The reward space is a 2D vector containing rewards for two different schemes (‘local’ or ‘global’) for:</p>
+<ul class="simple">
+<li><p>the occupation level</p></li>
+<li><p>the mixture level
+If the scheme is ‘local’, the reward is given for the currently occupied section.
+If the scheme is ‘global’, the reward is summed over all sections.</p></li>
+</ul>
+</section>
+<section id="starting-state">
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<p>The initial position is a uniform random distribution of agents over the sections. This can be changed via the
+‘position_distribution’ argument. The agent types are also randomly distributed according to the
+‘type_distribution’ argument. The default is a uniform distribution over all types.</p>
+</section>
+<section id="episode-termination">
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<p>The episode is terminated if num_timesteps is reached. The default value is 100.
+Agents only receive the reward after the last timestep.</p>
+</section>
+<section id="episode-truncation">
+<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">#</a></h2>
+<p>The problem is not truncated. It has a maximum number of timesteps.</p>
+</section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>‘num_timesteps (int)’: number of timesteps in the domain. Default: 100</p></li>
+<li><p>‘num_agents (int)’: number of agents in the domain. Default: 100</p></li>
+<li><p>‘reward_scheme (str)’: the reward scheme to use (‘local’, or ‘global’). Default: local</p></li>
+<li><p>‘sections (int)’: number of beach sections in the domain. Default: 6</p></li>
+<li><p>‘capacity (int)’: capacity of each beach section. Default: 10</p></li>
+<li><p>‘type_distribution (tuple)’: the distribution of agent types in the domain. Default: 2 types equally distributed (0.5, 0.5).</p></li>
+<li><p>‘position_distribution (tuple)’: the initial distribution of agents in the domain. Default: uniform over all sections (None).</p></li>
+<li><p>‘render_mode (str)’: render mode. Default: None</p></li>
+</ul>
+</section>
 </section>
 
           </article>
@@ -377,8 +430,33 @@ These attributes should not be changed after initialization.</p></li>
           
         </footer>
       </div>
-      <aside class="toc-drawer no-toc">
+      <aside class="toc-drawer">
         
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">MO-Beach</a><ul>
+<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
+<li><a class="reference internal" href="#action-space">Action Space</a></li>
+<li><a class="reference internal" href="#reward-space">Reward Space</a></li>
+<li><a class="reference internal" href="#starting-state">Starting State</a></li>
+<li><a class="reference internal" href="#episode-termination">Episode Termination</a></li>
+<li><a class="reference internal" href="#episode-truncation">Episode Truncation</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
         
         
       </aside>
