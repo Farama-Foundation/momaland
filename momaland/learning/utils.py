@@ -3,6 +3,7 @@
 import errno
 import os
 import subprocess
+
 import numpy as np
 import requests
 
@@ -31,7 +32,7 @@ def remap_actions(action, num_agents, num_actions):
     """Remap a single number to a list of actions."""
     return np.unravel_index(action, (num_actions,) * num_agents)
 
-  
+
 def autotag():
     """This adds a tag to the wandb run marking the commit number, allows versioning of experiments. From CleanRL's benchmark utility."""
 
