@@ -87,6 +87,22 @@ def parallel_normalization_test(env_module):
     env.close()
 
 
+def parallel_centralized_agent_test(env_module):
+    """Soft test unit. No assertions.
+
+    This test unit is used to check if the API breaks when the central agent wrapper is applied.
+    """
+    env = env_module.parallel_env()
+    env = ParallelWrappers.CentraliseAgent(env)
+    observation, info = env.reset(seed=42)
+    done = False
+    while done:
+        actions = {agent: env.action_space[agent].sample() for agent in env.agents}
+        observation, reward, truncation, termination, info = env.step(actions)
+        done = truncation or termination
+    env.close()
+
+
 def aec_test(env_module):
     """Testing for the following wrappers for AEC:
     - Normalization
@@ -107,7 +123,14 @@ def parallel_test(env_module):
     print("Passed Parallel wrapper test")
 
 
+def central_agent_test(env_module):
+    """Testing for the CentralisedAgent wrapper for Parallel."""
+    parallel_centralized_agent_test(env_module)
+    print("Passed Centralized Agent Parallel wrapper test")
+
+
 def wrapper_test(env_module):
     """Wrapper testing for AEC and Parallel environments."""
     aec_test(env_module)
     parallel_test(env_module)
+    central_agent_test(env_module)

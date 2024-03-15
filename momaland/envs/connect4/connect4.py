@@ -10,57 +10,6 @@
 | Observation Shape  | (board_height=6, board_width=7, 2)               |
 | Observation Values | [0,1]                                            |
 | Reward Shape       | (2,) or (2+board_width,)                         |
-
-MO-Connect4 is a multi-objective variant of the two-player, single-objective turn-based board game Connect 4.
-In Connect 4, players can win by connecting four of their tokens vertically, horizontally or diagonally. The players
-drop their respective token in a column of a standing board (of width 7 and height 6 by default), where each token will
-fall until it reaches the bottom of the column or lands on top of an existing token.
-Players cannot place a token in a full column, and the game ends when either a player has made a sequence of 4 tokens,
-or when all columns have been filled (draw).
-MO-Connect4 extends this game with a second objective that incentivizes faster wins, and optionally the additional
-(conflicting) objectives of having more tokens than the opponent in every column. Additionally, width and height of the
-board can be set to values from 4 to 20.
-
-
-### Observation Space
-
-The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
-below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
-
-The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
-Each plane represents a specific agent's tokens, and each location in the grid represents the placement of the
-corresponding agent's token. 1 indicates that the agent has a token placed in the given location, and 0 indicates they
-do not have a token in that location (meaning that either the cell is empty, or the other agent has a token in that
- location).
-
-
-#### Legal Actions Mask
-
-The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
-The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
-or not; the action encoding is described in the Action Space section below.
-The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
-game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
-
-
-### Action Space
-
-The action space is the set of integers from 0 to board_width (exclusive), where the number represents which column
-a token should be dropped in.
-
-
-### Rewards
-
-Dimension 0: If an agent successfully connects four of their tokens, they will be rewarded 1 point. At the same time,
-the opponent agent will be awarded -1 point. If the game ends in a draw, both players are rewarded 0.
-Dimension 1: If an agent wins, they get a reward of 1-(move_count/board_size) to incentivize faster wins. The losing opponent gets the negated reward. In case of a draw, both agents get 0.
-Dimension 2 to board_width+1 (default 8): (optional) If at game end, an agent has more tokens than their opponent in
-column X, they will be rewarded 1 point in reward dimension 2+X. The opponent agent will be rewarded -1 point. If the
-column has an equal number of tokens from both players, both players are rewarded 0.
-
-
-### Version History
-
 """
 from __future__ import annotations
 
@@ -120,7 +69,50 @@ def raw_env(**kwargs):
 
 
 class MOConnect4(MOAECEnv, EzPickle):
-    """Multi-objective Connect Four."""
+    """Multi-objective Connect Four.
+
+    MO-Connect4 is a multi-objective variant of the two-player, single-objective turn-based board game Connect 4.
+    In Connect 4, players can win by connecting four of their tokens vertically, horizontally or diagonally. The players
+    drop their respective token in a column of a standing board (of width 7 and height 6 by default), where each token will
+    fall until it reaches the bottom of the column or lands on top of an existing token.
+    Players cannot place a token in a full column, and the game ends when either a player has made a sequence of 4 tokens,
+    or when all columns have been filled (draw).
+    MO-Connect4 extends this game with a second objective that incentivizes faster wins, and optionally the additional
+    (conflicting) objectives of having more tokens than the opponent in every column. Additionally, width and height of the
+    board can be set to values from 4 to 20.
+
+    ## Observation Space
+    The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
+    below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
+
+    The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
+    Each plane represents a specific agent's tokens, and each location in the grid represents the placement of the
+    corresponding agent's token. 1 indicates that the agent has a token placed in the given location, and 0 indicates they
+    do not have a token in that location (meaning that either the cell is empty, or the other agent has a token in that
+    location).
+
+    ## Legal Actions Mask
+    The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
+    The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
+    or not; the action encoding is described in the Action Space section below.
+    The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
+    game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
+
+
+    ## Action Space
+    The action space is the set of integers from 0 to board_width (exclusive), where the number represents which column
+    a token should be dropped in.
+
+    ## Rewards
+    Dimension 0: If an agent successfully connects four of their tokens, they will be rewarded 1 point. At the same time,
+    the opponent agent will be awarded -1 point. If the game ends in a draw, both players are rewarded 0.
+    Dimension 1: If an agent wins, they get a reward of 1-(move_count/board_size) to incentivize faster wins. The losing opponent gets the negated reward. In case of a draw, both agents get 0.
+    Dimension 2 to board_width+1 (default 8): (optional) If at game end, an agent has more tokens than their opponent in
+    column X, they will be rewarded 1 point in reward dimension 2+X. The opponent agent will be rewarded -1 point. If the
+    column has an equal number of tokens from both players, both players are rewarded 0.
+
+    ## Version History
+    """
 
     metadata = {
         "render_modes": ["human", "rgb_array"],

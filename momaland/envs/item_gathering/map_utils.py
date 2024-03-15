@@ -17,15 +17,18 @@ DEFAULT_MAP = np.array(
 )
 
 
-def randomise_map(env_map):
+def randomise_map(env_map, seed=None):
     """Randomize the interior of the map (only the item positions).
 
     Args:
         env_map (np.ndarray): The map to randomize.
+        seed (int, optional): The seed to use for the randomization. Defaults to None.
 
     Returns:
         np.ndarray: The randomized map.
     """
+    if seed is not None:
+        np.random.seed(seed)
     interior_map = env_map[2:-2, 2:-2]
     # shuffle row-wise
     interior_map = np.random.permutation(interior_map)
@@ -35,7 +38,7 @@ def randomise_map(env_map):
     return env_map
 
 
-def generate_map(rows=8, columns=8, item_distribution=(3, 3, 2), num_agents=2):
+def generate_map(rows=8, columns=8, item_distribution=(3, 3, 2), num_agents=2, seed=None):
     """Generate a map for the Item Gathering environment, according to the original paper.
 
     Items are only generated in the interior of the map, i.e., not in the 2 outermost layers of the map.
@@ -45,7 +48,10 @@ def generate_map(rows=8, columns=8, item_distribution=(3, 3, 2), num_agents=2):
         columns (int, optional): The number of columns in the map. Defaults to 8.
         item_distribution (tuple, optional): The number of items of each type to place in the map. Defaults to (3, 3, 2).
         num_agents (int, optional): The number of agents to place in the map. Defaults to 2.
+        seed (int, optional): The seed to use for the randomization. Defaults to None.
     """
+    if seed is not None:
+        np.random.seed(seed)
     map = np.zeros((rows, columns), dtype=int)
     interior_map = map[2:-2, 2:-2]
     item_index_start = 2
