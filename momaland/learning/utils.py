@@ -3,7 +3,6 @@
 import errno
 import os
 import subprocess
-
 import numpy as np
 import requests
 
@@ -32,7 +31,7 @@ def remap_actions(action, num_agents, num_actions):
     """Remap a single number to a list of actions."""
     return np.unravel_index(action, (num_actions,) * num_agents)
 
-
+  
 def autotag():
     """This adds a tag to the wandb run marking the commit number, allows versioning of experiments. From CleanRL's benchmark utility."""
 
@@ -64,7 +63,7 @@ def autotag():
 
     if "WANDB_TAGS" in os.environ:
         raise ValueError(
-            "WANDB_TAGS is already set. Please unset it before running this script or run the script with --auto-tag " "False"
+            "WANDB_TAGS is already set. Please unset it before running this script or run the script with --auto-tag False"
         )
     wandb_tag = _autotag()
     if len(wandb_tag) > 0:
