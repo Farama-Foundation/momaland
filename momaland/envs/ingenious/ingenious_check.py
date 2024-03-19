@@ -5,7 +5,7 @@ import random
 import gymnasium
 import numpy as np
 
-from momaland.envs.ingenious.ingenious import MOIngenious
+from momaland.envs.ingenious.ingenious import Ingenious
 
 # from ingenious import MOIngenious
 from momaland.envs.ingenious.ingenious_base import Hex2ArrayLocation
@@ -63,7 +63,7 @@ def test_move():
 
     Returns: True or False
     """
-    ig_env = MOIngenious(num_agents=2, rack_size=2, num_colors=2, board_size=8)
+    ig_env = Ingenious(num_agents=2, rack_size=2, num_colors=2, board_size=8)
     ig_env.reset()
     # print(ig_env.game.board_array, "nweowjrowhafhif!!!!!!!!!")
 
@@ -91,7 +91,7 @@ def test_step():
 
     Returns: True or False
     """
-    ig_env = MOIngenious(num_agents=2, rack_size=2, num_colors=2, board_size=8)
+    ig_env = Ingenious(num_agents=2, rack_size=2, num_colors=2, board_size=8)
     ig_env.reset()
     flag = True
 
@@ -157,7 +157,7 @@ def test_reset():
     Returns: True or False
 
     """
-    ig_env = MOIngenious(num_agents=2, rack_size=2, num_colors=2, board_size=4)
+    ig_env = Ingenious(num_agents=2, rack_size=2, num_colors=2, board_size=4)
     ig_env.reset(105)
     train(ig_env)
     ig_env.reset(110)
@@ -186,11 +186,11 @@ def test_reset():
 
 def test_ingenious_rule():
     """Ingenious rule test in a small case setting; when game end successfully, no agent should successively play 3 times."""
-    ig_env = MOIngenious(num_agents=2, rack_size=2, num_colors=2, board_size=8)
+    ig_env = Ingenious(num_agents=2, rack_size=2, num_colors=2, board_size=8)
     ag = -1
     sum = 0
     ig_env.reset()
-    ig_env.game.limitation_score = 5
+    ig_env.game.max_score = 5
 
     done = False
     if_exeed = True
@@ -222,7 +222,7 @@ def test_ingenious_rule():
 
 def test_API():
     """Test observe interface in ingenous.py."""
-    ig_env = MOIngenious()
+    ig_env = Ingenious()
     ig_env.limitation_score = 10000
     # ag = ig_env.agent_selection
     # obs = ig_env.observe(ag)
@@ -314,7 +314,7 @@ def test_API():
 
 def check_fully_observable():
     """Test observable trigger in ingenous.py."""
-    ig_env = MOIngenious(fully_obs=True)
+    ig_env = Ingenious(fully_obs=True)
     ig_env.reset()
     ag = ig_env.agent_selection
     obs = ig_env.observe(ag)
@@ -324,7 +324,7 @@ def check_fully_observable():
 
 def check_two_team():
     """Test teammate(reward sharing) in ingenous.py."""
-    ig_env = MOIngenious(num_agents=4, reward_mode="two_teams")
+    ig_env = Ingenious(num_agents=4, reward_mode="two_teams")
     ig_env.reset()
     ag = ig_env.agent_selection
     obs = ig_env.observe(ag)
@@ -353,7 +353,7 @@ def check_two_team():
 
 def check_collaborative():
     """Test teammate(reward sharing) in ingenous.py."""
-    ig_env = MOIngenious(num_agents=4, reward_mode="collaborative")
+    ig_env = Ingenious(num_agents=4, reward_mode="collaborative")
     ig_env.reset()
     ag = ig_env.agent_selection
     obs = ig_env.observe(ag)
@@ -406,7 +406,7 @@ def check_parameter_range():
                             )
 
                             try:
-                                ig_env = MOIngenious(
+                                ig_env = Ingenious(
                                     num_agents=n_player,
                                     rack_size=draw,
                                     num_colors=color,

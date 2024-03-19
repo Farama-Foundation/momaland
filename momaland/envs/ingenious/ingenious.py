@@ -1,6 +1,16 @@
-"""Multi-objective Ingenious environment for MOMAland.
+"""Ingenious environment.
 
-To Write.
+|--------------------|--------------------------------------------------|
+| Actions            | Discrete                                         |
+| Parallel API       | No                                               |
+| Manual Control     | No                                               |
+| Agents             | 2                                                |
+| Action Shape       | (1,)                                             |
+| Action Values      | Discrete(board_width=8 * board_height=8 * 3)     |
+| Observation Shape  | (board_height=8, board_width=8, 2)               |
+| Observation Values | [0,1]                                            |
+| Reward Shape       | (num_objectives=4,)                              |
+
 """
 
 import functools
@@ -19,13 +29,13 @@ from momaland.utils.env import MOAECEnv
 
 
 def env(**kwargs):
-    """Autowrapper for multi-objective Ingenious game.
+    """Returns the wrapped Ingenious environment in `AEC` format.
 
     Args:
-        **kwargs: keyword args to forward to the parallel_env function
+        **kwargs: keyword args to forward to the raw_env function
 
     Returns:
-        A fully wrapped env
+        A fully wrapped AEC env
     """
     env = raw_env(**kwargs)
 
@@ -35,12 +45,12 @@ def env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """Env factory function for multi-objective Ingenious game."""
-    return MOIngenious(**kwargs)
+    """Env factory function for the Ingenious environment."""
+    return Ingenious(**kwargs)
 
 
-class MOIngenious(MOAECEnv):
-    """Environment for the multi-objective Ingenious game."""
+class Ingenious(MOAECEnv):
+    """Environment for the Ingenious board game."""
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
 
@@ -67,29 +77,28 @@ class MOIngenious(MOAECEnv):
         """
         self.num_colors = num_colors
         self.init_draw = rack_size
-        self.num_players = num_agents
         self.limitation_score = 18  # max score in score board for one certain color.
         assert reward_mode in {
             "competitive",
             "collaborative",
             "two_teams",
         }, "reward_mode has to be one element in {'competitive','collaborative','two_teams'}"
-        self.teammate_mode = reward_mode
+        self.reward_mode = reward_mode
+        self.fully_obs = fully_obs
 
-        if self.teammate_mode == "two_teams":
-            assert num_agents % 2 == 0, "Number of players must be even if teammate_mode is two_teams."
+        if self.reward_mode == "two_teams":
+            assert num_agents % 2 == 0, "Number of players must be even if reward_mode is two_teams."
             self.limitation_score = self.limitation_score * (num_agents / 2)
-        elif self.teammate_mode == "collaborative":
+        elif self.reward_mode == "collaborative":
             self.limitation_score = self.limitation_score * num_agents
 
-        self.fully_obs = fully_obs
         if board_size is None:
-            self.board_size = {2: 6, 3: 7, 4: 8, 5: 9, 6: 10}.get(self.num_players)
+            self.board_size = {2: 6, 3: 7, 4: 8, 5: 9, 6: 10}.get(self.num_agents)
         else:
             self.board_size = board_size
 
         self.game = IngeniousBase(
-            num_agents=self.num_players,
+            num_agents=self.num_agents,
             rack_size=self.init_draw,
             num_colors=self.num_colors,
             board_size=self.board_size,
@@ -97,9 +106,7 @@ class MOIngenious(MOAECEnv):
         )
 
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
-        # init list of agent
         self.agents = self.possible_agents[:]
-
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
         self.infos = {agent: {} for agent in self.agents}
@@ -108,8 +115,6 @@ class MOIngenious(MOAECEnv):
         self.refresh_cumulative_reward = True
         self.render_mode = render_mode
 
-        # Observation space is a dict of 2 elements: actions mask and game state (board, agent own tile bag,
-        # agent score)
         self.observation_spaces = {
             i: Dict(
                 {
@@ -119,7 +124,7 @@ class MOIngenious(MOAECEnv):
                                 0, len(ALL_COLORS), shape=(2 * self.board_size - 1, 2 * self.board_size - 1), dtype=np.float32
                             ),
                             "tiles": Box(0, self.num_colors, shape=(self.init_draw,), dtype=np.int32),
-                            "scores": Box(0, self.game.limitation_score, shape=(self.num_colors,), dtype=np.int32),
+                            "scores": Box(0, self.game.max_score, shape=(self.num_colors,), dtype=np.int32),
                         }
                     ),
                     "action_mask": Box(low=0, high=1, shape=(len(self.game.masked_action),), dtype=np.int8),
@@ -130,10 +135,8 @@ class MOIngenious(MOAECEnv):
 
         self.action_spaces = dict(zip(self.agents, [Discrete(len(self.game.masked_action))] * num_agents))
 
-        # The reward after one move is the difference between the previous and current score.
-        self.reward_spaces = dict(
-            zip(self.agents, [Box(0, self.game.limitation_score, shape=(self.num_colors,))] * num_agents)
-        )
+        # The reward for each move is the difference between the previous and current score.
+        self.reward_spaces = dict(zip(self.agents, [Box(0, self.game.max_score, shape=(self.num_colors,))] * num_agents))
 
     @functools.lru_cache(maxsize=None)
     @override
@@ -148,7 +151,6 @@ class MOIngenious(MOAECEnv):
 
     @override
     def reward_space(self, agent):
-        """Returns the reward space for the given agent."""
         return self.reward_spaces[agent]
 
     @override
@@ -165,8 +167,7 @@ class MOIngenious(MOAECEnv):
     @override
     def reset(self, seed=None, options=None):
         """Reset needs to initialize the `agents` attribute and must set up the environment so that render(),
-        and step() can be called without issues.
-        """
+        and step() can be called without issues."""
         if seed is not None:
             np.random.seed(seed)
             random.seed(seed)
@@ -190,7 +191,6 @@ class MOIngenious(MOAECEnv):
         Args:
             action: action of the active agent
         """
-
         current_agent = self.agent_selection
 
         if self.terminations[current_agent] or self.truncations[current_agent]:
@@ -209,24 +209,23 @@ class MOIngenious(MOAECEnv):
         if self.game.end_flag:
             self.terminations = {agent: True for agent in self.agents}
 
-        # update teammate score(copy current agent score to the teammate)
-        if self.teammate_mode != "competitive":
+        # update teammate score (copy current agent's score to teammates)
+        if self.reward_mode != "competitive":
             index_current_agent = self.agents.index(current_agent)
-            for i in range(0, self.num_players):
-                if self.teammate_mode == "two_teams":
-                    # two team mode, players who is teammates of the current agent has the same reward and score
+            for i in range(0, self.num_agents):
+                if self.reward_mode == "two_teams":
+                    # in two_team mode, players who are teammates of the current agent get the same reward and score
                     if i != index_current_agent and i % 2 == index_current_agent % 2:
                         agent = self.agents[i]
                         self.game.score[agent] = self.game.score[current_agent]
                         self.rewards[agent] = self.rewards[current_agent]
-                elif self.teammate_mode == "collaborative":
-                    # collabarotive mode, every player has the same reward and score
+                elif self.reward_mode == "collaborative":
+                    # in collaborative mode, every player gets the same reward and score
                     if i != index_current_agent:
                         agent = self.agents[i]
                         self.game.score[agent] = self.game.score[current_agent]
                         self.rewards[agent] = self.rewards[current_agent]
 
-        # update accumulate_rewards
         self._accumulate_rewards()
 
         # update to next agent
@@ -243,15 +242,11 @@ class MOIngenious(MOAECEnv):
         if self.fully_obs:
             p_tiles = np.array([item for item in self.game.p_tiles.values()], dtype=np.int32)
         else:
-            # print(self.game.p_tiles[agent])
             p_tiles = np.array(self.game.p_tiles[agent], dtype=np.int32)
-            # p_score = np.array(list(self.game.score[agent].values()), dtype=np.int32)
-        # show all score board
         tmp = []
         for agent_score in self.game.score.values():
             tmp.append([score for score in agent_score.values()])
         p_score = np.array(tmp, dtype=np.int32)
-
         observation = {"board": board_vals, "tiles": p_tiles, "scores": p_score}
         action_mask = np.array(self.game.return_action_list(), dtype=np.int8)
         return {"observation": observation, "action_mask": action_mask}

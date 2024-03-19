@@ -1,6 +1,6 @@
-"""Base class for Ingenious environment.
+"""Base class for the Ingenious environment.
 
-This class is not meant to be instantiated directly. This class supports the MOIngenious environment and provides the
+This class is not meant to be instantiated directly. This class supports the Ingenious environment and provides the
 board and rules.
 """
 
@@ -11,12 +11,6 @@ import random
 import numpy as np
 
 
-# red 12-pointed star
-# green circle
-# blue 6-pointed star
-# orange hexagon
-# yellow 24-pointed star
-# purple ring
 RED = 1
 GREEN = 2
 BLUE = 3
@@ -25,13 +19,12 @@ YELLOW = 5
 PURPLE = 6
 ALL_COLORS = [RED, GREEN, BLUE, ORANGE, YELLOW, PURPLE]
 COLOR_NAMES = ["red", "green", "blue", "orange", "yellow", "purple"]
-
 NUM_TILES = 120
 Hex = collections.namedtuple("Hex", ["q", "r", "s"])
 
 
 def hex_coord(q, r, s):
-    """Create a cube-based coordinates."""
+    """Create a cube-based coordinate."""
     assert not (round(q + r + s) != 0), "q + r + s must be 0"
     return Hex(q, r, s)
 
@@ -98,7 +91,7 @@ def generate_board(board_size):
 
 
 class IngeniousBase:
-    """Base class for Ingenious environment."""
+    """Base class for the Ingenious environment."""
 
     def __init__(self, num_agents=2, rack_size=6, num_colors=6, board_size=6, max_score=18):
         """Initialize the Ingenious environment.
@@ -117,13 +110,13 @@ class IngeniousBase:
         assert num_agents <= num_colors, "Number of agents cannot be larger than number of colors. "
 
         self.board_size = board_size
-        self.num_player = num_agents
-        self.agents = [f"agent_{i}" for i in range(self.num_player)]
+        self.num_agents = num_agents
+        self.agents = [f"agent_{i}" for i in range(self.num_agents)]
         self.agent_selector = 0
-        self.limitation_score = max_score
+        self.max_score = max_score
         self.colors = num_colors
         self.corner_color = ALL_COLORS
-        self.init_draw = rack_size
+        self.rack_size = rack_size
         self.board_array = np.zeros([2 * self.board_size - 1, 2 * self.board_size - 1])
         self.board_hex = generate_board(self.board_size)  # original full board
         self.action_map = {}
@@ -145,7 +138,7 @@ class IngeniousBase:
                 neighbour = hex_neighbor(loc, direct)
                 if neighbour not in self.board_hex:
                     continue
-                for i in range(0, self.init_draw):
+                for i in range(0, self.rack_size):
                     if (loc, neighbour, i) not in self.action_map:
                         self.action_map[(loc, neighbour, i)] = self.action_size
                         self.action_index_map[self.action_size] = (loc, neighbour, i)
@@ -174,7 +167,7 @@ class IngeniousBase:
                 neighbour = hex_neighbor(loc, direct)
                 if neighbour not in self.board_hex:
                     continue
-                for i in range(0, self.init_draw):
+                for i in range(0, self.rack_size):
                     if (loc, neighbour, i) not in self.action_map:
                         self.action_map[(loc, neighbour, i)] = self.action_size
                         self.action_index_map[self.action_size] = (loc, neighbour, i)
@@ -192,17 +185,17 @@ class IngeniousBase:
         self.score = {agent: {ALL_COLORS[i]: 0 for i in range(0, self.colors)} for agent in self.agents}
 
     def draw_tiles_fill(self):
-        """Draw tiles for single player with amount(self.init_draw) of tiles."""
-        return [self.tiles_bag.pop(self.random.randrange(len(self.tiles_bag))) for _ in range(self.init_draw)]
+        """Draw rack_size tiles for single player."""
+        return [self.tiles_bag.pop(self.random.randrange(len(self.tiles_bag))) for _ in range(self.rack_size)]
 
     def get_tile(self, a):
         """Draw tiles for a specific player."""
-        while len(self.p_tiles[a]) < self.init_draw:
+        while len(self.p_tiles[a]) < self.rack_size:
             self.p_tiles[a].append(self.tiles_bag.pop(self.random.randrange(len(self.tiles_bag))))
         return
 
     def initial_corner(self):
-        """Initialise the corner of the board with the 6 colors."""
+        """Initialise the corners of the board with the 6 colors."""
         for i in range(0, 6):
             a = hex_scale(hex_directions[i], self.board_size - 1)
             x, y = Hex2ArrayLocation(a, self.board_size)
@@ -217,7 +210,7 @@ class IngeniousBase:
                     hx2 = hex_neighbor(hx1, j)
                     if (hx2 not in self.board_hex) or (hx1 not in self.board_hex) or (hx2 == a):
                         continue
-                    for card in range(0, self.init_draw):
+                    for card in range(0, self.rack_size):
                         c1 = self.action_map[(hx1, hx2, card)]
                         c2 = self.action_map[(hx2, hx1, card)]
                         self.first_round_pos.add(c1)
@@ -239,7 +232,6 @@ class IngeniousBase:
             self.tiles_bag = int(NUM_TILES / len(diff_color_combinations + same_color_combinations)) * (
                 diff_color_combinations + same_color_combinations
             )
-        # print(len(self.tiles_bag))
         if self.board_size in [9, 10]:
             # cannot fill the board for 9 or 10(complement rule)
             self.tiles_bag *= 2
@@ -249,19 +241,18 @@ class IngeniousBase:
 
     def set_action_index(self, index):
         """Apply the corresponding action for the given index on the board."""
-        """If selected actions is not a legal move, return False"""
         assert self.masked_action[index] == 1, "Illegal move, choose a valid action."
         if self.first_round:
             assert index in self.first_round_pos, (
                 "Illegal move, in the first round tiles can only be placed next to " "corners."
             )
-        """Hex Coordinate: h1,h2 ;  Tile to play: card"""
-        h1, h2, card = self.action_index_map[index]
+        # Hex Coordinate: h1,h2 ;  Tile to play: tile
+        h1, h2, tile = self.action_index_map[index]
         agent_i = self.agent_selector
         agent = self.agents[agent_i]
-        assert card < len(self.p_tiles[agent]), "Illegal move: choosing tile out of hand(happening after ingenious)"
-        """Extract the certain tile (color1 , color2) as (c1,c2)"""
-        c1, c2 = self.p_tiles[agent][card]
+        assert tile < len(self.p_tiles[agent]), "Illegal move: choosing tile out of rack"
+        # Extract the tile (color1 , color2) as (c1,c2)
+        c1, c2 = self.p_tiles[agent][tile]
         # Translate Hex Coordinate to Offset Coordinate(x,y)
         x1, y1 = Hex2ArrayLocation(h1, self.board_size)
         x2, y2 = Hex2ArrayLocation(h2, self.board_size)
@@ -275,61 +266,60 @@ class IngeniousBase:
                 self.p_tiles[agent].remove(item)
                 flag = True
                 break
-        assert flag, "Illegal move: set the tile to the coordinate unsuccessfully"
-        """Update the mask_action list after the action"""
+        assert flag, "Illegal move: unsuccessfully setting the tile to the coordinate"
+        # Update the mask_action list after the action
         self.legal_move.remove(index)
         self.board_array[x1][y1] = c1
         self.board_array[x2][y2] = c2
         self.exclude_action(h1)
         self.exclude_action(h2)
         if self.first_round:
-            # if first round, each player should take different corner
-            # print('first round', h1,h2)
+            # In the first round, every player must start in a different corner
             self.exclude_position_first_round(h1)
             self.exclude_position_first_round(h2)
 
-        """Flag to signal if ingenious is called """
+        # Flag to signal if ingenious is called
         skip_flag = False
-        """flags to avoid calling ingenious on colour that was already maxed out """
+        # flags to avoid calling ingenious on colour that was already maxed out
         ingenious_possible = [True, True]
-        if self.score[agent][c1] == self.limitation_score:
+        if self.score[agent][c1] == self.max_score:
             ingenious_possible[0] = False
-        if self.score[agent][c2] == self.limitation_score:
+        if self.score[agent][c2] == self.max_score:
             ingenious_possible[1] = False
 
-        """Update score through checking 5 neighboring directions for h1 and h2 independently"""
+        # Update score through checking 5 neighboring directions for h1 and h2 independently
         self.score[agent][c1] += self.calculate_score_for_piece(h1, h2, c1)
         self.score[agent][c2] += self.calculate_score_for_piece(h2, h1, c2)
 
-        if self.score[agent][c1] > self.limitation_score and ingenious_possible[0]:
+        if self.score[agent][c1] > self.max_score and ingenious_possible[0]:
             skip_flag = True
-            self.score[agent][c1] = self.limitation_score
-        if self.score[agent][c2] > self.limitation_score and ingenious_possible[1]:
+            self.score[agent][c1] = self.max_score
+        if self.score[agent][c2] > self.max_score and ingenious_possible[1]:
             skip_flag = True
-            self.score[agent][c2] = self.limitation_score
+            self.score[agent][c2] = self.max_score
 
-        """End game if no more legal actions."""
+        # End game if no more legal actions.
         if len(self.legal_move) == 0:
             self.end_flag = True
-            # Preserve the number of tiles in hand for each player to comply with observation dimensions
-            while len(self.p_tiles[agent]) < self.init_draw:
+            # Preserve the number of tiles in rack for each player to comply with observation dimensions
+            while len(self.p_tiles[agent]) < self.rack_size:
                 self.p_tiles[agent].append((0, 0))
             return True
 
-        """All tiles in hand has been played"""
+        # All tiles in rack have been played
         if len(self.p_tiles[agent]) == 0:
-            self.end_flag = True  # The player should win instantly if he plays out all the tiles in hand.
-            # Preserve the number of tiles in hand for each player to comply with observation dimensions
-            while len(self.p_tiles[agent]) < self.init_draw:
+            self.end_flag = True  # The player should win instantly if he plays out all the tiles in rack.
+            # Preserve the number of tiles in rack for each player to comply with observation dimensions
+            while len(self.p_tiles[agent]) < self.rack_size:
                 self.p_tiles[agent].append((0, 0))
             return True
 
-        """In the original rules of the game, when a player calls ingenious, they can play a bonus round without
-        replenishing tiles in hand. However, due to implementation constraints in our case the player replenishes its
-        hand in all cases (ingenious or not)"""
+        # In the original rules of the game, when a player calls ingenious, they can play a bonus round without
+        # replenishing the tiles in the rack. However, in our implementation the player replenishes their rack in all
+        # cases, ingenious or not.
         self.get_tile(agent)
         # Rule that says if you have no tiles of a color, you can swap your tiles with the lowest score.
-        self.refresh_hand(agent)
+        self.refresh_rack(agent)
         # Pass turn to next player if ingenious was not called
         if not skip_flag:
             self.next_turn()
@@ -356,7 +346,7 @@ class IngeniousBase:
             hx2 = hex_neighbor(hx, i)
             if hx2 not in self.board_hex:
                 continue
-            for card in range(0, self.init_draw):
+            for card in range(0, self.rack_size):
                 x = self.action_map[(hx, hx2, card)]
                 self.masked_action[x] = 0
                 if x in self.legal_move:
@@ -368,25 +358,24 @@ class IngeniousBase:
 
     def next_turn(self):
         """Move to the next turn."""
-        self.agent_selector = (self.agent_selector + 1) % self.num_player
+        self.agent_selector = (self.agent_selector + 1) % self.num_agents
         if self.agent_selector == 0 and self.first_round:
             self.first_round = False
         return self.agent_selector
 
-    def refresh_hand(self, player):
-        """Additional rule to refresh hand-held tiles."""
-        """find the color for which the player has the lowest score"""
+    def refresh_rack(self, player):
+        """Additional rule to refresh rack tiles."""
+        # find the color for which the player has the lowest score
         minval = min(self.score[player].values())
         flag_lowest_score = False
         for item in self.p_tiles[player]:
             for col in item:
-                # print(player,self.p_tiles[player],item, col, self.score[player])
                 if self.score[player][col] == minval:
                     flag_lowest_score = True
             if flag_lowest_score:
                 break
         if not flag_lowest_score:
-            """no lowest score color"""
+            # no lowest score color
             # save current unused tiles to add them back to the tiles bag
             back_up = self.p_tiles[player].copy()
             # clear the player's tiles
@@ -408,27 +397,26 @@ class IngeniousBase:
 
     def log(self):
         """Print the current status of the game."""
-        print({"board_size": self.board_size, "num_players": self.num_player})
+        print({"board_size": self.board_size, "num_players": self.num_agents})
         print("selector", self.agent_selector)
         print(self.board_array)
         print(self.score)
         print(self.p_tiles)
 
     def exclude_position_first_round(self, pos):
-        """Exclude available position in self.first_round_pos to ensure that each player begins with a different corner ( each corner is taken once)."""
+        """Ensure that each player begins with a different corner."""
         for i in range(0, 6):
             neighbor_hex = hex_neighbor(pos, i)
             if hex_scale(neighbor_hex, 1.0 / (self.board_size - 1)) in hex_directions:
                 # neighbor_hex is corner
                 a = neighbor_hex
-                # print("find the corner to remove in first round",a,pos)
                 for k in range(0, 6):
                     hx1 = hex_neighbor(a, k)
                     for j in range(0, 6):
                         hx2 = hex_neighbor(hx1, j)
                         if (hx2 not in self.board_hex) or (hx1 not in self.board_hex) or (hx2 == a):
                             continue
-                        for card in range(0, self.init_draw):
+                        for card in range(0, self.rack_size):
                             c1 = self.action_map[(hx1, hx2, card)]
                             c2 = self.action_map[(hx2, hx1, card)]
                             if c1 in self.first_round_pos:
