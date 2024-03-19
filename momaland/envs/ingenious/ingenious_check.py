@@ -319,16 +319,18 @@ def check_fully_observable():
     ag = ig_env.agent_selection
     obs = ig_env.observe(ag)
     print("Observation", obs)
+    print("Fully Observable: Pass")
 
 
-def check_teammate():
+def check_two_team():
     """Test teammate(reward sharing) in ingenous.py."""
-    ig_env = MOIngenious(num_agents=4, reward_mode=True)
+    ig_env = MOIngenious(num_agents=4, reward_mode="two_teams")
     ig_env.reset()
     ag = ig_env.agent_selection
     obs = ig_env.observe(ag)
-    index = random_index_of_one(ig_env.game.return_action_list())
-    ig_env.step(index)
+    # index = random_index_of_one(ig_env.game.return_action_list())
+    # ig_env.step(index)
+    print("Start check_two_team")
     print("Observation", obs)
     done = False
     while not done:
@@ -346,6 +348,36 @@ def check_teammate():
         print("Termination: ", termination)
         done = truncation or termination
     print(ig_env.game.score)
+    print("Stop check_two_team")
+
+
+def check_collaborative():
+    """Test teammate(reward sharing) in ingenous.py."""
+    ig_env = MOIngenious(num_agents=4, reward_mode="collaborative")
+    ig_env.reset()
+    ag = ig_env.agent_selection
+    obs = ig_env.observe(ag)
+    # index = random_index_of_one(ig_env.game.return_action_list())
+    # ig_env.step(index)
+    print("Start check_collaborative")
+    print("Observation", obs)
+    done = False
+    while not done:
+        ag = ig_env.agent_selection
+        print("Agent: ", ag)
+        obs = ig_env.observe(ag)
+        masked_act_list = obs["action_mask"]
+        action = random_index_of_one(masked_act_list)
+        print("Action: ", action)
+        ig_env.step(action)
+        observation, reward, termination, truncation, _ = ig_env.last()
+        print("Observations: ", observation["observation"])
+        print("Rewards: ", reward, "_accumulate_reward(from gymnasium code)", ig_env._cumulative_rewards)
+        print("Truncation: ", truncation)
+        print("Termination: ", termination)
+        done = truncation or termination
+    print(ig_env.game.score)
+    print("Stop check_collaborative")
 
 
 def check_parameter_range():
@@ -354,7 +386,7 @@ def check_parameter_range():
         for draw in range(2, 7):
             for color in range(n_player, 7):
                 for bs in range(0, 10):
-                    for teammate in [True, False]:
+                    for teammate in ["competitive", "collaborative", "two_teams"]:
                         for fully_obs in [True, False]:
                             print(
                                 "num_players=",
@@ -403,8 +435,11 @@ if __name__ == "__main__":
     # run this function, you could always find opponents' tiles in observation space
     check_fully_observable()
 
-    # check teammate_mode through simulation, it could be found that teammates always share the same score in score board.
-    check_teammate()
+    # check two_team mode through simulation, it could be found that teammates always share the same score in score board.
+    check_two_team()
+
+    # check collaborative mode through simulation, it could be found that every players always share the same score in score board.
+    check_collaborative()
 
     # check parameter range by ramdom choose.
     check_parameter_range()

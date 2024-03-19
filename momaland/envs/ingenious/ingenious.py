@@ -50,7 +50,7 @@ class MOIngenious(MOAECEnv):
         rack_size: int = 6,
         num_colors: int = 6,
         board_size: int = None,
-        reward_mode: str = "competitive",  # TODO needs implementation
+        reward_mode: str = "competitive",
         fully_obs: bool = False,
         render_mode: bool = None,
     ):
@@ -69,13 +69,21 @@ class MOIngenious(MOAECEnv):
         self.init_draw = rack_size
         self.num_players = num_agents
         self.limitation_score = 18  # max score in score board for one certain color.
+        assert reward_mode in {
+            "competitive",
+            "collaborative",
+            "two_teams",
+        }, "reward_mode has to be one element in {'competitive','collaborative','two_teams'}"
         self.teammate_mode = reward_mode
-        if self.teammate_mode is True:
-            assert num_agents % 2 == 0, "Number of players must be even if teammate_mode is on."
+
+        if self.teammate_mode == "two_teams":
+            assert num_agents % 2 == 0, "Number of players must be even if teammate_mode is two_teams."
             self.limitation_score = self.limitation_score * (num_agents / 2)
+        elif self.teammate_mode == "collaborative":
+            self.limitation_score = self.limitation_score * num_agents
 
         self.fully_obs = fully_obs
-        if board_size == 0:
+        if board_size is None:
             self.board_size = {2: 6, 3: 7, 4: 8, 5: 9, 6: 10}.get(self.num_players)
         else:
             self.board_size = board_size
@@ -202,13 +210,21 @@ class MOIngenious(MOAECEnv):
             self.terminations = {agent: True for agent in self.agents}
 
         # update teammate score(copy current agent score to the teammate)
-        if self.teammate_mode is True:
+        if self.teammate_mode != "competitive":
             index_current_agent = self.agents.index(current_agent)
             for i in range(0, self.num_players):
-                if i != index_current_agent and i % 2 == index_current_agent % 2:
-                    agent = self.agents[i]
-                    self.game.score[agent] = self.game.score[current_agent]
-                    self.rewards[agent] = self.rewards[current_agent]
+                if self.teammate_mode == "two_teams":
+                    # two team mode, players who is teammates of the current agent has the same reward and score
+                    if i != index_current_agent and i % 2 == index_current_agent % 2:
+                        agent = self.agents[i]
+                        self.game.score[agent] = self.game.score[current_agent]
+                        self.rewards[agent] = self.rewards[current_agent]
+                elif self.teammate_mode == "collaborative":
+                    # collabarotive mode, every player has the same reward and score
+                    if i != index_current_agent:
+                        agent = self.agents[i]
+                        self.game.score[agent] = self.game.score[current_agent]
+                        self.rewards[agent] = self.rewards[current_agent]
 
         # update accumulate_rewards
         self._accumulate_rewards()
