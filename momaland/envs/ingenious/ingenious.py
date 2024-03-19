@@ -1,15 +1,65 @@
 """Ingenious environment.
 
-|--------------------|--------------------------------------------------|
-| Actions            | Discrete                                         |
-| Parallel API       | No                                               |
-| Manual Control     | No                                               |
-| Agents             | 2                                                |
-| Action Shape       | (1,)                                             |
-| Action Values      | Discrete(board_width=8 * board_height=8 * 3)     |
-| Observation Shape  | (board_height=8, board_width=8, 2)               |
-| Observation Values | [0,1]                                            |
-| Reward Shape       | (num_objectives=4,)                              |
+|--------------------|--------------------------------------------------------------|
+| Actions            | Discrete                                                     |
+| Parallel API       | No                                                           |
+| Manual Control     | No                                                           |
+| Agents             | num_agents=2                                                 |
+| Action Shape       | (1,)                                                         |
+| Action Values      | Discrete(size depends on board size and rack size: there     |
+|                    |  is one integer encoding the placement of each rack tile     |
+|                    |  on each board hex in each possible direction.)              |
+| Observations       | Observations are dicts with three entries:                   |
+|                    |  "board": array with size (2*board_size-1, 2*board_size-1)   |
+|                    |  containing values from 0 to num_colors;                     |
+|                    |  "racks": for each observable agent, an array of length      |
+|                    |  rack_size containing pairs of values from 0 to num_colors;  |
+|                    |  "scores": for all agents, their scores in all num_colors    |
+|                    |  objectives as values from 0 to max_score.                   |
+| Reward Shape       | (num_colors=6,)                                              |
+
+This environment is based on the Ingenious game: https://boardgamegeek.com/boardgame/9674/ingenious
+
+The game's original rules support multiple players collecting scores in multiple colors, which we define as the
+objectives of the game: for example (red=5, green=2, blue=9). The goal in the original game is to maximize the
+minimum score over all colors (2 in the example above), however we leave the utility wrapper up to the users and only
+return the vectorial score on each color dimension (5,2,9).
+
+
+### Observation Space
+
+The observation is a dictionary which contains an 'observation' element which is the usual RL observation,
+and an 'action_mask' which holds the legal moves, described in the Legal Actions Mask section below.
+
+The 'observation' element itself is a dictionary with three entries: 'board' is representing the hexagonal board as
+an array of size (2*board_size-1, 2*board_size-1) with integer entries from 0 (empty hex) to num_colors (tiles of
+different colors). 'racks' represents for each observable agent - by default only the acting agent, if fully_obs=True
+all agents - their tiles rack as an array of size rack_size containing pairs of integers (each pair is a tile) from 0
+to num_colors. 'scores' represents for all agents their current scores in all num_colors objectives, as integers from
+0 to max_score.
+
+
+#### Legal Actions Mask
+
+The legal moves available to the current agent are found in the 'action_mask' element of the dictionary observation.
+The 'action_mask' is a binary vector where each index of the vector represents whether the represented action is legal
+or not; the action encoding is described in the Action Space section below.
+The 'action_mask' will be all zeros for any agent except the one whose turn it is.
+
+
+### Action Space
+
+The action space depends on board size and rack size: It contains one integer for each possible placement of any of
+the player's rack tiles (rack_size parameter) on any board hex (board_size parameter) in every possible direction.
+
+
+### Rewards
+
+The agents can collect a separate score in each available color. These scores are the num_colors different reward
+dimensions.
+
+
+### Version History
 
 """
 
@@ -70,14 +120,20 @@ class Ingenious(MOAECEnv):
             num_agents (int): The number of agents (between 2 and 6). Default is 2.
             rack_size (int): The number of tiles each player keeps in their rack (between 2 and 6). Default is 6.
             num_colors (int): The number of colors (objectives) in the game (between 2 and 6). Default is 6.
-            board_size (int): The size of one side of the hexagonal board (between 3 and 10). By default the size is set to n+4 where n is the number of agents.
-            reward_mode (str): Can be set to "competitive" (individual rewards for all agents), "collaborative" (shared rewards for all agents), or "two_teams" (rewards shared within two opposing teams; num_agents needs to be even). Default is "competitive".
+
+            board_size (int): The size of one side of the hexagonal board (between 3 and 10). By default the size is set
+             to n+4 where n is the number of agents.
+
+            reward_mode (str): Can be set to "competitive" (individual rewards for all agents), "collaborative" (shared
+            rewards for all agents), or "two_teams" (rewards shared within two opposing teams; num_agents needs to be
+            even). Default is "competitive".
+
             fully_obs (bool): Fully observable game mode, i.e. the racks of all players are visible. Default is False.
             render_mode (str): The rendering mode. Default: None
         """
         self.num_colors = num_colors
         self.init_draw = rack_size
-        self.limitation_score = 18  # max score in score board for one certain color.
+        self.max_score = 18  # max score in score board for one certain color.
         assert reward_mode in {
             "competitive",
             "collaborative",
@@ -88,9 +144,9 @@ class Ingenious(MOAECEnv):
 
         if self.reward_mode == "two_teams":
             assert num_agents % 2 == 0, "Number of players must be even if reward_mode is two_teams."
-            self.limitation_score = self.limitation_score * (num_agents / 2)
+            self.max_score = self.max_score * (num_agents / 2)
         elif self.reward_mode == "collaborative":
-            self.limitation_score = self.limitation_score * num_agents
+            self.max_score = self.max_score * num_agents
 
         if board_size is None:
             self.board_size = {2: 6, 3: 7, 4: 8, 5: 9, 6: 10}.get(self.num_agents)
@@ -102,7 +158,7 @@ class Ingenious(MOAECEnv):
             rack_size=self.init_draw,
             num_colors=self.num_colors,
             board_size=self.board_size,
-            max_score=self.limitation_score,
+            max_score=self.max_score,
         )
 
         self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
@@ -247,6 +303,6 @@ class Ingenious(MOAECEnv):
         for agent_score in self.game.score.values():
             tmp.append([score for score in agent_score.values()])
         p_score = np.array(tmp, dtype=np.int32)
-        observation = {"board": board_vals, "tiles": p_tiles, "scores": p_score}
+        observation = {"board": board_vals, "racks": p_tiles, "scores": p_score}
         action_mask = np.array(self.game.return_action_list(), dtype=np.int8)
         return {"observation": observation, "action_mask": action_mask}

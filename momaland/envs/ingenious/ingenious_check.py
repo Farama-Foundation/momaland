@@ -223,7 +223,7 @@ def test_ingenious_rule():
 def test_API():
     """Test observe interface in ingenous.py."""
     ig_env = Ingenious()
-    ig_env.limitation_score = 10000
+    ig_env.max_score = 10000
     # ag = ig_env.agent_selection
     # obs = ig_env.observe(ag)
     # print(sum(masked_act_list))
