@@ -46,33 +46,33 @@ class MOIngenious(MOAECEnv):
 
     def __init__(
         self,
-        num_players=2,
-        init_draw=6,
-        num_colors=6,
-        board_size=0,
-        teammate_mode=False,
-        fully_obs=False,
-        render_mode=None,
+        num_agents: int = 2,
+        rack_size: int = 6,
+        num_colors: int = 6,
+        board_size: int = None,
+        reward_mode: str = "competitive",  # TODO needs implementation
+        fully_obs: bool = False,
+        render_mode: bool = None,
     ):
-        """Initializes the multi-objective Ingenious game.
+        """Initializes the Ingenious environment.
 
         Args:
-            num_players (int): The number of players in the environment. Default: 2
-            init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
-            num_colors (int): The number of colors in the game. Default: 4
-            board_size (int): The size of the board. Default: 0 (0 means the board size id dependent on num_players like { 2:6, 3:7 , 4:8}; otherwise, set the board_size freely between 3 and 8)
-            teammate_mode: Partnership Game or not. Default:False
-            fully_obs: Fully observable or not. Default:False
+            num_agents (int): The number of agents (between 2 and 6). Default is 2.
+            rack_size (int): The number of tiles each player keeps in their rack (between 2 and 6). Default is 6.
+            num_colors (int): The number of colors (objectives) in the game (between 2 and 6). Default is 6.
+            board_size (int): The size of one side of the hexagonal board (between 3 and 10). By default the size is set to n+4 where n is the number of agents.
+            reward_mode (str): Can be set to "competitive" (individual rewards for all agents), "collaborative" (shared rewards for all agents), or "two_teams" (rewards shared within two opposing teams; num_agents needs to be even). Default is "competitive".
+            fully_obs (bool): Fully observable game mode, i.e. the racks of all players are visible. Default is False.
             render_mode (str): The rendering mode. Default: None
         """
         self.num_colors = num_colors
-        self.init_draw = init_draw
-        self.num_players = num_players
+        self.init_draw = rack_size
+        self.num_players = num_agents
         self.limitation_score = 18  # max score in score board for one certain color.
-        self.teammate_mode = teammate_mode
+        self.teammate_mode = reward_mode
         if self.teammate_mode is True:
-            assert num_players % 2 == 0, "Number of players must be even if teammate_mode is on."
-            self.limitation_score = self.limitation_score * (num_players / 2)
+            assert num_agents % 2 == 0, "Number of players must be even if teammate_mode is on."
+            self.limitation_score = self.limitation_score * (num_agents / 2)
 
         self.fully_obs = fully_obs
         if board_size == 0:
@@ -81,14 +81,14 @@ class MOIngenious(MOAECEnv):
             self.board_size = board_size
 
         self.game = IngeniousBase(
-            num_players=self.num_players,
-            init_draw=self.init_draw,
+            num_agents=self.num_players,
+            rack_size=self.init_draw,
             num_colors=self.num_colors,
             board_size=self.board_size,
-            limitation_score=self.limitation_score,
+            max_score=self.limitation_score,
         )
 
-        self.possible_agents = ["agent_" + str(r) for r in range(num_players)]
+        self.possible_agents = ["agent_" + str(r) for r in range(num_agents)]
         # init list of agent
         self.agents = self.possible_agents[:]
 
@@ -120,11 +120,11 @@ class MOIngenious(MOAECEnv):
             for i in self.agents
         }
 
-        self.action_spaces = dict(zip(self.agents, [Discrete(len(self.game.masked_action))] * num_players))
+        self.action_spaces = dict(zip(self.agents, [Discrete(len(self.game.masked_action))] * num_agents))
 
         # The reward after one move is the difference between the previous and current score.
         self.reward_spaces = dict(
-            zip(self.agents, [Box(0, self.game.limitation_score, shape=(self.num_colors,))] * num_players)
+            zip(self.agents, [Box(0, self.game.limitation_score, shape=(self.num_colors,))] * num_agents)
         )
 
     @functools.lru_cache(maxsize=None)

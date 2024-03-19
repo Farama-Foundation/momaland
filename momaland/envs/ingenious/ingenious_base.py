@@ -100,30 +100,30 @@ def generate_board(board_size):
 class IngeniousBase:
     """Base class for Ingenious environment."""
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=6, limitation_score=18):
+    def __init__(self, num_agents=2, rack_size=6, num_colors=6, board_size=6, max_score=18):
         """Initialize the Ingenious environment.
 
         Args:
-            num_players (int): Number of players in the game.
-            init_draw (int): Number of tiles to draw at the beginning of the game.
-            num_colors (int): Number of colors in the game.
-            board_size (int): Size of the board.
-            limitation_score(int): Limitation to refresh the score board for any color. Default: 20
+            num_agents (int): The number of agents (between 2 and 6). Default is 2.
+            rack_size (int): The number of tiles each player keeps in their rack (between 2 and 6). Default is 6.
+            num_colors (int): The number of colors (objectives) in the game (between 2 and 6). Default is 6.
+            board_size (int): The size of one side of the hexagonal board (between 3 and 10). Default is 6.
+            max_score(int): Maximal score possible for any given color/objective. Default: 18
         """
-        assert 2 <= num_players <= 6, "Number of players must be between 2 and 6."
+        assert 2 <= num_agents <= 6, "Number of players must be between 2 and 6."
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
-        assert 2 <= init_draw <= 6, "Number of tiles in hand must be between 2 and 6."
+        assert 2 <= rack_size <= 6, "Rack size must be between 2 and 6."
         assert 3 <= board_size <= 10, "Board size must be between 3 and 10."
-        assert num_players <= num_colors, "Number of players should be smaller than number of colors. "
+        assert num_agents <= num_colors, "Number of agents cannot be larger than number of colors. "
 
         self.board_size = board_size
-        self.num_player = num_players
+        self.num_player = num_agents
         self.agents = [f"agent_{i}" for i in range(self.num_player)]
         self.agent_selector = 0
-        self.limitation_score = limitation_score
+        self.limitation_score = max_score
         self.colors = num_colors
         self.corner_color = ALL_COLORS
-        self.init_draw = init_draw
+        self.init_draw = rack_size
         self.board_array = np.zeros([2 * self.board_size - 1, 2 * self.board_size - 1])
         self.board_hex = generate_board(self.board_size)  # original full board
         self.action_map = {}
