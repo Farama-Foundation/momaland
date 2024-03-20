@@ -14,7 +14,7 @@ from momaland.envs.beach_domain.beach_domain import (
     _local_capacity_reward,
     _local_mixture_reward,
 )
-from momaland.learning.discrete.iql import train
+from momaland.learning.iql.iql import train
 from momaland.learning.utils import mkdir_p
 
 
