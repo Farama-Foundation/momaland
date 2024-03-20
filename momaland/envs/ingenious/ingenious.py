@@ -149,12 +149,12 @@ class Ingenious(MOAECEnv):
             self.max_score = self.max_score * num_agents
 
         if board_size is None:
-            self.board_size = {2: 6, 3: 7, 4: 8, 5: 9, 6: 10}.get(self.num_agents)
+            self.board_size = {2: 6, 3: 7, 4: 8, 5: 9, 6: 10}.get(num_agents)
         else:
             self.board_size = board_size
 
         self.game = IngeniousBase(
-            num_agents=self.num_agents,
+            num_agents=num_agents,
             rack_size=self.init_draw,
             num_colors=self.num_colors,
             board_size=self.board_size,
