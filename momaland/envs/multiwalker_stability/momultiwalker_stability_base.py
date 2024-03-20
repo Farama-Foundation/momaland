@@ -56,12 +56,12 @@ class MOBipedalWalkerStability(pz_bipedalwalker):
     def reward_space(self):
         """Reward space shape = 2 element 1D array, each element representing 1 objective.
 
-        1. scalarized reward of: package moving forward, no walkers falling, and package not falling
-        2. package not tipping
+        1. package moving forward + no walkers falling + package not falling
+        2. package not tipping  + no walkers falling + package not falling
         """
         return spaces.Box(
             low=np.array([-210, -0.01567]),
-            high=np.array([0.46, 0]),
+            high=np.array([-210 + 0.46, 0]),
             shape=(2,),
             dtype=np.float32,
         )
@@ -201,26 +201,27 @@ class MOMultiWalkerStabilityEnv(pz_multiwalker_base):
         rewards[:, 0] = package_shaping - self.prev_package_shaping  # obj1: move forward
         self.prev_package_shaping = package_shaping
 
-        self.scroll = xpos.mean() - VIEWPORT_W / SCALE / 5 - (self.n_walkers - 1) * WALKER_SEPERATION * TERRAIN_STEP
-
-        done = [False] * self.n_walkers
-        for i, (fallen, walker) in enumerate(zip(self.fallen_walkers, self.walkers)):
-            if fallen:
-                rewards[i, 0] += self.fall_reward
-                if self.remove_on_fall:
-                    walker._destroy()
-                if not self.terminate_on_fall:
-                    rewards[i, 0] += self.terminate_reward
-                done[i] = True
-        if (self.terminate_on_fall and np.sum(self.fallen_walkers) > 0) or self.game_over or self.package.position.x < 0:
-            rewards[:, 0] += self.terminate_reward
-            done = [True] * self.n_walkers
-        elif self.package.position.x > (self.terrain_length - TERRAIN_GRASS) * TERRAIN_STEP:
-            done = [True] * self.n_walkers
-
-        # package stability obj
+        # obj 2: package stability
         pkg_angle_delta = abs(self.previous_pkg_angle - self.package.angle)
         rewards[:, 1] = -pkg_angle_delta
         self.previous_pkg_angle = self.package.angle
+
+        self.scroll = xpos.mean() - VIEWPORT_W / SCALE / 5 - (self.n_walkers - 1) * WALKER_SEPERATION * TERRAIN_STEP
+
+        # fall
+        done = [False] * self.n_walkers
+        for i, (fallen, walker) in enumerate(zip(self.fallen_walkers, self.walkers)):
+            if fallen:
+                rewards[i, :] += self.fall_reward
+                if self.remove_on_fall:
+                    walker._destroy()
+                if not self.terminate_on_fall:
+                    rewards[i, :] += self.terminate_reward
+                done[i] = True
+        if (self.terminate_on_fall and np.sum(self.fallen_walkers) > 0) or self.game_over or self.package.position.x < 0:
+            rewards[:, :] += self.terminate_reward
+            done = [True] * self.n_walkers
+        elif self.package.position.x > (self.terrain_length - TERRAIN_GRASS) * TERRAIN_STEP:
+            done = [True] * self.n_walkers
 
         return rewards, done, obs

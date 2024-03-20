@@ -70,12 +70,15 @@ class MOMultiwalkerStability(MOAECEnv, pz_multiwalker):
     The higher bound is `1`, the lower bound is `-1`.
 
     ## Reward Space
-    The reward space is a 2D vector where; the first value contains the sum of following rewards:
+    The reward space is a 2D vector where; the first value contains the following reward:
     - Maximizing distance traveled towards the end of the level during one step. `[-0.46, 0.46]`
-    - Penalty for agent falling. `[-110, 0]`
-    - Penalty for the package falling. `[-100, 0]`
+
     and the second value contains:
     - A penalty based on the change of angle of the package, to avoid shaking the package. `[-0.01567, 0]`
+
+    Both these objectives are penalized with:
+    - Penalty for agent falling. `[-110, 0]`
+    - Penalty for the package falling. `[-100, 0]`
 
     ## Episode Termination
     The episode is terminated if the package is dropped. If `terminate_on_fall` is `True` (default), then environment is terminated if a single agent falls even if the package is still alive.

@@ -6,12 +6,12 @@
 <!-- start elevator-pitch -->
 MOMAland is an open source Python library for developing and comparing multi-objective multi-agent reinforcement learning algorithms by providing a standard API to communicate between learning algorithms and environments, as well as a standard set of environments compliant with that API. Essentially, the environments follow the standard [PettingZoo APIs](https://github.com/Farama-Foundation/PettingZoo), but return vectorized rewards as numpy arrays instead of scalar values.
 
-The documentation website is at TODO, and we have a public discord server (which we also use to coordinate development work) that you can join [here](https://discord.gg/bnJ6kubTg6).
+The documentation website is at https://momaland.farama.org/, and we have a public discord server (which we also use to coordinate development work) that you can join [here](https://discord.gg/bnJ6kubTg6).
 <!-- end elevator-pitch -->
 
 ## Environments
 MOMAland includes environments taken from the MOMARL literature, as well as multi-objective version of classical environments, such as SISL or Butterfly.
-The full list of environments is available at TODO.
+The full list of environments is available at https://momaland.farama.org/environments/all-envs/.
 
 ## Installation
 <!-- start install -->
@@ -64,6 +64,21 @@ For details on multi-objective multi-agent RL definitions, see [Multi-Objective 
 
 You can also check more examples in this colab notebook! [![MOMAland Demo in Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Farama-Foundation/momaland/blob/doc/notebook/momaland_demo.ipynb)
 <!-- end snippet-usage -->
+
+## Learning Algorithms
+<!-- start learning-algorithms -->
+We provide a set of learning algorithms that are compatible with the MOMAland environments. The learning algorithms are implemented in the [learning/](https://github.com/Farama-Foundation/momaland/tree/main/momaland/learning) directory. To keep everything as self-contained as possible, each algorithm is implemented as a single-file (close to [cleanRL's philosophy](https://github.com/vwxyzjn/cleanrl/tree/master)).
+
+Nevertheless, we reuse tools provided by other libraries, like multi-objective evaluations and performance indicators from [MORL-Baselines](https://github.com/LucasAlegre/morl-baselines).
+
+Here is a list of algorithms that are currently implemented:
+
+| **Name**                                                                                                                                                                                                                                                            | Single/Multi-policy | Reward | Utility       | Observation space | Action space | Paper |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|--------|---------------|-------------------|--------------|-------|
+| MOMAPPO (OLS) [continuous](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/continuous/cooperative_momappo.py),<br/> [discrete](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/discrete/cooperative_momappo.py) | Multi               | Team   | Team / Linear | Any               | Any          |       |
+
+
+<!-- end learning-algorithms -->
 
 ## Environment Versioning
 MOMAland keeps strict versioning for reproducibility reasons. All environments end in a suffix like "_v0".  When changes are made to environments that might impact learning results, the number is increased by one to prevent potential confusion.

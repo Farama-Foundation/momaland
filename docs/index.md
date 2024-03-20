@@ -32,7 +32,7 @@ environments/all-envs
 :caption: Tutorials
 
 tutorials/custom_env
-tutorials/training
+tutorials/learning_algorithms
 ```
 
 ```{toctree}
@@ -53,13 +53,9 @@ Contribute to the Docs <https://github.com/rradules/momaland/tree/master/docs/>
 An API standard for multi-objective multi-agent reinforcement learning (MOMARL)
 ```
 
-<!-- ```{figure} _static/img/environments-demo.gif TODO
-   :width: 480px
-   :name: MOMAland Environments
-``` -->
-```{figure} _static/gifs/surround.gif
+```{figure} _static/walkers_pf.gif
    :width: 480
-   :alt: Multiple agents collaborating to surround a target
+   :alt: Multiple agents collaborating for various trade-offs
 ```
 
 
