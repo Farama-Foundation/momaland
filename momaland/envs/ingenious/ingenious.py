@@ -179,7 +179,9 @@ class Ingenious(MOAECEnv):
                             "board": Box(
                                 0, len(ALL_COLORS), shape=(2 * self.board_size - 1, 2 * self.board_size - 1), dtype=np.float32
                             ),
-                            "racks": Box(0, self.num_colors, shape=(self.init_draw, 2), dtype=np.int32),
+                            "racks": Box(0, self.num_colors, shape=(num_agents, self.init_draw, 2), dtype=np.int32)
+                            if self.fully_obs
+                            else Box(0, self.num_colors, shape=(self.init_draw, 2), dtype=np.int32),
                             "scores": Box(0, self.game.max_score, shape=(num_agents, self.num_colors), dtype=np.int32),
                         }
                     ),
