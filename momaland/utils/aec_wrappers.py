@@ -1,8 +1,43 @@
 """Various wrappers for AEC MO environments."""
+from typing import Optional
 
 import numpy as np
 from gymnasium.wrappers.normalize import RunningMeanStd
 from pettingzoo.utils.wrappers.base import BaseWrapper
+
+
+class RecordEpisodeStatistics(BaseWrapper):
+    """This wrapper will record episode statistics and print them at the end of each episode."""
+
+    def __init__(self, env):
+        """This wrapper will record episode statistics and print them at the end of each episode.
+
+        Args:
+            env (env): The environment to apply the wrapper
+        """
+        BaseWrapper.__init__(self, env)
+        self.episode_rewards = {agent: 0 for agent in self.possible_agents}
+        self.episode_lengths = {agent: 0 for agent in self.possible_agents}
+
+    def last(self, observe: bool = True):
+        """Receives the latest observation from the environment, recording episode statistics."""
+        obs, rews, terminated, truncated, infos = super().last(observe=observe)
+        for agent in self.env.possible_agents:
+            self.episode_rewards[agent] += rews
+            self.episode_lengths[agent] += 1
+        if terminated or truncated:
+            infos["episode"] = {
+                "r": self.episode_rewards,
+                "l": self.episode_lengths,
+            }
+        return obs, rews, terminated, truncated, infos
+
+    def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
+        """Resets the environment and the episode statistics."""
+        super().reset(seed, options)
+        for agent in self.env.possible_agents:
+            self.episode_rewards[agent] = 0
+            self.episode_lengths[agent] = 0
 
 
 class LinearizeReward(BaseWrapper):
@@ -11,8 +46,8 @@ class LinearizeReward(BaseWrapper):
     `weights` represents the weights of each objective in the reward vector space for each agent.
 
     Example:
-    >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8]}
-    >>> env = LinearizeReward(env, weights)
+        >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8]}
+        ... env = LinearizeReward(env, weights)
     """
 
     def __init__(self, env, weights: dict):
@@ -43,9 +78,9 @@ class NormalizeReward(BaseWrapper):
         instantiated or the policy was changed recently.
 
     Example:
-    >>> for agent in env.possible_agents:
-    >>>     for idx in range(env.reward_space(agent).shape[0]):
-    >>>         env = AECWrappers.NormalizeReward(env, agent, idx)
+        >>> for agent in env.possible_agents:
+        ...     for idx in range(env.reward_space(agent).shape[0]):
+        ...         env = AECWrappers.NormalizeReward(env, agent, idx)
     """
 
     def __init__(

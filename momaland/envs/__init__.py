@@ -1,2 +1,2 @@
 """Environment modules for momaland."""
-import momaland.envs.beach_domain
+import momaland.envs.beach

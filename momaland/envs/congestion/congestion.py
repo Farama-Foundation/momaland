@@ -46,11 +46,11 @@ def env(**kwargs):
 
 def raw_env(**kwargs):
     """Env factory function for the congestion game."""
-    return MOCongestionGame(**kwargs)
+    return MOCongestion(**kwargs)
 
 
-class MOCongestionGame(MOParallelEnv):
-    """Environment for MO Congestion Game problem.
+class MOCongestion(MOParallelEnv):
+    """Environment for MO-Congestion problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -129,7 +129,7 @@ class MOCongestionGame(MOParallelEnv):
         self.cost_function = dict()
         self._create_latency_and_cost_function(nx.get_edge_attributes(self.graph, "latency_function"), num_agents)
 
-    metadata = {"render_modes": ["human"], "name": "mocongestion_v0", "is_parallelizable": True}
+    metadata = {"render_modes": ["human"], "name": "mocongestion_v0"}
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected

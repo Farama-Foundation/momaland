@@ -33,7 +33,7 @@ class RecordEpisodeStatistics(BaseParallelWrapper):
         return obs, rews, terminateds, truncateds, infos
 
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
-        """Resets the environment, recording episode statistics."""
+        """Resets the environment and the episode statistics."""
         obs, info = super().reset(seed, options)
         for agent in self.env.possible_agents:
             self.episode_rewards[agent] = 0
@@ -47,8 +47,8 @@ class LinearizeReward(BaseParallelWrapper):
     `weights` represents the weights of each objective in the reward vector space for each agent.
 
     Example:
-    >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8])}
-    >>> env = LinearizeReward(env, weights)
+        >>> weights = {"agent_0": np.array([0.1, 0.9]), "agent_1": np.array([0.2, 0.8])}
+        ... env = LinearizeReward(env, weights)
     """
 
     def __init__(self, env, weights: dict):
@@ -82,9 +82,9 @@ class NormalizeReward(BaseParallelWrapper):
         instantiated or the policy was changed recently.
 
     Example:
-    >>> for agent in env.possible_agents:
-    >>>     for idx in range(env.reward_space(agent).shape[0]):
-    >>>         env = AECWrappers.NormalizeReward(env, agent, idx)
+        >>> for agent in env.possible_agents:
+        ...     for idx in range(env.reward_space(agent).shape[0]):
+        ...         env = AECWrappers.NormalizeReward(env, agent, idx)
     """
 
     def __init__(

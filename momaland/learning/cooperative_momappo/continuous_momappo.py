@@ -1,4 +1,7 @@
-"""Implementation of multi-objective MAPPO with parameter sharing on the CPU. Learning on jax compiled functions. Works for cooperative settings."""
+"""Implementation of multi-objective MAPPO with parameter sharing (continuous envs).
+
+Utilizes OLS to generate weight vectors and learn a Pareto set of policies. Works for cooperative settings.
+"""
 
 import argparse
 import os
@@ -13,19 +16,19 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import optax
-import orbax.checkpoint
 import wandb
 from distrax import MultivariateNormalDiag
-from etils import epath
 from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
 from jax import vmap
+from morl_baselines.common.evaluation import log_all_multi_policy_metrics
 from morl_baselines.multi_policy.linear_support.linear_support import LinearSupport
 from supersuit import agent_indicator_v0, clip_actions_v0, normalize_obs_v0
 from tqdm import tqdm
 
-from momaland.envs.crazyrl.catch import catch_v0 as Catch
-from momaland.learning.utils import policy_evaluation_mo
+from momaland.learning.cooperative_momappo.utils import policy_evaluation_mo, save_actor
+from momaland.learning.utils import autotag
+from momaland.utils.all_modules import all_environments
 from momaland.utils.env import ParallelEnv
 from momaland.utils.parallel_wrappers import (
     LinearizeReward,
@@ -38,19 +41,36 @@ def parse_args():
     """Argument parsing for the algorithm."""
     # fmt: off
     parser = argparse.ArgumentParser()
+
+    # Env and experiment arguments
+    parser.add_argument("--env-id", type=str, help="MOMAland id of the environment to run (check all_modules.py)", required=True)
     parser.add_argument("--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"),
                         help="the name of this experiment")
     parser.add_argument("--seed", type=int, default=1,
                         help="seed of the experiment")
+    parser.add_argument(
+        "--ref-point", type=float, nargs="+", help="Reference point to use for the hypervolume calculation", required=True
+    )
     parser.add_argument("--debug", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="run in debug mode")
+    parser.add_argument("--save-policies", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="save the trained policies")
+
+    # Wandb
     parser.add_argument("--track", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True, help="log metrics to wandb")
     parser.add_argument("--wandb-project", type=str, default="MOMAland", help="the wandb's project name")
-    parser.add_argument("--wandb-entity", type=str, default="MOMAland", help="the wandb's entity")
+    parser.add_argument("--wandb-entity", type=str, default="openrlbenchmark", help="the wandb's entity")
+    parser.add_argument(
+        "--auto-tag",
+        type=lambda x: bool(strtobool(x)),
+        default=True,
+        nargs="?",
+        const=True,
+        help="if toggled, the runs will be tagged with git tags, commit, and pull request number if possible",
+    )
 
     # Algorithm specific arguments
-    parser.add_argument("--num-steps", type=int, default=1280, help="the number of steps per epoch (higher batch size should be better)")
-    parser.add_argument("--total-timesteps", type=int, default=1e5,
-                        help="total timesteps of the experiments")
+    parser.add_argument("--num-steps-per-epoch", type=int, default=1280, help="the number of steps per epoch (higher batch size should be better)")
+    parser.add_argument("--timesteps-per-weight", type=int, default=10e5, help="timesteps per weight vector")
+    parser.add_argument("--num-weights", type=int, default=5, help="Number of different weights to train on")
     parser.add_argument("--update-epochs", type=int, default=2, help="the number epochs to update the policy")
     parser.add_argument("--num-minibatches", type=int, default=2, help="the number of minibatches (keep small in MARL)")
     parser.add_argument("--gamma", type=float, default=0.99,
@@ -85,7 +105,7 @@ class Actor(nn.Module):
     """Actor class for the agent."""
 
     action_dim: Sequence[int]
-    net_arch: np.ndarray
+    net_arch: jnp.ndarray
     activation: str = "tanh"
 
     @nn.compact
@@ -111,7 +131,7 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     """Critic class for the agent."""
 
-    net_arch: np.ndarray
+    net_arch: jnp.ndarray
     activation: str = "tanh"
 
     @nn.compact
@@ -301,7 +321,7 @@ def _update_epoch(update_state, unused):
     batch_size = minibatch_size * args.num_minibatches
     permutation = jax.random.permutation(subkey, batch_size)
     batch = (traj_batch, advantages, targets)
-    # flattens the num_steps dimensions into batch_size; keeps the other dimensions untouched (len(env.possible_agents), obs_dim, ...)
+    # flattens the num_steps_per_epoch dimensions into batch_size; keeps the other dimensions untouched (len(env.possible_agents), obs_dim, ...)
     batch = jax.tree_util.tree_map(lambda x: x.reshape((batch_size,) + x.shape[1:]), batch)
     # shuffles the full batch using permutations
     shuffled_batch = jax.tree_util.tree_map(lambda x: jnp.take(x, permutation, axis=0), batch)
@@ -319,9 +339,9 @@ def _update_epoch(update_state, unused):
 
 def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
     """MAPPO scalarizing the vector reward using weights and weighted sum."""
-    num_updates = int(args.total_timesteps // args.num_steps)
+    num_updates = int(args.timesteps_per_weight // args.num_steps_per_epoch)
     global minibatch_size
-    minibatch_size = int(args.num_steps // args.num_minibatches)
+    minibatch_size = int(args.num_steps_per_epoch // args.num_minibatches)
 
     def linear_schedule(count):
         frac = 1.0 - (count // (args.num_minibatches * args.update_epochs)) / num_updates
@@ -373,7 +393,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
 
     # BUFFER
     buffer = Buffer(
-        batch_size=args.num_steps,
+        batch_size=args.num_steps_per_epoch,
         joint_actions_shape=(len(env.possible_agents), single_action_space.shape[0]),
         obs_shape=(len(env.possible_agents), single_obs_space.shape[0]),
         global_obs_shape=env.state().shape,
@@ -444,7 +464,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
                     wandb.log(
                         {
                             f"charts_{weights}/episode_return": team_return,
-                            f"charts_{weights}/episode_length": info["episode"]["l"],
+                            f"charts_{weights}/episode_length": info["episode"]["l"][env.possible_agents[0]],
                             "global_step": current_timestep,
                         }
                     )
@@ -453,7 +473,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
             runner_state = (actor_state, critic_state, obs, key)
             return runner_state
 
-        for _ in range(args.num_steps):
+        for _ in range(args.num_steps_per_epoch):
             runner_state = _env_step(runner_state)
 
         # CALCULATE ADVANTAGE
@@ -482,6 +502,7 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
                     f"losses_{weights}/entropy": loss_info[1][2].mean(),
                     f"losses_{weights}/approx_kl": loss_info[1][3].mean(),
                     "global_step": current_timestep,
+                    "charts/SPS": current_timestep / (time.time() - start_time),
                 }
             )
 
@@ -500,33 +521,32 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
     return {"runner_state": runner_state, "metrics": metric}
 
 
-def save_actor(actor_state):
-    """Saves trained actor."""
-    directory = epath.Path("../trained_model")
-    actor_dir = directory / "actor_cpu"
-    print("Saving actor to ", actor_dir)
-    ckptr = orbax.checkpoint.PyTreeCheckpointer()
-    ckptr.save(actor_dir, actor_state, force=True)
-
-
 if __name__ == "__main__":
     args = parse_args()
     rng = jax.random.PRNGKey(args.seed)
     np.random.seed(args.seed)
 
+    if args.track and args.auto_tag:
+        autotag()
+
+    print("Let's go, running on", jax.devices())
+
+    env_constructor = all_environments[args.env_id].parallel_env
     start_time = time.time()
 
-    # NN initialization and jit compiled functions
-    env: ParallelEnv = Catch.parallel_env()
-    eval_env: ParallelEnv = Catch.parallel_env()
+    # Env init
+    env: ParallelEnv = env_constructor()
+    eval_env: ParallelEnv = env_constructor()
     eval_env = clip_actions_v0(eval_env)
-    eval_env = normalize_obs_v0(env, env_min=-1.0, env_max=1.0)
+    eval_env = normalize_obs_v0(eval_env, env_min=-1.0, env_max=1.0)
     eval_env = agent_indicator_v0(eval_env)
 
-    env.reset()
-    eval_env.reset()
+    env.reset(seed=args.seed)
+    eval_env.reset(seed=args.seed)
     current_timestep = 0
+    reward_dim = env.unwrapped.reward_space(env.possible_agents[0]).shape[0]
 
+    # NN initialization and jit compiled functions
     single_action_space = env.action_space(env.possible_agents[0])
     actor = Actor(single_action_space.shape[0], net_arch=args.actor_net_arch, activation=args.activation)
     critic = Critic(net_arch=args.critic_net_arch, activation=args.activation)
@@ -534,42 +554,44 @@ if __name__ == "__main__":
     critic.apply = jax.jit(critic.apply)
 
     if args.track:
-        exp_name = os.path.basename(__file__)[: -len(".py")]
-        run_name = f"{env.__class__.__name__}_{exp_name}_{args.seed}"
+        exp_name = args.exp_name
+        args_dict = vars(args)
+        args_dict["algo"] = exp_name
+        run_name = f"{args.env_id}__{exp_name}__{args.seed}__{int(time.time())}"
         wandb.init(
             project=args.wandb_project,
             entity=args.wandb_entity,
-            config=vars(args),
+            config=args_dict,
             name=run_name,
             save_code=True,
         )
 
-    ols = LinearSupport(num_objectives=2, epsilon=0.0001, verbose=True)
+    ols = LinearSupport(num_objectives=reward_dim, epsilon=0.0, verbose=args.debug)
+    weight_number = 1
     value = []
-    while not ols.ended():
-        w = ols.next_weight()
+    w = ols.next_weight()
+    while not ols.ended() and weight_number <= args.num_weights:
         out = train(args, env, w, rng)
         actor_state = out["runner_state"][0]
-        _, disc_vec_return = policy_evaluation_mo(actor, actor_state, env=eval_env, num_obj=ols.num_objectives)
+        _, disc_vec_return = policy_evaluation_mo(
+            actor, actor_state, env=eval_env, num_obj=ols.num_objectives, gamma=args.gamma
+        )
         value.append(disc_vec_return)
+        print(f"Weight {weight_number}/{args.num_weights} done!")
+        print(f"Value: {disc_vec_return}, weight: {w}")
         ols.add_solution(value[-1], w)
+        if args.track:
+            log_all_multi_policy_metrics(
+                current_front=ols.ccs,
+                hv_ref_point=np.array(args.ref_point),
+                reward_dim=reward_dim,
+                global_step=weight_number * args.timesteps_per_weight,
+            )
+        if args.save_policies:
+            save_actor(actor_state, w, args)
+        w = ols.next_weight()
+        weight_number += 1
 
     env.close()
     wandb.finish()
     print(f"total time: {time.time() - start_time}")
-
-    # actor_state = out["runner_state"][0]
-    # save_actor(actor_state)
-
-    # import matplotlib.pyplot as plt
-    # plt.plot(returns[:, 0], returns[:, 2], label="episode return")
-
-    # plt.plot(out["metrics"]["total_loss"].mean(-1).reshape(-1), label="total loss")
-    # plt.plot(out["metrics"]["actor_loss"].mean(-1).reshape(-1), label="actor loss")
-    # plt.plot(out["metrics"]["value_loss"].mean(-1).reshape(-1), label="value loss")
-    # plt.plot(out["metrics"]["entropy"].mean(-1).reshape(-1), label="entropy")
-    # plt.plot(out["metrics"]["approx_kl"].mean(-1).reshape(-1), label="approx kl")
-    # plt.xlabel("Timestep")
-    # plt.ylabel("Team return")
-    # plt.legend()
-    # plt.show()

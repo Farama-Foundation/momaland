@@ -50,7 +50,7 @@ def raw_env(**kwargs):
 
 
 class MOGemMining(MOParallelEnv):
-    """Environment for MO gem mining domain.
+    """Environment for MO-GemMining domain.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -59,7 +59,7 @@ class MOGemMining(MOParallelEnv):
     These attributes should not be changed after initialization.
     """
 
-    metadata = {"render_modes": ["human"], "name": "mogemmining_v0"}
+    metadata = {"render_modes": ["human"], "name": "mogem_mining_v0"}
 
     def __init__(
         self,
