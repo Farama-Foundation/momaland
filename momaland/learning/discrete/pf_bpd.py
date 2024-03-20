@@ -1,4 +1,12 @@
-"""Derivation of the PF in the Beach Domain."""
+"""Derivation of the PF in the Beach Domain.
+
+To reproduce the results of the paper "Reward shaping for knowledge-based multi-objective multi-agent reinforcement learning"
+by Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018) we need to derive the true Pareto front for the Beach
+
+- exp1: 50 agents, 5 sections, 3 capacity, type distribution [35, 15]
+- exp2: 100 agents, 5 sections, 5 capacity, type distribution [70, 30]
+"""
+import argparse
 from itertools import product
 
 import numpy as np
@@ -9,6 +17,19 @@ from momaland.envs.beach_domain.beach_domain import (
     _local_mixture_reward,
 )
 from momaland.learning.utils import mkdir_p
+
+
+def parse_args():
+    """Argument parsing for true pareto front generation."""
+    # fmt: off
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--total-agents', type=int, default=50, )
+    parser.add_argument('--num-sections', type=int, default=5, )
+    parser.add_argument('--capacity', type=int, default=3, )
+    parser.add_argument('--type-distribution', type=int, nargs=2, default=[35, 15], )
+    args = parser.parse_args()
+    # fmt: on
+    return args
 
 
 def fast_p_prune(candidates):
@@ -142,19 +163,13 @@ if __name__ == "__main__":
         print(local_cap, local_mix)
     print(np.average(all_rew, axis=0), np.sum(all_rew, axis=0))
     """
+    args = parse_args()
+    total_agents = args.total_agents
+    num_sections = args.num_sections
+    capacity = args.capacity
+    type_distribution = args.type_distribution
 
-    total_agents = 50
-
-    if total_agents == 50:
-        num_sections = 3
-        capacity = 10
-        type_distribution = [35, 15]
-    elif total_agents == 100:
-        num_sections = 5
-        capacity = 10
-        type_distribution = [70, 30]
-
-    folder = "results/pf"
+    folder = "momaland/learning/discrete/results/pf"
     mkdir_p(folder)
 
     # generate all combinations of distributions for each type
