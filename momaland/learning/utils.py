@@ -1,9 +1,24 @@
 """Utils for the learning module."""
-
+import errno
 import os
 import subprocess
 
 import requests
+
+
+def mkdir_p(path):
+    """Creates a folder at the provided path, used  for logging functionality.
+
+    Args:
+        path: string defining the location of the folder.
+    """
+    try:
+        os.makedirs(path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 
 def autotag():

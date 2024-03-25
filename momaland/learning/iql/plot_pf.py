@@ -20,12 +20,12 @@ if __name__ == "__main__":
     args = parse_args()
 
     # Read the CSV file into a DataFrame
-    df_pf = pd.read_csv(f"momaland/learning/discrete/results/pf/pf_bpd_{args.num_agents}_G.csv")
+    df_pf = pd.read_csv(f"momaland/learning/iql/results/pf/pf_bpd_{args.num_agents}_G.csv")
     # Read the CSV file with best runs
-    df_runs_g = pd.read_csv(f"momaland/learning/discrete/results/nds/BPD_{args.num_agents}_global.csv")
-    df_runs_l = pd.read_csv(f"momaland/learning/discrete/results/nds/BPD_{args.num_agents}_local.csv")
+    df_runs_g = pd.read_csv(f"momaland/learning/iql/results/nds/BPD_{args.num_agents}_global.csv")
+    df_runs_l = pd.read_csv(f"momaland/learning/iql/results/nds/BPD_{args.num_agents}_local.csv")
     # Read the CSV file with random run
-    df_runs_random = pd.read_csv(f"momaland/learning/discrete/results/nds/BPD_{args.num_agents}_random.csv")
+    df_runs_random = pd.read_csv(f"momaland/learning/iql/results/nds/BPD_{args.num_agents}_random.csv")
 
     # Plot the data
     plt.plot(df_pf["Capacity"], df_pf["Mixture"], marker="x")

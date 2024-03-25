@@ -21,9 +21,9 @@ if __name__ == "__main__":
     args = parse_args()
 
     # Read the CSV file with best runs
-    df_runs_g = pd.read_csv(f"momaland/learning/discrete/results/runs/BPD_{args.num_agents}_global.csv")
-    df_runs_l = pd.read_csv(f"momaland/learning/discrete/results/runs/BPD_{args.num_agents}_local.csv")
-    df_random = pd.read_csv(f"momaland/learning/discrete/results/runs/BPD_{args.num_agents}_random.csv")
+    df_runs_g = pd.read_csv(f"momaland/learning/iql/results/runs/BPD_{args.num_agents}_global.csv")
+    df_runs_l = pd.read_csv(f"momaland/learning/iql/results/runs/BPD_{args.num_agents}_local.csv")
+    df_random = pd.read_csv(f"momaland/learning/iql/results/runs/BPD_{args.num_agents}_random.csv")
 
     # Add a column to the dataframes to distinguish between the different reward schemes
     df_runs_l["Reward"] = "Local"

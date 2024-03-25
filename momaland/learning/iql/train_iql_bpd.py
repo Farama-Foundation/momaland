@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from pf_bpd import fast_p_prune
 
-from momaland.envs.beach_domain.beach_domain import (
+from momaland.envs.beach.beach import (
     _global_capacity_reward,
     _global_mixture_reward,
     _local_capacity_reward,
@@ -158,9 +158,9 @@ if __name__ == "__main__":
     # ---------------------- #
     mkdir_p("results/runs")
     if args.random:
-        df_total.to_csv(f"momaland/learning/discrete/results/runs/BPD_{args.num_agents}_random.csv", index=False)
+        df_total.to_csv(f"momaland/learning/iql/results/runs/BPD_{args.num_agents}_random.csv", index=False)
     else:
-        df_total.to_csv(f"momaland/learning/discrete/results/runs/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False)
+        df_total.to_csv(f"momaland/learning/iql/results/runs/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False)
 
     # ------------------------------ #
     # Saving Non-Dominated Solutions #
@@ -172,6 +172,6 @@ if __name__ == "__main__":
     df = pd.DataFrame(best_rewards, columns=["Capacity", "Mixture"])
     # Save to csv
     if args.random:
-        df.to_csv(f"momaland/learning/discrete/results/nds/BPD_{args.num_agents}_random.csv", index=False)
+        df.to_csv(f"momaland/learning/iql/results/nds/BPD_{args.num_agents}_random.csv", index=False)
     else:
-        df.to_csv(f"momaland/learning/discrete/results/nds/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False)
+        df.to_csv(f"momaland/learning/iql/results/nds/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False)

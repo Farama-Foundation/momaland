@@ -12,10 +12,7 @@ from itertools import product
 import numpy as np
 import pandas as pd
 
-from momaland.envs.beach_domain.beach_domain import (
-    _local_capacity_reward,
-    _local_mixture_reward,
-)
+from momaland.envs.beach.beach import _local_capacity_reward, _local_mixture_reward
 from momaland.learning.utils import mkdir_p
 
 
