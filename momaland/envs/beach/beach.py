@@ -21,7 +21,7 @@ from momaland.utils.env import MOParallelEnv
 LEFT = -1
 RIGHT = 1
 STAY = 0
-MOVES = ["LEFT", "RIGHT", "STAY"]
+MOVES = [LEFT, STAY, RIGHT]
 NUM_OBJECTIVES = 2
 
 
@@ -265,7 +265,7 @@ class MOBeachDomain(MOParallelEnv):
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
             act = actions[agent]
-            self._state[i] = min(self.sections - 1, max(self._state[i] + act, 0))
+            self._state[i] = min(self.sections - 1, max(self._state[i] + MOVES[act], 0))
 
         section_consumptions, section_agent_types = self._get_stats()
 
