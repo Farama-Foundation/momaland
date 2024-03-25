@@ -14,10 +14,9 @@ Notes:
 Central observation:
     - If the central_observation flag is set to True, then the environment implements:
         - a central observation space: self.central_observation_space
-        - a central observation function: self.central_observation()
+        - a central observation function: self.state()
 """
 
-import functools
 import random
 from copy import deepcopy
 from os import path
@@ -188,7 +187,7 @@ class MOItemGathering(MOParallelEnv):
         self.central_observation_space = Box(
             low=-(len(self.possible_agents)),
             high=self.num_objectives,
-            shape=self.env_map.shape,
+            shape=self.env_map.flatten().shape,
             dtype=np.int64,
         )
 
@@ -209,15 +208,11 @@ class MOItemGathering(MOParallelEnv):
         self.map_bg_imgs = []
         self.window = None
 
-    # this cache ensures that same space object is returned for the same agent
-    # allows action space seeding to work as expected
-    @functools.lru_cache(maxsize=None)
     @override
     def observation_space(self, agent):
         # gymnasium spaces are defined and documented here: https://gymnasiuspspom.farama.org/api/spaces/
         return self.observation_spaces[agent]
 
-    @functools.lru_cache(maxsize=None)
     @override
     def action_space(self, agent):
         return self.action_spaces[agent]
@@ -226,7 +221,7 @@ class MOItemGathering(MOParallelEnv):
     def reward_space(self, agent):
         return self.reward_spaces[agent]
 
-    def central_observation_space(self):
+    def get_central_observation_space(self):
         """Returns the central observation space."""
         return self.central_observation_space
 
@@ -323,7 +318,7 @@ class MOItemGathering(MOParallelEnv):
 
         self.agent_positions, self.env_map = self._init_map_and_positions(self.env_map)
 
-        map_obs = self.central_observation()
+        map_obs = self.state()
         # observations are a tuple of agent id (in the map) and the map observation
         observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}
         self.time_num = 0
@@ -370,7 +365,7 @@ class MOItemGathering(MOParallelEnv):
         # initial collision check, verify all agent pairs
         new_positions, collisions = self._verify_collisions(collisions, new_positions)
 
-        max_collisions = self.num_agents * 10
+        max_collisions = self.num_agents * 50
         while len(collisions) > 0 and max_collisions > 0:
             new_positions, collisions = self._verify_collisions(collisions, new_positions)
             max_collisions -= 1
@@ -385,11 +380,11 @@ class MOItemGathering(MOParallelEnv):
         # update all reward vectors with collected items (if any), delete items from the map
         for i in range(len(self.agent_positions)):
             value_in_cell = self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]]
-            if value_in_cell > len(self.possible_agents):
+            if value_in_cell > 0:
                 rewards[self.agents[i]][self.item_dict[value_in_cell]] += 1
                 self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]] = 0
 
-        map_obs = self.central_observation()
+        map_obs = self.state()
         observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}
 
         # typically there won't be any information in the infos, but there must
@@ -411,8 +406,8 @@ class MOItemGathering(MOParallelEnv):
 
         return observations, rewards, self.truncations, self.terminations, infos
 
-    def central_observation(self):
-        """Function to create the observation passed to each agent at the end of a timestep.
+    def state(self):
+        """Returns the global observation of the map passed to each agent at the end of a timestep.
 
         Returns: a 2D Numpy array with the following items encoded:
         - 0 is empty space

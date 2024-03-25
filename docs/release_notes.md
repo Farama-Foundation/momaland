@@ -2,7 +2,7 @@
 
 ```{eval-rst}
 .. changelog::
-    :github: https://github.com/Farama-Foundation/MO-Gymnasium/releases
-    :pypi: https://pypi.org/project/mo-gymnasium/
+    :github: https://github.com/Farama-Foundation/momaland/releases
+    :pypi: https://pypi.org/project/momaland/
     :changelog-url:
 ```

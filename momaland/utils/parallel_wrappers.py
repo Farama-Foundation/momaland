@@ -1,9 +1,14 @@
 """Various wrappers for Parallel MO environments."""
+from collections import namedtuple
 from typing import Optional
 
 import numpy as np
+from gymnasium.spaces import Box, Dict, Discrete
 from gymnasium.wrappers.normalize import RunningMeanStd
 from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
+
+from momaland.learning.utils import remap_actions
+from momaland.utils.env import MOParallelEnv
 
 
 class RecordEpisodeStatistics(BaseParallelWrapper):
@@ -33,7 +38,7 @@ class RecordEpisodeStatistics(BaseParallelWrapper):
         return obs, rews, terminateds, truncateds, infos
 
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
-        """Resets the environment, recording episode statistics."""
+        """Resets the environment and the episode statistics."""
         obs, info = super().reset(seed, options)
         for agent in self.env.possible_agents:
             self.episode_rewards[agent] = 0
@@ -139,3 +144,77 @@ class NormalizeReward(BaseParallelWrapper):
         """Normalizes the rewards with the running mean rewards and their variance."""
         self.return_rms.update(self.returns)
         return rews / np.sqrt(self.return_rms.var + self.epsilon)
+
+
+class CentraliseAgent(BaseParallelWrapper):
+    """This wrapper will create a central agent that observes the full state of the environment.
+
+    The central agent will receive the concatenation of all agents' observations as its own observation (or a global
+    state, if available in the environment), and a multi-objective reward vector (representing the component-wise sum of
+    the individual agent rewards) as its own reward. The central agent is expected to return a vector of actions, one
+    for each agent in the original environment.
+    """
+
+    def __init__(self, env: MOParallelEnv, action_mapping=False):
+        """Central agent wrapper class initializer.
+
+        Args:
+            env: The parallel environment to apply the wrapper
+            action_mapping: Whether to use an action mapping to Discrete spaces of not
+        """
+        super().__init__(env)
+        self.action_mapping = action_mapping
+        self.unwrapped.spec = namedtuple("Spec", ["id"])
+        self.unwrapped.spec.id = self.env.metadata.get("name")
+        if self.env.metadata.get("central_observation"):
+            self.observation_space = env.get_central_observation_space()
+            self.unwrapped.observation_space = env.get_central_observation_space()
+        else:
+            self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
+        # self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+        # For compatibility with MORL baselines
+        # Make the action space a Box space with the same bounds as the first agent's action space
+        ag0_action_space = env.action_space(self.possible_agents[0])
+        self.num_actions = ag0_action_space.n
+        if self.action_mapping:
+            self.action_space = Discrete(self.num_actions ** len(self.possible_agents))
+            self.unwrapped.action_space = self.action_space
+        elif self.env.metadata.get("central_observation"):
+            self.action_space = Box(
+                low=ag0_action_space.start,
+                high=(ag0_action_space.n - 1),
+                shape=(len(self.possible_agents),),
+                dtype=ag0_action_space.dtype,
+            )
+        else:
+            self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+        self.reward_space = self.env.reward_space(self.possible_agents[0])
+        self.unwrapped.reward_space = self.reward_space
+
+    def step(self, actions):
+        """Steps through the environment, joining the returned values for the central agent."""
+        # Remake the action list into a dictionary compatible with MOMAland environments
+        if self.action_mapping:
+            remapped_actions = remap_actions(actions, len(self.agents), self.num_actions)
+            actions = {agent: remapped_actions[i] for i, agent in enumerate(self.agents)}
+        elif self.env.metadata.get("central_observation"):
+            actions = {agent: actions[num] for num, agent in enumerate(self.possible_agents)}
+
+        observations, rewards, terminations, truncations, infos = self.env.step(actions)
+        if self.env.metadata.get("central_observation"):
+            observations = self.env.state().flatten()
+        joint_reward = np.sum(list(rewards.values()), axis=0)
+        return (
+            observations,
+            joint_reward,
+            np.any(list(terminations.values())),
+            np.any(list(truncations.values())),
+            infos,
+        )
+
+    def reset(self, seed=None):
+        """Resets the environment, joining the returned values for the central agent."""
+        observations, infos = self.env.reset(seed)
+        if self.env.metadata.get("central_observation"):
+            observations = self.env.state().flatten()
+        return observations, list(infos.values())
