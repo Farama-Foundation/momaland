@@ -12,12 +12,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=44, help="Seed for the agent.")
     parser.add_argument("-objectives", type=int, default=2, help="Number of objectives/item types for the IG problem.")
+    parser.add_argument("-project", type=str, default="MOMAland-IG", help="Project name.")
     args = parser.parse_args()
     seed = args.seed
     obj = args.objectives
 
     env = make_single_agent_ig_env(objectives=obj)
     eval_env = make_single_agent_ig_env(objectives=obj)
+    project_name = args.project
 
     ref_point = np.zeros(obj)
     if obj == 2:
@@ -33,7 +35,7 @@ if __name__ == "__main__":
         scaling_factor=np.ones(obj + 1),
         learning_rate=1e-3,
         batch_size=256,
-        project_name="MOMAland-Evaluation",
+        project_name=project_name,
         experiment_name="PCN",
         log=True,
     )
