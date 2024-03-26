@@ -11,7 +11,7 @@ from momaland.learning.morl.ig_env_factory import make_single_agent_ig_env
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
-    parser.add_argument("-objectives", type=int, default=2, help="Number of objectives/item types for the IG problem.")
+    parser.add_argument("-objectives", type=int, default=3, help="Number of objectives/item types for the IG problem.")
     parser.add_argument("-project", type=str, default="MOMAland-IG", help="Project name.")
     args = parser.parse_args()
     seed = args.seed
@@ -30,11 +30,11 @@ if __name__ == "__main__":
         learning_rate=3e-4,
         gamma=0.99,
         batch_size=256,
-        net_arch=[64, 64],
+        net_arch=[128, 128],
         buffer_size=1000,
-        initial_epsilon=0.5,
+        initial_epsilon=1.0,
         final_epsilon=0.05,
-        epsilon_decay_steps=7500,
+        epsilon_decay_steps=75000,
         learning_starts=100,
         alpha_per=0.6,
         min_priority=0.01,
@@ -48,11 +48,11 @@ if __name__ == "__main__":
         seed=seed,
     )
 
-    timesteps_per_iter = 1000
+    timesteps_per_iter = 10000
     algo = "gpi-ls"
 
     agent.train(
-        total_timesteps=100 * timesteps_per_iter,
+        total_timesteps=15 * timesteps_per_iter,
         eval_env=eval_env,
         ref_point=ref_point,
         weight_selection_algo=algo,
