@@ -36,7 +36,7 @@ if __name__ == "__main__":
         gamma=0.99,
         scaling_factor=np.ones(obj + 1),
         learning_rate=1e-3,
-        hidden_dim=128,
+        hidden_dim=256,
         batch_size=256,
         project_name=project_name,
         experiment_name="PCN",
