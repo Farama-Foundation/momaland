@@ -102,7 +102,7 @@ class MOBeachDomain(MOParallelEnv):
     - 'render_mode (str)': render mode. Default: None
     """
 
-    metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
+    metadata = {"render_modes": ["human"], "name": "mobeach_v0", "central_observation": True}
 
     def __init__(
         self,
@@ -167,6 +167,15 @@ class MOBeachDomain(MOParallelEnv):
             )
         )
 
+        self.central_observation_space = Box(
+            low=0,
+            high=self.num_agents,
+            # Observation form:
+            # agents * [agent type, section id, section capacity, section consumption, % of agents of current type]
+            shape=(self.num_agents * 5,),
+            dtype=np.float32,
+        )
+
         # maximum capacity reward can be calculated  by calling the _global_capacity_reward()
         optimal_consumption = [capacity for _ in range(sections)]
         optimal_consumption[-1] = max(self.num_agents - ((sections - 1) * capacity), 0)
@@ -190,6 +199,10 @@ class MOBeachDomain(MOParallelEnv):
     def reward_space(self, agent):
         """Returns the reward space for the given agent."""
         return self.reward_spaces[agent]
+
+    def get_central_observation_space(self):
+        """Returns the central observation space."""
+        return self.central_observation_space
 
     @override
     def render(self):
@@ -310,7 +323,19 @@ class MOBeachDomain(MOParallelEnv):
 
     @override
     def state(self) -> np.ndarray:
-        return np.array(self._types + self._state, dtype=np.int32)
+        """Returns the global observation of the beach.
+
+        Returns: a 1D Numpy array with the following items in order:
+        [agentX_section, agentX_type, ...,
+        capacity, sectionY_consumption, sectionY_%_of_agents_of_current_type, ...]
+        """
+        # return np.array(self._types + self._state, dtype=np.int32)
+        section_consumptions, section_agent_types = self._get_stats()
+        global_obs = [self._get_obs(i, section_consumptions, section_agent_types) for i in range(len(self.agents))]
+        global_obs = np.array(global_obs, dtype=np.float32).flatten()
+        assert len(global_obs) == len(self.agents) * 5
+
+        return np.array(global_obs, dtype=np.float32).flatten()
 
     def _get_obs(self, i, section_consumptions, section_agent_types):
         total_same_type = section_agent_types[self._state[i]][self._types[i]]
