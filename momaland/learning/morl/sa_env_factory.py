@@ -1,7 +1,7 @@
-"""Item Gathering environment factory."""
+"""Single agent environment factory."""
 
-from momaland.envs.item_gathering import item_gathering
 from momaland.envs.item_gathering.map_utils import DEFAULT_MAP, generate_map
+from momaland.utils.all_modules import mobeach_v0, moitem_gathering_v0
 from momaland.utils.parallel_wrappers import CentraliseAgent
 
 
@@ -23,5 +23,30 @@ def make_single_agent_ig_env(objectives=3):
         env_map = get_map_4_O()
     else:
         env_map = DEFAULT_MAP
-    ig_env = item_gathering.parallel_env(initial_map=env_map, num_timesteps=50, randomise=False, render_mode=None)
+    ig_env = moitem_gathering_v0.parallel_env(initial_map=env_map, num_timesteps=50, randomise=False, render_mode=None)
     return CentraliseAgent(ig_env, action_mapping=True)
+
+
+def make_single_agent_bpd_env(size="small"):
+    """Create a centralised agent environment for the MO Beach Problem domain."""
+    if size == "small":
+        bpd_env = mobeach_v0.parallel_env(
+            num_timesteps=10,
+            num_agents=10,
+            reward_scheme="global",
+            sections=3,
+            capacity=3,
+            type_distribution=(0.7, 0.3),
+            position_distribution=(0.5, 0.0, 0.5),
+        )
+    else:
+        bpd_env = moitem_gathering_v0.parallel_env(
+            num_timesteps=1,
+            num_agents=50,
+            reward_scheme="global",
+            sections=5,
+            capacity=3,
+            type_distribution=(0.7, 0.3),
+            position_distribution=(0.0, 0.5, 0.0, 0.5, 0.0),
+        )
+    return CentraliseAgent(bpd_env, action_mapping=True)
