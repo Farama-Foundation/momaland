@@ -30,7 +30,7 @@ if __name__ == "__main__":
         gamma=1,
         scaling_factor=np.ones(obj + 1),
         learning_rate=1e-3,
-        hidden_dim=256,
+        hidden_dim=512,
         batch_size=256,
         project_name=project_name,
         experiment_name="PCN",
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     timesteps_per_iter = 1000
     agent.train(
         eval_env=eval_env,
-        total_timesteps=5 * timesteps_per_iter,
+        total_timesteps=10 * timesteps_per_iter,
         ref_point=ref_point,
         num_er_episodes=20,
         num_model_updates=50,
