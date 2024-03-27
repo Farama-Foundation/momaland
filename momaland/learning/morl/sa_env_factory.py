@@ -1,7 +1,8 @@
 """Single agent environment factory."""
 
+from momaland.envs.beach import mobeach_v0
+from momaland.envs.item_gathering import moitem_gathering_v0
 from momaland.envs.item_gathering.map_utils import DEFAULT_MAP, generate_map
-from momaland.utils.all_modules import mobeach_v0, moitem_gathering_v0
 from momaland.utils.parallel_wrappers import CentraliseAgent
 
 
