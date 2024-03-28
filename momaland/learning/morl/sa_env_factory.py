@@ -50,4 +50,4 @@ def make_single_agent_bpd_env(size="small"):
             type_distribution=(0.7, 0.3),
             position_distribution=(0.0, 0.5, 0.0, 0.5, 0.0),
         )
-    return CentraliseAgent(bpd_env, action_mapping=True)
+    return CentraliseAgent(bpd_env, action_mapping=True, reward_type="average")

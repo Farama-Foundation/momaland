@@ -21,7 +21,7 @@ if __name__ == "__main__":
     project_name = args.project
 
     ref_point = np.zeros(obj)
-    max_return = np.array([35.0, 15.0])
+    max_return = np.array([3.5, 1.5])
     print("Reference point: ", ref_point)
 
     agent = PCN(
