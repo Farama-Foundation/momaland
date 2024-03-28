@@ -342,8 +342,8 @@ board can be set to values from 4 to 20.</p>
 <section id="observation-space">
 <h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
 <p>The observation is a dictionary which contains an <code class="docutils literal notranslate"><span class="pre">'observation'</span></code> element which is the usual RL observation described
-below, and an  <code class="docutils literal notranslate"><span class="pre">'action_mask'</span></code> which holds the legal moves, described in the Legal Actions Mask section below.</p>
-<p>The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
+below, and an  <code class="docutils literal notranslate"><span class="pre">'action_mask'</span></code> which holds the legal moves, described in the Legal Actions Mask section below.
+The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
 Each plane represents a specific agent’s tokens, and each location in the grid represents the placement of the
 corresponding agent’s token. 1 indicates that the agent has a token placed in the given location, and 0 indicates they
 do not have a token in that location (meaning that either the cell is empty, or the other agent has a token in that
@@ -354,8 +354,7 @@ location).</p>
 <p>The legal moves available to the current agent are found in the <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> element of the dictionary observation.
 The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> is a binary vector where each index of the vector represents whether the represented action is legal
 or not; the action encoding is described in the Action Space section below.
-The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
-game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn’t happening anymore because of missing TerminateIllegalWrapper</p>
+The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> will be all zeros for any agent except the one whose turn it is.</p>
 </section>
 <section id="action-space">
 <h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
@@ -370,6 +369,20 @@ Dimension 1: If an agent wins, they get a reward of 1-(move_count/board_size) to
 Dimension 2 to board_width+1 (default 8): (optional) If at game end, an agent has more tokens than their opponent in
 column X, they will be rewarded 1 point in reward dimension 2+X. The opponent agent will be rewarded -1 point. If the
 column has an equal number of tokens from both players, both players are rewarded 0.</p>
+</section>
+<section id="starting-state">
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<p>The game starts with an empty board.</p>
+</section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>‘render_mode’: The mode to render with. Can be ‘human’ or ‘rgb_array’.</p></li>
+<li><p>‘screen_scaling’: The factor by which to scale the screen.</p></li>
+<li><p>‘board_width’: The width of the board (from 4 to 20)</p></li>
+<li><p>‘board_height’: The height of the board (from 4 to 20)</p></li>
+<li><p>‘column_objectives’: Whether to use column objectives or not (without them, there are 2 objectives. With them, there are 2+board_width objectives)</p></li>
+</ul>
 </section>
 <section id="version-history">
 <h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">#</a></h2>
@@ -438,6 +451,8 @@ column has an equal number of tokens from both players, both players are rewarde
 <li><a class="reference internal" href="#legal-actions-mask">Legal Actions Mask</a></li>
 <li><a class="reference internal" href="#action-space">Action Space</a></li>
 <li><a class="reference internal" href="#rewards">Rewards</a></li>
+<li><a class="reference internal" href="#starting-state">Starting State</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
 <li><a class="reference internal" href="#version-history">Version History</a></li>
 </ul>
 </li>

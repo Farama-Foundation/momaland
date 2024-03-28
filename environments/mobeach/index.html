@@ -318,7 +318,7 @@
 <td><p>Box(0.0, 100.0, (5,), float32)</p></td>
 </tr>
 <tr class="row-odd"><td><p>Reward Space</p></td>
-<td><p>Box(0.0, 18.73087, (2,), float32)</p></td>
+<td><p>Box(0.0, 12.881808, (2,), float32)</p></td>
 </tr>
 <tr class="row-even"><td><p>Import</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">momaland.envs.mobeach_v0</span></code></p></td>
@@ -342,12 +342,7 @@
 </section>
 <section id="action-space">
 <h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
-<p>The action space is a Discrete space, where:</p>
-<ul class="simple">
-<li><p>moving left is -1</p></li>
-<li><p>moving right is +1</p></li>
-<li><p>staying is 0</p></li>
-</ul>
+<p>The action space is a Discrete space [0, 1, 2], corresponding to moving left, moving right, staying in place.</p>
 </section>
 <section id="reward-space">
 <h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
@@ -377,12 +372,12 @@ Agents only receive the reward after the last timestep.</p>
 <section id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>‘num_timesteps (int)’: number of timesteps in the domain. Default: 100</p></li>
+<li><p>‘num_timesteps (int)’: number of timesteps in the domain. Default: 1</p></li>
 <li><p>‘num_agents (int)’: number of agents in the domain. Default: 100</p></li>
 <li><p>‘reward_scheme (str)’: the reward scheme to use (‘local’, or ‘global’). Default: local</p></li>
 <li><p>‘sections (int)’: number of beach sections in the domain. Default: 6</p></li>
-<li><p>‘capacity (int)’: capacity of each beach section. Default: 10</p></li>
-<li><p>‘type_distribution (tuple)’: the distribution of agent types in the domain. Default: 2 types equally distributed (0.5, 0.5).</p></li>
+<li><p>‘capacity (int)’: capacity of each beach section. Default: 7</p></li>
+<li><p>‘type_distribution (tuple)’: the distribution of agent types in the domain. Default: 2 types equally distributed (0.3, 0.7).</p></li>
 <li><p>‘position_distribution (tuple)’: the initial distribution of agents in the domain. Default: uniform over all sections (None).</p></li>
 <li><p>‘render_mode (str)’: render mode. Default: None</p></li>
 </ul>

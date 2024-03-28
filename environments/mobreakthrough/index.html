@@ -338,20 +338,19 @@ Additionally, the board width can be modified from 3 to 20 squares, and the boar
 <section id="observation-space">
 <h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
 <p>The observation is a dictionary which contains an <code class="docutils literal notranslate"><span class="pre">'observation'</span></code> element which is the usual RL observation described
-below, and an  <code class="docutils literal notranslate"><span class="pre">'action_mask'</span></code> which holds the legal moves, described in the Legal Actions Mask section below.</p>
-<p>The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
+below, and an  <code class="docutils literal notranslate"><span class="pre">'action_mask'</span></code> which holds the legal moves, described in the Legal Actions Mask section below.
+The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
 Each plane represents a specific agent’s pieces, and each location in the grid represents the placement of the
 corresponding agent’s piece. 1 indicates that the agent has a piece placed in the given location, and 0 indicates they
 do not have a piece in that location (meaning that either the cell is empty, or the other agent has a piece in that
 location).</p>
+</section>
 <section id="legal-actions-mask">
-<h3>Legal Actions Mask<a class="headerlink" href="#legal-actions-mask" title="Link to this heading">#</a></h3>
+<h2>Legal Actions Mask<a class="headerlink" href="#legal-actions-mask" title="Link to this heading">#</a></h2>
 <p>The legal moves available to the current agent are found in the <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> element of the dictionary observation.
 The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> is a binary vector where each index of the vector represents whether the represented action is legal
 or not; the action encoding is described in the Action Space section below.
-The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
-game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn’t happening anymore because of missing TerminateIllegalWrapper</p>
-</section>
+The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> will be all zeros for any agent except the one whose turn it is.</p>
 </section>
 <section id="action-space">
 <h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
@@ -368,6 +367,19 @@ opponent gets the negated reward. In case of a draw, both agents get 0.
 Dimension 2: (optional) The number of opponent pieces (divided by the max number of pieces) an agent has captured.
 Dimension 3: (optional) The negative number of pieces (divided by the max number of pieces)
 an agent has lost to the opponent.</p>
+</section>
+<section id="starting-state">
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<p>The starting board is empty except for the first two rows that are filled with pieces of player 0, and the last two rows that are filled with pieces of player 1.</p>
+</section>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>‘board_width’: The width of the board (from 3 to 20)</p></li>
+<li><p>‘board_height’: The height of the board (from 5 to 20)</p></li>
+<li><p>‘num_objectives’: The number of objectives (from 1 to 4)</p></li>
+<li><p>‘render_mode’: The render mode.</p></li>
+</ul>
 </section>
 <section id="version-history">
 <h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">#</a></h2>
@@ -432,12 +444,12 @@ an agent has lost to the opponent.</p>
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">MO-Breakthrough</a><ul>
-<li><a class="reference internal" href="#observation-space">Observation Space</a><ul>
+<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
 <li><a class="reference internal" href="#legal-actions-mask">Legal Actions Mask</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#action-space">Action Space</a></li>
 <li><a class="reference internal" href="#rewards">Rewards</a></li>
+<li><a class="reference internal" href="#starting-state">Starting State</a></li>
+<li><a class="reference internal" href="#arguments">Arguments</a></li>
 <li><a class="reference internal" href="#version-history">Version History</a></li>
 </ul>
 </li>
