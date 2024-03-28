@@ -67,10 +67,7 @@ class MOBeachDomain(MOParallelEnv):
     `[a_type, section_id, section_capacity, section_consumption, %_of_a_of_current_type]`
 
     ## Action Space
-    The action space is a Discrete space, where:
-    - moving left is -1
-    - moving right is +1
-    - staying is 0
+    The action space is a Discrete space [0, 1, 2], corresponding to moving left, moving right, staying in place.
 
     ## Reward Space
     The reward space is a 2D vector containing rewards for two different schemes ('local' or 'global') for:
@@ -92,12 +89,12 @@ class MOBeachDomain(MOParallelEnv):
     The problem is not truncated. It has a maximum number of timesteps.
 
     ## Arguments
-    - 'num_timesteps (int)': number of timesteps in the domain. Default: 100
+    - 'num_timesteps (int)': number of timesteps in the domain. Default: 1
     - 'num_agents (int)': number of agents in the domain. Default: 100
     - 'reward_scheme (str)': the reward scheme to use ('local', or 'global'). Default: local
     - 'sections (int)': number of beach sections in the domain. Default: 6
-    - 'capacity (int)': capacity of each beach section. Default: 10
-    - 'type_distribution (tuple)': the distribution of agent types in the domain. Default: 2 types equally distributed (0.5, 0.5).
+    - 'capacity (int)': capacity of each beach section. Default: 7
+    - 'type_distribution (tuple)': the distribution of agent types in the domain. Default: 2 types equally distributed (0.3, 0.7).
     - 'position_distribution (tuple)': the initial distribution of agents in the domain. Default: uniform over all sections (None).
     - 'render_mode (str)': render mode. Default: None
     """
@@ -106,12 +103,12 @@ class MOBeachDomain(MOParallelEnv):
 
     def __init__(
         self,
-        num_timesteps=10,
+        num_timesteps=1,
         num_agents=100,
         reward_scheme="local",
         sections=6,
-        capacity=10,
-        type_distribution=(0.5, 0.5),
+        capacity=7,
+        type_distribution=(0.3, 0.7),
         position_distribution=None,
         render_mode=None,
     ):

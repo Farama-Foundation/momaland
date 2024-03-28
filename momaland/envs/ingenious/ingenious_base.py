@@ -100,15 +100,15 @@ def generate_board(board_size):
 class IngeniousBase:
     """Base class for Ingenious environment."""
 
-    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=8, limitation_score=18):
+    def __init__(self, num_players=2, init_draw=6, num_colors=6, board_size=6, limitation_score=18):
         """Initialize the Ingenious environment.
 
         Args:
-            num_players (int): Number of players in the game.
-            init_draw (int): Number of tiles to draw at the beginning of the game.
-            num_colors (int): Number of colors in the game.
-            board_size (int): Size of the board.
-            limitation_score(int): Limitation to refresh the score board for any color. Default: 20
+            num_players (int): The number of players in the environment. Default: 2
+            init_draw (int): The number of tiles each player draws at the beginning of the game. Default: 6
+            num_colors (int): The number of colors in the game. Default: 6
+            board_size (int): The size of the board. Default: 6
+            limitation_score (int): Maximum score for any color. Default: 18
         """
         assert 2 <= num_players <= 5, "Number of players must be between 2 and 5."
         assert 2 <= num_colors <= 6, "Number of colors must be between 2 and 6."
