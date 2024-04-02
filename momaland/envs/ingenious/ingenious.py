@@ -44,7 +44,7 @@ to num_colors. 'scores' represents for all agents their current scores in all nu
 The legal moves available to the current agent are found in the 'action_mask' element of the dictionary observation.
 The 'action_mask' is a binary vector where each index of the vector represents whether the represented action is legal
 or not; the action encoding is described in the Action Space section below.
-The 'action_mask' will be all zeros for any agent except the one whose turn it is.
+The 'action_mask' shows only the current agent's legal moves.
 
 
 ### Action Space
