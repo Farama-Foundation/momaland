@@ -32,11 +32,11 @@ def make_single_agent_bpd_env(size="small"):
     """Create a centralised agent environment for the MO Beach Problem domain."""
     if size == "small":
         bpd_env = mobeach_v0.parallel_env(
-            num_timesteps=10,
+            num_timesteps=5,
             num_agents=10,
             reward_scheme="global",
             sections=3,
-            capacity=3,
+            capacity=2,
             type_distribution=(0.7, 0.3),
             position_distribution=(0.5, 0.0, 0.5),
         )
