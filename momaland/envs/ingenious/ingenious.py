@@ -120,14 +120,11 @@ class Ingenious(MOAECEnv):
             num_agents (int): The number of agents (between 2 and 6). Default is 2.
             rack_size (int): The number of tiles each player keeps in their rack (between 2 and 6). Default is 6.
             num_colors (int): The number of colors (objectives) in the game (between 2 and 6). Default is 6.
-
             board_size (int): The size of one side of the hexagonal board (between 3 and 10). By default the size is set
              to n+4 where n is the number of agents.
-
             reward_mode (str): Can be set to "competitive" (individual rewards for all agents), "collaborative" (shared
             rewards for all agents), or "two_teams" (rewards shared within two opposing teams; num_agents needs to be
             even). Default is "competitive".
-
             fully_obs (bool): Fully observable game mode, i.e. the racks of all players are visible. Default is False.
             render_mode (str): The rendering mode. Default: None
         """
