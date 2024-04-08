@@ -31,10 +31,10 @@ This does not include dependencies for all components of MOMAland (not everythin
 
 ## API
 <!-- start snippet-usage -->
-Similar to [PettingZoo](https://pettingzoo.farama.org), the MOMAland API models environments as simple Python `env` classes. Creating environment instances and interacting with them is very simple - here's an example using the "momultiwalker_v0" environment:
+Similar to [PettingZoo](https://pettingzoo.farama.org), the MOMAland API models environments as simple Python `env` classes. Creating environment instances and interacting with them is very simple - here's an example using the "momultiwalker_stability_v0" environment:
 
 ```python
-from momaland.envs.momultiwalker import momultiwalker_v0 as _env
+from momaland.envs.momultiwalker_stability import momultiwalker_stability_v0 as _env
 import numpy as np
 
 # .env() function will return an AEC environment, as per PZ standard
@@ -57,9 +57,9 @@ env.close()
 # Making the vector reward a scalar reward to shift to single-objective multi-agent (aka PettingZoo)
 # We can assign different weights to the objectives of each agent.
 weights = {
-    "walker_0": np.array([0.1, 0.7, 0.2]),
-    "walker_1": np.array([0.6, 0.1, 0.3]),
-    "walker_2": np.array([0.2, 0.2, 0.6]),
+    "walker_0": np.array([0.7, 0.3]),
+    "walker_1": np.array([0.5, 0.5]),
+    "walker_2": np.array([0.2, 0.8]),
 }
 env = LinearizeReward(env, weights)
 ```
