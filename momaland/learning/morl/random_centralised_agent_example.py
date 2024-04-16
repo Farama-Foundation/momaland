@@ -1,7 +1,7 @@
 """Example script for environment interaction and centralised agent wrapper."""
-from momaland.envs.beach import beach
-from momaland.envs.item_gathering import item_gathering
+
 from momaland.envs.item_gathering.map_utils import generate_map
+from momaland.utils.all_modules import mobeach_v0, moitem_gathering_v0
 from momaland.utils.parallel_wrappers import CentraliseAgent
 
 
@@ -40,14 +40,14 @@ def train_random(moma_env):
 if __name__ == "__main__":
     test_map = generate_map(rows=8, columns=8, item_distribution=(4, 4, 4, 2, 2), num_agents=10, seed=0)
 
-    ig_env = item_gathering.parallel_env(
+    ig_env = moitem_gathering_v0.parallel_env(
         num_timesteps=50,
         initial_map=test_map,
         randomise=True,
         render_mode=None,
     )
 
-    mobpd_env = beach.parallel_env(
+    mobpd_env = mobeach_v0.parallel_env(
         sections=2,
         capacity=3,
         num_agents=10,
@@ -60,5 +60,5 @@ if __name__ == "__main__":
     # train_random(ig_env)
     # train_random(mobpd_env)
 
-    train_sa_random(ig_env)
+    # train_sa_random(ig_env)
     train_sa_random(mobpd_env)
