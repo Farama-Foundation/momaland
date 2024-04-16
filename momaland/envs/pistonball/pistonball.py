@@ -54,7 +54,43 @@ def raw_env(**kwargs):
 
 
 class MOPistonball(MOAECEnv, PistonballEnv):
-    """A multi-objective version of the pistonball environment."""
+    """An `AEC` environment where pistons need to cooperate to move a ball towards the edge of the window.
+
+    ## Observation Space
+    The observation space is unchanged from the original Pistonball. Each piston agent’s observation is an RGB image of the two pistons (or the wall) next to the agent and the space above them.
+
+    ## Action Space
+    The action space is unchanged from the original Pistonball. The action space is a 3D vector when set to discrete: 0 to move down, 1 to stay still, and 2 to move up. When set to continuous mode, an action takes a value between -1 and 1 proportional to the amount that the pistons are raised or lowered by.
+
+    ## Reward Space
+    The reward disentangles the original components of the scalar reward in Pistonball. As such, the reward space is a 3D vector containing rewards for:
+    - Maximising the global reward. The global reward specifies how close the ball is to the edge of the window.
+    - Maximising the local reward. The local reward is given when an agent moves the ball closer to the edge of the window.
+    - Minimizing the time penalty.
+
+    ## Starting State
+    The ball is by default dropped at the right edge of the window. This can be changed by setting `random_drop` to `True`.
+
+    ## Episode Termination
+    The episode is terminated when the ball reaches the limit of the window.
+
+    ## Episode Truncation
+    The episode is truncated when `max_cycles` is reached. This is set to 125 by default.
+
+    ## Arguments
+    - `n_pistons (int, optional)`: The number of pistons in the environment. Defaults to 20.
+    - `time_penalty (int, optional)`: The time penalty for not finishing the episode. Defaults to -0.1.
+    - `continuous (int, optional)`: Whether to use continuous actions or not. Defaults to True.
+    - `random_drop (int, optional)`: Whether to drop the ball at a random place. Defaults to True.
+    - `ball_mass (int, optional)`: The mass of the ball. Defaults to 0.75.
+    - `ball_friction (int, optional)`: The friction of the ball. Defaults to 0.3.
+    - `ball_elasticity (int, optional)`: The elasticity of the ball. Defaults to 1.5.
+    - `max_cycles (int, optional)`: The maximum number of cycles in the environment before termination. Defaults to 125.
+    - `render_mode (int, optional)`: The render mode. Can be human, rgb_array or None. Defaults to None.
+
+    ## Credits
+    The code was adapted from the [original Pistonball](https://github.com/Farama-Foundation/PettingZoo/blob/master/pettingzoo/butterfly/pistonball/pistonball.py).
+    """
 
     metadata = {
         "render_modes": ["human", "rgb_array"],

@@ -3,7 +3,7 @@
 # import random
 
 import numpy as np
-from ingenious import MOIngenious
+from ingenious import Ingenious
 
 
 # from ingenious_base import Hex2ArrayLocation
@@ -165,9 +165,9 @@ def data_equivalence(data_1, data_2) -> bool:
 
 
 if __name__ == "__main__":
-    ig_env = MOIngenious(num_players=4, init_draw=4, num_colors=4, board_size=8)
+    ig_env = Ingenious(num_agents=4, rack_size=4, num_colors=4, board_size=8)
 
-    ig_env2 = MOIngenious(num_players=4, init_draw=4, num_colors=4, board_size=8)
+    ig_env2 = Ingenious(num_agents=4, rack_size=4, num_colors=4, board_size=8)
 
     env1 = ig_env
     env2 = ig_env2
