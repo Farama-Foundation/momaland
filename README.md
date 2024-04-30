@@ -1,4 +1,4 @@
-[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.]https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![tests](https://github.com/rradules/momaland/workflows/Python%20tests/badge.svg)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -77,9 +77,12 @@ Nevertheless, we reuse tools provided by other libraries, like multi-objective e
 
 Here is a list of algorithms that are currently implemented:
 
-| **Name**                                                                                                                                                                                                                                                            | Single/Multi-policy | Reward | Utility       | Observation space | Action space | Paper |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|--------|---------------|-------------------|--------------|-------|
-| MOMAPPO (OLS) [continuous](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/continuous/cooperative_momappo.py),<br/> [discrete](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/discrete/cooperative_momappo.py) | Multi               | Team   | Team / Linear | Any               | Any          |       |
+| **Name**                                                                                                                                                                                                                                                            | Single/Multi-policy | Reward     | Utility             | Observation space | Action space | Paper |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|------------|---------------------|-------------------|--------------|-------|
+| MOMAPPO (OLS) [continuous](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/continuous/cooperative_momappo.py),<br/> [discrete](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/discrete/cooperative_momappo.py) | Multi               | Team       | Team / Linear       | Any               | Any          |       |
+| [Scalarized IQL](https://github.com/Farama-Foundation/momaland/tree/main/momaland/learning/iql)                                                                                                                                                                     | Single              | Individual | Individual / Linear | Discrete          | Discrete     |       |
+| [Centralization wrapper](https://github.com/Farama-Foundation/momaland/blob/main/momaland/utils/parallel_wrappers.py#L149)                                                                                                                                          | Any                 | Team       | Team / Any          | Discrete          | Discrete     |       |
+| [Linearization wrapper](https://github.com/Farama-Foundation/momaland/blob/main/momaland/utils/parallel_wrappers.py#L49)                                                                                                                                            | Single              | Any        | Individual / Linear | Any               | Any          |       |
 
 
 <!-- end learning-algorithms -->
@@ -88,10 +91,10 @@ Here is a list of algorithms that are currently implemented:
 MOMAland keeps strict versioning for reproducibility reasons. All environments end in a suffix like "_v0".  When changes are made to environments that might impact learning results, the number is increased by one to prevent potential confusion.
 
 ## Development Roadmap
-We have a roadmap for future development available here: TODO.
+We have a roadmap for future development available [here](https://github.com/Farama-Foundation/momaland/issues/56).
 
 ## Project Maintainers
-Project Managers:  TODO
+Project Managers:  Florian Felten (@ffelten)
 
 Maintenance for this project is also contributed by the broader Farama team: [farama.org/team](https://farama.org/team).
 
