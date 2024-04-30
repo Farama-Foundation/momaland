@@ -111,10 +111,11 @@ class Escort(CrazyRLBaseParallelEnv, EzPickle):
             final_target_location (nparray[float], optional): Array of the final position of the moving target
             num_intermediate_points (int, optional): Number of intermediate points in the target trajectory
         """
-        EzPickle.__init__(self, *args, num_intermediate_points, final_target_location, **kwargs)
-        self.final_target_location = final_target_location
-
+        EzPickle.__init__(
+            self, *args, num_intermediate_points=num_intermediate_points, final_target_location=final_target_location, **kwargs
+        )
         super().__init__(*args, **kwargs)
+        self.final_target_location = final_target_location
 
         # There are two more ref points than intermediate points, one for the initial and final target locations
         self.num_ref_points = num_intermediate_points + 2

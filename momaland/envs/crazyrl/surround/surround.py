@@ -99,12 +99,12 @@ class Surround(CrazyRLBaseParallelEnv, EzPickle):
 
     @override
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         EzPickle.__init__(
             self,
             *args,
             **kwargs,
         )
-        super().__init__(*args, **kwargs)
 
     @override
     def _transition_state(self, actions):

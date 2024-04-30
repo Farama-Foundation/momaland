@@ -10,58 +10,6 @@
 | Observation Shape  | (board_height=15, board_width=15, num_colors=5)    |
 | Observation Values | [0,1]                                              |
 | Reward Shape       | (num_objectives,)                                  |
-
-MO-SameGame is a multi-objective, multi-agent variant of the single-player, single-objective turn-based puzzle game
-called SameGame.
-1 to 5 agents can play (default is 1), on a rectangular board with width and height from 3 to 30 squares (defaults are
-15), which are initially filled with randomly colored tiles in 2 to 10 different colors (default is 5).
-Players move alternatingly by selecting any tile in a group of at least 2 vertically and/or horizontally connected
-tiles of the same color. This group then disappears from the board. Tiles that were above the removed group "fall down"
-to close any vertical gaps; when entire columns of tiles become empty, all columns to the right move left to close the
-horizontal gap.
-Single-player, single-objective SameGame rewards the player with n^2 points for removing any group of n tiles.
-MO-SameGame can extend this in two ways. Agents can either only get points for their own actions, or all rewards can be
-shared. Additionally, points for every color can be counted as separate objectives, or they can be accumulated in a
-single objective like in the default game variant.
-
-
-### Observation Space
-
-The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
-below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
-
-The main observation space is num_colors planes of a board_height * board_width grid (a board_height * board_width *
-num_colors tensor). Each plane represents the tiles of a specific color, and each location in the grid represents a
-location on the board. 1 indicates that a given location has a tile of the given plane's color, and 0
-indicates there is no tile of that color at that location (meaning that either the board location is empty, or filled
-by a tile of another color).
-
-
-#### Legal Actions Mask
-
-The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
-The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
-or not; the action encoding is described in the Action Space section below.
-The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
-game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
-
-
-### Action Space
-
-The action space is the set of integers from 0 to board_width * board_height (exclusive). If the group connected to the
-tile at coordinates (x,y) is removed, this is encoded as the integer y * board_width + x.
-
-
-### Rewards
-
-Rewards can be team rewards or individual rewards (default is individual).
-If color_rewards = False:
-Dimension 0: n^2 points for the removal of any group of size n.
-If color_rewards = True (default):
-Dimensions d=0 to d=num_objectives-1: n^2 points for the removal of any group of size n in color d+1.
-
-### Version History
-
 """
 
 # Adapted from https://github.com/waldner/samepy/tree/master
@@ -124,7 +72,61 @@ def raw_env(**kwargs):
 
 
 class MOSameGame(MOAECEnv, EzPickle):
-    """SameGame environment for multiple agents with multiple objectives."""
+    """Multi-objective Multi-agent SameGame.
+
+    MO-SameGame is a multi-objective, multi-agent variant of the single-player, single-objective turn-based puzzle
+    game called SameGame.
+    1 to 5 agents can play (default is 1), on a rectangular board with width and height from 3 to 30 squares (
+    defaults are 15), which are initially filled with randomly colored tiles in 2 to 10 different colors (default is
+    5). Players move in sequential order by selecting any tile in a group of at least 2 vertically and/or
+    horizontally connected tiles of the same color. This group then disappears from the board. Tiles that were above
+    the removed group "fall down" to close any vertical gaps; when entire columns of tiles become empty, all columns
+    to the right move left to close the horizontal gap.
+    Single-player, single-objective SameGame rewards the player with n^2 points for removing any group of n tiles.
+    MO-SameGame can extend this in two ways. Agents can either only get points for their own actions, or all rewards
+    can be shared. Additionally, points for every color can be counted as separate objectives, or they can be
+    accumulated in a single objective like in the default game variant.
+
+    ## Observation Space
+    The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
+    below, and an `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
+    The main observation space is num_colors planes of a board_height * board_width grid (a board_height * board_width *
+    num_colors tensor). Each plane represents the tiles of a specific color, and each location in the grid represents a
+    location on the board. 1 indicates that a given location has a tile of the given plane's color, and 0
+    indicates there is no tile of that color at that location (meaning that either the board location is empty, or filled
+    by a tile of another color).
+
+    ## Legal Actions Mask
+    The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
+    The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
+    or not; the action encoding is described in the Action Space section below.
+    The `action_mask` will be all zeros for any agent except the one whose turn it is.
+
+    ## Action Space
+    The action space is the set of integers from 0 to board_width * board_height (exclusive). If the group connected to the
+    tile at coordinates (x,y) is removed, this is encoded as the integer y * board_width + x.
+
+    ## Rewards
+    Rewards can be team rewards or individual rewards (default is individual).
+    If color_rewards = False:
+    Dimension 0: n^2 points for the removal of any group of size n.
+    If color_rewards = True (default):
+    Dimensions d=0 to d=num_objectives-1: n^2 points for the removal of any group of size n in color d+1.
+
+    ## Starting State
+    The starting board is filled with randomly colored tiles in 2 to 10 different colors (default is 5).
+
+    ## Arguments
+    - 'board_width': The width of the board (between 3 and 30)
+    - 'board_height': The height of the board (between 3 and 30)
+    - 'num_colors': The number of colors (between 2 and 10)
+    - 'num_agents': The number of agents (between 1 and 5)
+    - 'team_rewards': True = agents share all rewards, False = agents get individual rewards
+    - 'color_rewards': True = agents get separate rewards for each color, False = agents get a single reward accumulating all colors
+    - 'render_mode': The render mode
+
+    ## Version History
+    """
 
     metadata = {"render_modes": ["ansi"], "name": "mosame_game_v0", "is_parallelizable": False}
 

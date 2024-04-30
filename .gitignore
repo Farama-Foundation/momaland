@@ -10,6 +10,12 @@ __pycache__/
 
 # Pycharm
 /.idea
+# Cluster scripts
+/hpc
+momaland/learning/wandb/
+momaland/learning/morl/wandb/
+momaland/learning/weights/
+momaland/learning/morl/weights/
 
 # Distribution / packaging
 .Python

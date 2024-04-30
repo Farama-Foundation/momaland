@@ -10,58 +10,6 @@
 | Observation Shape  | (board_height=8, board_width=8, 2)               |
 | Observation Values | [0,1]                                            |
 | Reward Shape       | (num_objectives=4,)                              |
-
-MO-Breakthrough is a multi-objective variant of the two-player, single-objective turn-based board game Breakthrough.
-In Breakthrough, players start with two rows of identical pieces in front of them, on an 8x8 board, and try to reach
-the opponent's home row with any piece. The first player to move a piece on their opponent's home row wins. Players
-move alternatingly, and each piece can move one square straight forward or diagonally forward. Opponent pieces can also
-be captured, but only by moving diagonally forward, not straight.
-MO-Breakthrough extends this game with up to three additional objectives: a second objective that incentivizes faster
-wins, a third one for capturing opponent pieces, and a fourth one for avoiding the capture of the agent's own pieces.
- Additionally, the board width can be modified from 3 to 20 squares, and the board height from 5 to 20 squares.
-
-
-### Observation Space
-
-The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
-below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
-
-The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
-Each plane represents a specific agent's pieces, and each location in the grid represents the placement of the
-corresponding agent's piece. 1 indicates that the agent has a piece placed in the given location, and 0 indicates they
-do not have a piece in that location (meaning that either the cell is empty, or the other agent has a piece in that
-location).
-
-
-#### Legal Actions Mask
-
-The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
-The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
-or not; the action encoding is described in the Action Space section below.
-The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
-game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
-
-
-### Action Space
-
-The action space is the set of integers from 0 to board_width*board_height*3 (exclusive). If a piece at coordinates
-(x,y) is moved, this is encoded as the integer x * 3 * board_height + y * 3 + z where z == 0 for left diagonal, 1 for
-straight, and 2 for right diagonal move.
-
-
-### Rewards
-
-Dimension 0: If an agent moves one of their pieces to the opponent's home row, they will be rewarded 1 point. At the
-same time, the opponent agent will be awarded -1 point. There are no draws in Breakthrough.
-Dimension 1: If an agent wins, they get a reward of 1-(move_count/max_moves) to incentivize faster wins. The losing
-opponent gets the negated reward. In case of a draw, both agents get 0.
-Dimension 2: (optional) The number of opponent pieces (divided by the max number of pieces) an agent has captured.
-Dimension 3: (optional) The negative number of pieces (divided by the max number of pieces)
- an agent has lost to the opponent.
-
-
-### Version History
-
 """
 from __future__ import annotations
 
@@ -108,7 +56,57 @@ def raw_env(**kwargs):
 
 
 class MOBreakthrough(MOAECEnv, EzPickle):
-    """Multi-objective Breakthrough."""
+    """Multi-objective Breakthrough.
+
+    MO-Breakthrough is a multi-objective variant of the two-player, single-objective turn-based board game Breakthrough.
+    In Breakthrough, players start with two rows of identical pieces in front of them, on an 8x8 board, and try to reach
+    the opponent's home row with any piece. The first player to move a piece on their opponent's home row wins. Players
+    move alternatingly, and each piece can move one square straight forward or diagonally forward. Opponent pieces can also
+    be captured, but only by moving diagonally forward, not straight.
+    MO-Breakthrough extends this game with up to three additional objectives: a second objective that incentivizes faster
+    wins, a third one for capturing opponent pieces, and a fourth one for avoiding the capture of the agent's own pieces.
+    Additionally, the board width can be modified from 3 to 20 squares, and the board height from 5 to 20 squares.
+
+    ## Observation Space
+    The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
+    below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
+    The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
+    Each plane represents a specific agent's pieces, and each location in the grid represents the placement of the
+    corresponding agent's piece. 1 indicates that the agent has a piece placed in the given location, and 0 indicates they
+    do not have a piece in that location (meaning that either the cell is empty, or the other agent has a piece in that
+    location).
+
+    ## Legal Actions Mask
+    The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
+    The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
+    or not; the action encoding is described in the Action Space section below.
+    The `action_mask` will be all zeros for any agent except the one whose turn it is.
+
+    ## Action Space
+    The action space is the set of integers from 0 to board_width*board_height*3 (exclusive). If a piece at coordinates
+    (x,y) is moved, this is encoded as the integer x * 3 * board_height + y * 3 + z where z == 0 for left diagonal, 1 for
+    straight, and 2 for right diagonal move.
+
+    ## Rewards
+    Dimension 0: If an agent moves one of their pieces to the opponent's home row, they will be rewarded 1 point. At the
+    same time, the opponent agent will be awarded -1 point. There are no draws in Breakthrough.
+    Dimension 1: If an agent wins, they get a reward of 1-(move_count/max_moves) to incentivize faster wins. The losing
+    opponent gets the negated reward. In case of a draw, both agents get 0.
+    Dimension 2: (optional) The number of opponent pieces (divided by the max number of pieces) an agent has captured.
+    Dimension 3: (optional) The negative number of pieces (divided by the max number of pieces)
+    an agent has lost to the opponent.
+
+    ## Starting State
+    The starting board is empty except for the first two rows that are filled with pieces of player 0, and the last two rows that are filled with pieces of player 1.
+
+    ## Arguments
+    - 'board_width': The width of the board (from 3 to 20)
+    - 'board_height': The height of the board (from 5 to 20)
+    - 'num_objectives': The number of objectives (from 1 to 4)
+    - 'render_mode': The render mode.
+
+    ## Version History
+    """
 
     metadata = {
         "render_modes": ["ansi"],

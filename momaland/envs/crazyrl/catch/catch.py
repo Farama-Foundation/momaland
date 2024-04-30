@@ -109,8 +109,8 @@ class Catch(CrazyRLBaseParallelEnv, EzPickle):
             init_target_location (nparray, optional): Array of the initial position of the moving target
             target_speed (float, optional): Distance traveled by the target at each timestep
         """
-        EzPickle.__init__(self, *args, target_speed=0.1, **kwargs)
         super().__init__(*args, **kwargs)
+        EzPickle.__init__(self, *args, target_speed=0.1, **kwargs)
         self.target_speed = target_speed
 
     def _move_target(self):
