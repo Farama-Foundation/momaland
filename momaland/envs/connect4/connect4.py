@@ -145,7 +145,14 @@ class MOConnect4(MOAECEnv, EzPickle):
             board_height: The height of the board (from 4 to 20)
             column_objectives: Whether to use column objectives or not (without them, there are 2 objectives. With them, there are 2+board_width objectives)
         """
-        EzPickle.__init__(self, render_mode, screen_scaling)
+        EzPickle.__init__(
+            self,
+            render_mode,
+            screen_scaling,
+            board_width,
+            board_height,
+            column_objectives,
+        )
         self.env = super().__init__()
 
         if not (4 <= board_width <= 20):

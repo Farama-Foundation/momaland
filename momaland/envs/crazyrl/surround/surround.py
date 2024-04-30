@@ -2,6 +2,7 @@
 from typing_extensions import override
 
 import numpy as np
+from gymnasium.utils import EzPickle
 from pettingzoo.utils.wrappers import AssertOutOfBoundsWrapper
 
 from momaland.envs.crazyrl.crazyRL_base import FPS, CrazyRLBaseParallelEnv
@@ -48,7 +49,7 @@ def raw_env(*args, **kwargs):
     return Surround(*args, **kwargs)
 
 
-class Surround(CrazyRLBaseParallelEnv):
+class Surround(CrazyRLBaseParallelEnv, EzPickle):
     """A `Parallel` environment where drones learn how to surround a static target point.
 
     ## Observation Space
@@ -99,6 +100,11 @@ class Surround(CrazyRLBaseParallelEnv):
     @override
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        EzPickle.__init__(
+            self,
+            *args,
+            **kwargs,
+        )
 
     @override
     def _transition_state(self, actions):

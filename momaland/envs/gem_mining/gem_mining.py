@@ -17,6 +17,7 @@ from typing_extensions import override
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 
 from momaland.utils.conversions import mo_parallel_to_aec
@@ -49,7 +50,7 @@ def raw_env(**kwargs):
     return MOGemMining(**kwargs)
 
 
-class MOGemMining(MOParallelEnv):
+class MOGemMining(MOParallelEnv, EzPickle):
     """Environment for MO-GemMining domain.
 
     ## Observation Space
@@ -134,6 +135,23 @@ class MOGemMining(MOParallelEnv):
             render_mode: render mode
             seed: This environment is generated randomly using the provided seed. Defaults to 42.
         """
+        EzPickle.__init__(
+            self,
+            num_agents,
+            num_objectives,
+            min_connectivity,
+            max_connectivity,
+            min_workers,
+            max_workers,
+            min_prob,
+            max_prob,
+            trunc_probability,
+            w_bonus,
+            correlated_objectives,
+            num_timesteps,
+            render_mode,
+            seed,
+        )
         self.num_timesteps = num_timesteps
         self.episode_num = 0
         self.render_mode = render_mode

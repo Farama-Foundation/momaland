@@ -65,13 +65,12 @@ dimensions.
 
 import functools
 import random
-
-# from gymnasium.utils import EzPickle
 from typing_extensions import override
 
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Dict, Discrete
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 
 from momaland.envs.ingenious.ingenious_base import ALL_COLORS, IngeniousBase
@@ -99,7 +98,7 @@ def raw_env(**kwargs):
     return Ingenious(**kwargs)
 
 
-class Ingenious(MOAECEnv):
+class Ingenious(MOAECEnv, EzPickle):
     """Environment for the Ingenious board game."""
 
     metadata = {"render_modes": ["human"], "name": "moingenious_v0", "is_parallelizable": False}
@@ -128,6 +127,16 @@ class Ingenious(MOAECEnv):
             fully_obs (bool): Fully observable game mode, i.e. the racks of all players are visible. Default is False.
             render_mode (str): The rendering mode. Default: None
         """
+        EzPickle.__init__(
+            self,
+            num_agents,
+            rack_size,
+            num_colors,
+            board_size,
+            reward_mode,
+            fully_obs,
+            render_mode,
+        )
         self.num_colors = num_colors
         self.init_draw = rack_size
         self.max_score = 18  # max score in score board for one certain color.

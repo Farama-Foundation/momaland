@@ -18,6 +18,7 @@ from typing_extensions import override
 import numpy as np
 from gymnasium import spaces
 from gymnasium.logger import warn
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import agent_selector, wrappers
 
 from momaland.utils.env import MOAECEnv
@@ -54,7 +55,7 @@ def raw_env(**kwargs):
     return MOBreakthrough(**kwargs)
 
 
-class MOBreakthrough(MOAECEnv):
+class MOBreakthrough(MOAECEnv, EzPickle):
     """Multi-objective Breakthrough.
 
     MO-Breakthrough is a multi-objective variant of the two-player, single-objective turn-based board game Breakthrough.
@@ -125,6 +126,13 @@ class MOBreakthrough(MOAECEnv):
             num_objectives: The number of objectives (from 1 to 4)
             render_mode: The render mode.
         """
+        EzPickle.__init__(
+            self,
+            board_width,
+            board_height,
+            num_objectives,
+            render_mode,
+        )
         if not (3 <= board_width <= 20):
             raise ValueError("Config parameter board_width must be between 3 and 20.")
 
