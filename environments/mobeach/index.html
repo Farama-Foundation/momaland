@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="MO-Breakthrough" href="../mobreakthrough/" /><link rel="prev" title="Escort" href="../escort/" />
         <link rel="canonical" href="https://momaland.farama.org/environments/mobeach.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.3.7 and Furo 2023.08.19.dev1 -->
         <title>MO-Beach - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -299,7 +299,7 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="mo-beach">
-<h1>MO-Beach<a class="headerlink" href="#mo-beach" title="Link to this heading">#</a></h1>
+<h1>MO-Beach<a class="headerlink" href="#mo-beach" title="Link to this heading">¶</a></h1>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -328,7 +328,7 @@
 </div>
 <p>A <code class="docutils literal notranslate"><span class="pre">Parallel</span></code> 2-objective environment of the Beach problem domain.</p>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
 <p>The observation space is a continuous box with the length <code class="docutils literal notranslate"><span class="pre">5</span></code> containing:</p>
 <ul class="simple">
 <li><p>agent type</p></li>
@@ -341,11 +341,11 @@
 <code class="docutils literal notranslate"><span class="pre">[a_type,</span> <span class="pre">section_id,</span> <span class="pre">section_capacity,</span> <span class="pre">section_consumption,</span> <span class="pre">%_of_a_of_current_type]</span></code></p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>The action space is a Discrete space [0, 1, 2], corresponding to moving left, moving right, staying in place.</p>
 </section>
 <section id="reward-space">
-<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
 <p>The reward space is a 2D vector containing rewards for two different schemes (‘local’ or ‘global’) for:</p>
 <ul class="simple">
 <li><p>the occupation level</p></li>
@@ -355,22 +355,22 @@ If the scheme is ‘global’, the reward is summed over all sections.</p></li>
 </ul>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
 <p>The initial position is a uniform random distribution of agents over the sections. This can be changed via the
 ‘position_distribution’ argument. The agent types are also randomly distributed according to the
 ‘type_distribution’ argument. The default is a uniform distribution over all types.</p>
 </section>
 <section id="episode-termination">
-<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">¶</a></h2>
 <p>The episode is terminated if num_timesteps is reached. The default value is 100.
 Agents only receive the reward after the last timestep.</p>
 </section>
 <section id="episode-truncation">
-<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">#</a></h2>
+<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">¶</a></h2>
 <p>The problem is not truncated. It has a maximum number of timesteps.</p>
 </section>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>‘num_timesteps (int)’: number of timesteps in the domain. Default: 1</p></li>
 <li><p>‘num_agents (int)’: number of agents in the domain. Default: 100</p></li>
@@ -484,7 +484,7 @@ Agents only receive the reward after the last timestep.</p>
     
 
     <script src="../../_static/documentation_options.js?v=697c8f77"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     

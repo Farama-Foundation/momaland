@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Install" href="introduction/install/" />
         <link rel="canonical" href="https://momaland.farama.org/index.html" />
 
-    <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 7.3.7 and Furo 2023.08.19.dev1 -->
         <title>MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=3e7f4c72" />
@@ -326,12 +326,13 @@ An API standard for multi-objective multi-agent reinforcement learning (MOMARL)
 </h2>
 </div>
 <figure class="align-default">
-<a class="reference internal image-reference" href="_images/walkers_pf.gif"><img alt="Multiple agents collaborating for various trade-offs" src="_images/walkers_pf.gif" style="width: 480px;" /></a>
+<a class="reference internal image-reference" href="_images/walkers_pf.gif"><img alt="Multiple agents collaborating for various trade-offs" src="_images/walkers_pf.gif" style="width: 480px;" />
+</a>
 </figure>
 <p>MOMAland is an open source Python library for developing and comparing multi-objective multi-agent reinforcement learning algorithms by providing a standard API to communicate between learning algorithms and environments, as well as a standard set of environments compliant with that API. Essentially, the environments follow the standard <a class="reference external" href="https://github.com/Farama-Foundation/PettingZoo">PettingZoo APIs</a>, but return vectorized rewards as numpy arrays instead of scalar values.</p>
 <p>The documentation website is at https://momaland.farama.org/, and we have a public discord server (which we also use to coordinate development work) that you can join <a class="reference external" href="https://discord.gg/bnJ6kubTg6">here</a>.</p>
 <section id="api">
-<h1>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h1>
+<h1>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h1>
 <p>Similar to <a class="reference external" href="https://pettingzoo.farama.org">PettingZoo</a>, the MOMAland API models environments as simple Python <code class="docutils literal notranslate"><span class="pre">env</span></code> classes. Creating environment instances and interacting with them is very simple - here’s an example using the “momultiwalker_v0” environment:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">momaland.envs.momultiwalker</span> <span class="kn">import</span> <span class="n">momultiwalker_v0</span> <span class="k">as</span> <span class="n">_env</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -367,7 +368,7 @@ An API standard for multi-objective multi-agent reinforcement learning (MOMARL)
 <p>You can also check more examples in this colab notebook! <a class="reference external" href="https://colab.research.google.com/github/Farama-Foundation/momaland/blob/doc/notebook/momaland_demo.ipynb"><img alt="MOMAland Demo in Collab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 </section>
 <section id="install">
-<h1>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h1>
+<h1>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h1>
 <p>To install MOMAland, use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>momaland
 </pre></div>
@@ -380,7 +381,7 @@ An API standard for multi-objective multi-agent reinforcement learning (MOMARL)
 </ul>
 </section>
 <section id="citing">
-<h1>Citing<a class="headerlink" href="#citing" title="Link to this heading">#</a></h1>
+<h1>Citing<a class="headerlink" href="#citing" title="Link to this heading">¶</a></h1>
 <p>If you use this repository in your research, please cite:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">TODO</span><span class="p">}</span>
 </pre></div>
@@ -452,9 +453,11 @@ An API standard for multi-objective multi-agent reinforcement learning (MOMARL)
     
 
     <script src="_static/documentation_options.js?v=697c8f77"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=7660844c"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script>
 

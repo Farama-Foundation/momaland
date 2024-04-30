@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="MO-Connect4" href="../moconnect4/" /><link rel="prev" title="MO-Breakthrough" href="../mobreakthrough/" />
         <link rel="canonical" href="https://momaland.farama.org/environments/mocongestion.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.3.7 and Furo 2023.08.19.dev1 -->
         <title>MO-Congestion - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -299,7 +299,7 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="mo-congestion">
-<h1>MO-Congestion<a class="headerlink" href="#mo-congestion" title="Link to this heading">#</a></h1>
+<h1>MO-Congestion<a class="headerlink" href="#mo-congestion" title="Link to this heading">¶</a></h1>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -330,17 +330,17 @@
 <p>Multi-objective version of Braess’ Paradox where drivers have two objectives: travel time and monetary cost.
 The environment is a road network and the agents are the drivers that needs to travel from an origin to a destination point.</p>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
 <p>This environment is stateless, so the observation space is a constant 0. (Discrete with shape (1,)).</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>The action space is a discrete space representing the possible routes that the agent can take.
 The number of routes is different for each agent, as it depends on the number of possible routes for the OD pair of the agent.
 Selecting an action corresponds to choosing a route.</p>
 </section>
 <section id="reward-space">
-<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
 <p>The reward space is a 2D vector containing rewards for:</p>
 <ul class="simple">
 <li><p>Minimizing travel time (latency).</p></li>
@@ -348,19 +348,19 @@ Selecting an action corresponds to choosing a route.</p>
 </ul>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
 <p>The environment is stateless, so there is no starting state.</p>
 </section>
 <section id="episode-termination">
-<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">¶</a></h2>
 <p>The environment is stateless, so there are no episodes. Each “episode” is therefore terminated after each timestep.</p>
 </section>
 <section id="episode-truncation">
-<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">#</a></h2>
+<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">¶</a></h2>
 <p>Episodes are not truncated as there are terminated after each timestep.</p>
 </section>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">render_mode</span> <span class="pre">(str,</span> <span class="pre">optional)</span></code>: The mode to display the rendering of the environment. Can be human or None.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">problem_name</span> <span class="pre">(str,</span> <span class="pre">optional)</span></code>: The name of the road network that will be used.</p></li>
@@ -371,7 +371,7 @@ Selecting an action corresponds to choosing a route.</p>
 </ul>
 </section>
 <section id="credits">
-<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">#</a></h2>
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">¶</a></h2>
 <p>The code was adapted from <a class="reference external" href="https://github.com/goramos/marl-route-choice">codebase of “Toll-Based Learning for Minimising Congestion under Heterogeneous Preferences”</a>.</p>
 </section>
 </section>
@@ -477,7 +477,7 @@ Selecting an action corresponds to choosing a route.</p>
     
 
     <script src="../../_static/documentation_options.js?v=697c8f77"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     

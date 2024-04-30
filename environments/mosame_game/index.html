@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Surround" href="../surround/" /><link rel="prev" title="MO-Pistonball" href="../mopistonball/" />
         <link rel="canonical" href="https://momaland.farama.org/environments/mosame_game.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.3.7 and Furo 2023.08.19.dev1 -->
         <title>MO-SameGame - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -299,7 +299,7 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="mo-samegame">
-<h1>MO-SameGame<a class="headerlink" href="#mo-samegame" title="Link to this heading">#</a></h1>
+<h1>MO-SameGame<a class="headerlink" href="#mo-samegame" title="Link to this heading">¶</a></h1>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -340,7 +340,7 @@ MO-SameGame can extend this in two ways. Agents can either only get points for t
 can be shared. Additionally, points for every color can be counted as separate objectives, or they can be
 accumulated in a single objective like in the default game variant.</p>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
 <p>The observation is a dictionary which contains an <code class="docutils literal notranslate"><span class="pre">'observation'</span></code> element which is the usual RL observation described
 below, and an <code class="docutils literal notranslate"><span class="pre">'action_mask'</span></code> which holds the legal moves, described in the Legal Actions Mask section below.
 The main observation space is num_colors planes of a board_height * board_width grid (a board_height * board_width *
@@ -350,19 +350,19 @@ indicates there is no tile of that color at that location (meaning that either t
 by a tile of another color).</p>
 </section>
 <section id="legal-actions-mask">
-<h2>Legal Actions Mask<a class="headerlink" href="#legal-actions-mask" title="Link to this heading">#</a></h2>
+<h2>Legal Actions Mask<a class="headerlink" href="#legal-actions-mask" title="Link to this heading">¶</a></h2>
 <p>The legal moves available to the current agent are found in the <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> element of the dictionary observation.
 The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> is a binary vector where each index of the vector represents whether the represented action is legal
 or not; the action encoding is described in the Action Space section below.
 The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> will be all zeros for any agent except the one whose turn it is.</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>The action space is the set of integers from 0 to board_width * board_height (exclusive). If the group connected to the
 tile at coordinates (x,y) is removed, this is encoded as the integer y * board_width + x.</p>
 </section>
 <section id="rewards">
-<h2>Rewards<a class="headerlink" href="#rewards" title="Link to this heading">#</a></h2>
+<h2>Rewards<a class="headerlink" href="#rewards" title="Link to this heading">¶</a></h2>
 <p>Rewards can be team rewards or individual rewards (default is individual).
 If color_rewards = False:
 Dimension 0: n^2 points for the removal of any group of size n.
@@ -370,11 +370,11 @@ If color_rewards = True (default):
 Dimensions d=0 to d=num_objectives-1: n^2 points for the removal of any group of size n in color d+1.</p>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
 <p>The starting board is filled with randomly colored tiles in 2 to 10 different colors (default is 5).</p>
 </section>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>‘board_width’: The width of the board (between 3 and 30)</p></li>
 <li><p>‘board_height’: The height of the board (between 3 and 30)</p></li>
@@ -386,7 +386,7 @@ Dimensions d=0 to d=num_objectives-1: n^2 points for the removal of any group of
 </ul>
 </section>
 <section id="version-history">
-<h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">#</a></h2>
+<h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">¶</a></h2>
 </section>
 </section>
 
@@ -490,7 +490,7 @@ Dimensions d=0 to d=num_objectives-1: n^2 points for the removal of any group of
     
 
     <script src="../../_static/documentation_options.js?v=697c8f77"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     

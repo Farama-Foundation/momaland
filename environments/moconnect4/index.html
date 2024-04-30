@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="MO-GemMining" href="../mogem_mining/" /><link rel="prev" title="MO-Congestion" href="../mocongestion/" />
         <link rel="canonical" href="https://momaland.farama.org/environments/moconnect4.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.3.7 and Furo 2023.08.19.dev1 -->
         <title>MO-Connect4 - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -299,9 +299,10 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="mo-connect4">
-<h1>MO-Connect4<a class="headerlink" href="#mo-connect4" title="Link to this heading">#</a></h1>
+<h1>MO-Connect4<a class="headerlink" href="#mo-connect4" title="Link to this heading">¶</a></h1>
 <figure class="align-default" id="moconnect4">
-<a class="reference internal image-reference" href="../../_images/moconnect4.gif"><img alt="../../_images/moconnect4.gif" src="../../_images/moconnect4.gif" style="width: 200px;" /></a>
+<a class="reference internal image-reference" href="../../_images/moconnect4.gif"><img alt="../../_images/moconnect4.gif" src="../../_images/moconnect4.gif" style="width: 200px;" />
+</a>
 </figure>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -340,7 +341,7 @@ MO-Connect4 extends this game with a second objective that incentivizes faster w
 (conflicting) objectives of having more tokens than the opponent in every column. Additionally, width and height of the
 board can be set to values from 4 to 20.</p>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
 <p>The observation is a dictionary which contains an <code class="docutils literal notranslate"><span class="pre">'observation'</span></code> element which is the usual RL observation described
 below, and an  <code class="docutils literal notranslate"><span class="pre">'action_mask'</span></code> which holds the legal moves, described in the Legal Actions Mask section below.
 The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
@@ -350,19 +351,19 @@ do not have a token in that location (meaning that either the cell is empty, or 
 location).</p>
 </section>
 <section id="legal-actions-mask">
-<h2>Legal Actions Mask<a class="headerlink" href="#legal-actions-mask" title="Link to this heading">#</a></h2>
+<h2>Legal Actions Mask<a class="headerlink" href="#legal-actions-mask" title="Link to this heading">¶</a></h2>
 <p>The legal moves available to the current agent are found in the <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> element of the dictionary observation.
 The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> is a binary vector where each index of the vector represents whether the represented action is legal
 or not; the action encoding is described in the Action Space section below.
 The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> will be all zeros for any agent except the one whose turn it is.</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>The action space is the set of integers from 0 to board_width (exclusive), where the number represents which column
 a token should be dropped in.</p>
 </section>
 <section id="rewards">
-<h2>Rewards<a class="headerlink" href="#rewards" title="Link to this heading">#</a></h2>
+<h2>Rewards<a class="headerlink" href="#rewards" title="Link to this heading">¶</a></h2>
 <p>Dimension 0: If an agent successfully connects four of their tokens, they will be rewarded 1 point. At the same time,
 the opponent agent will be awarded -1 point. If the game ends in a draw, both players are rewarded 0.
 Dimension 1: If an agent wins, they get a reward of 1-(move_count/board_size) to incentivize faster wins. The losing opponent gets the negated reward. In case of a draw, both agents get 0.
@@ -371,11 +372,11 @@ column X, they will be rewarded 1 point in reward dimension 2+X. The opponent ag
 column has an equal number of tokens from both players, both players are rewarded 0.</p>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
 <p>The game starts with an empty board.</p>
 </section>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>‘render_mode’: The mode to render with. Can be ‘human’ or ‘rgb_array’.</p></li>
 <li><p>‘screen_scaling’: The factor by which to scale the screen.</p></li>
@@ -385,7 +386,7 @@ column has an equal number of tokens from both players, both players are rewarde
 </ul>
 </section>
 <section id="version-history">
-<h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">#</a></h2>
+<h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">¶</a></h2>
 </section>
 </section>
 
@@ -489,7 +490,7 @@ column has an equal number of tokens from both players, both players are rewarde
     
 
     <script src="../../_static/documentation_options.js?v=697c8f77"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     

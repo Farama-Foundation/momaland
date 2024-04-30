@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="MO-Ingenious" href="../moingenious/" /><link rel="prev" title="MO-Connect4" href="../moconnect4/" />
         <link rel="canonical" href="https://momaland.farama.org/environments/mogem_mining.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.3.7 and Furo 2023.08.19.dev1 -->
         <title>MO-GemMining - MOMAland Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -299,7 +299,7 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="mo-gemmining">
-<h1>MO-GemMining<a class="headerlink" href="#mo-gemmining" title="Link to this heading">#</a></h1>
+<h1>MO-GemMining<a class="headerlink" href="#mo-gemmining" title="Link to this heading">¶</a></h1>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -328,38 +328,38 @@
 </div>
 <p>Environment for MO-GemMining domain.</p>
 <section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">#</a></h2>
+<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
 <p>The observation space is a cBox of the number of agents in length.
 As this is a stateless environment, all agents receive a “0” observation each timestep.</p>
 </section>
 <section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">#</a></h2>
+<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
 <p>The action space is discrete set of integers for each agent, and is agent-specific.
 Each integer represents the ID of a mine (i.e., local reward function) which is reachable from the village (i.e., agent).
 Selecting an action represents sending the workers that live in a given village to the corresponding mine.</p>
 </section>
 <section id="reward-space">
-<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">#</a></h2>
+<h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
 <p>The reward space is a vector containing rewards in each objective (customizable).
 Each objective corresponds to a type of gem that can be found at the mines.
 The rewards correspond to the total number of gems of each type found at all the mines together at a given timestep.
 Please note that as this is a fully cooperative environment all agents receive the same reward vectors.</p>
 </section>
 <section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">#</a></h2>
+<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
 <p>As this is a state-less environment the “state” is just a default value. (See Observation Space.)</p>
 </section>
 <section id="episode-termination">
-<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">#</a></h2>
+<h2>Episode Termination<a class="headerlink" href="#episode-termination" title="Link to this heading">¶</a></h2>
 <p>As this is a state-less environment there isn’t really an episode.
 Hence the episode terminates after each timestep.</p>
 </section>
 <section id="episode-truncation">
-<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">#</a></h2>
+<h2>Episode Truncation<a class="headerlink" href="#episode-truncation" title="Link to this heading">¶</a></h2>
 <p>Each “episode” last 1 timestep (due to the bandit setting).</p>
 </section>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h2>
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>`num_agents: number of agents (i.e., villages) in the Gem Mining instance</p></li>
 <li><p>num_objectives: number of objectives (i.e., gem types), each mine has a probability of generating gems of any type at any timesteps</p></li>
@@ -378,7 +378,7 @@ Hence the episode terminates after each timestep.</p>
 </ul>
 </section>
 <section id="credits">
-<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">#</a></h2>
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">¶</a></h2>
 <p>The code was based on previous code by Diederik Roijers and Eugenio Bargiacchi (in different programming languages), and reimplemented.</p>
 </section>
 </section>
@@ -484,7 +484,7 @@ Hence the episode terminates after each timestep.</p>
     
 
     <script src="../../_static/documentation_options.js?v=697c8f77"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
