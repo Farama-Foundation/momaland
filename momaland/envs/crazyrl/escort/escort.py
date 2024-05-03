@@ -42,7 +42,7 @@ def raw_env(*args, **kwargs):
     """Returns the environment in `Parallel` format.
 
     Args:
-        **kwargs: keyword args to forward to create the `MOMultiwalker` environment.
+        **kwargs: keyword args to forward to create the `CrazyRLEscort` environment.
 
     Returns:
         A raw env.

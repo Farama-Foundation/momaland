@@ -15,7 +15,6 @@ from momaland.envs.crazyrl.surround import surround_v0
 from momaland.envs.gem_mining import mogem_mining_v0
 from momaland.envs.ingenious import moingenious_v0
 from momaland.envs.item_gathering import moitem_gathering_v0
-from momaland.envs.multiwalker import momultiwalker_v0
 from momaland.envs.multiwalker_stability import momultiwalker_stability_v0
 from momaland.envs.pistonball import mopistonball_v0
 from momaland.envs.samegame import mosame_game_v0
@@ -23,7 +22,6 @@ from momaland.envs.samegame import mosame_game_v0
 
 all_environments = {
     "mobeach_v0": mobeach_v0,
-    "momultiwalker_v0": momultiwalker_v0,
     "momultiwalker_stability_v0": momultiwalker_stability_v0,
     "catch_v0": catch_v0,
     "surround_v0": surround_v0,

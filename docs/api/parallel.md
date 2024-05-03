@@ -7,13 +7,13 @@ title: "Parallel"
 Parallel environments can be interacted with as follows:
 
 ```python
-from momaland.envs.momultiwalker import momultiwalker_v0 as _env
+from momaland.envs.momultiwalker_stability import momultiwalker_stability_v0 as _env
 
 # .parallel_env() function will return a Parallel environment, as per PZ standard
 parallel_env = _env.parallel_env(render_mode="human")
 
 # optionally, you can scalarize the reward with weights
-parallel_env = momaland.LinearReward(parallel_env, weight=np.array([0.6, 0.2, 0.2]))
+parallel_env = momaland.LinearReward(parallel_env, weight=np.array([0.7, 0.3]))
 
 observations, infos = parallel_env.reset(seed=42)
 while parallel_env.agents:
