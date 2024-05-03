@@ -232,7 +232,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../environments/mogem_mining/">MO-GemMining</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/moingenious/">MO-Ingenious</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/moitem_gathering/">MO-ItemGathering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../environments/momultiwalker/">MO-Multiwalker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/momultiwalker_stability/">MO-MultiwalkerStability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/mopistonball/">MO-Pistonball</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../environments/mosame_game/">MO-SameGame</a></li>
@@ -312,13 +311,13 @@
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <p>Parallel environments can be interacted with as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">momaland.envs.momultiwalker</span> <span class="kn">import</span> <span class="n">momultiwalker_v0</span> <span class="k">as</span> <span class="n">_env</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">momaland.envs.momultiwalker_stability</span> <span class="kn">import</span> <span class="n">momultiwalker_stability_v0</span> <span class="k">as</span> <span class="n">_env</span>
 
 <span class="c1"># .parallel_env() function will return a Parallel environment, as per PZ standard</span>
 <span class="n">parallel_env</span> <span class="o">=</span> <span class="n">_env</span><span class="o">.</span><span class="n">parallel_env</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
 
 <span class="c1"># optionally, you can scalarize the reward with weights</span>
-<span class="n">parallel_env</span> <span class="o">=</span> <span class="n">momaland</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">parallel_env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]))</span>
+<span class="n">parallel_env</span> <span class="o">=</span> <span class="n">momaland</span><span class="o">.</span><span class="n">LinearReward</span><span class="p">(</span><span class="n">parallel_env</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]))</span>
 
 <span class="n">observations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">parallel_env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="k">while</span> <span class="n">parallel_env</span><span class="o">.</span><span class="n">agents</span><span class="p">:</span>
@@ -621,7 +620,7 @@ centralized training decentralized execution methods like QMIX</p>
     
     
 
-    <script src="../../_static/documentation_options.js?v=697c8f77"></script>
+    <script src="../../_static/documentation_options.js?v=58a8cf74"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
