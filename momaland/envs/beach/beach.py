@@ -69,11 +69,11 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
     The action space is a Discrete space [0, 1, 2], corresponding to moving left, moving right, staying in place.
 
     ## Reward Space
-    The reward space is a 2D vector containing rewards for two different schemes ('local' or 'global') for:
+    The reward space is a 2D vector containing rewards for two different modes ('individual' or 'team') for:
     - the occupation level
     - the mixture level
-    If the scheme is 'local', the reward is given for the currently occupied section.
-    If the scheme is 'global', the reward is summed over all sections.
+    If the mode is 'individual', the reward is given for the currently occupied section.
+    If the mode is 'team', the reward is summed over all sections.
 
     ## Starting State
     The initial position is a uniform random distribution of agents over the sections. This can be changed via the
@@ -90,7 +90,7 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
     ## Arguments
     - 'num_timesteps (int)': number of timesteps in the domain. Default: 1
     - 'num_agents (int)': number of agents in the domain. Default: 100
-    - 'reward_scheme (str)': the reward scheme to use ('local', or 'global'). Default: local
+    - 'reward_mode (str)': the reward mode to use ('individual', or 'team'). Default: individual
     - 'sections (int)': number of beach sections in the domain. Default: 6
     - 'capacity (int)': capacity of each beach section. Default: 7
     - 'type_distribution (tuple)': the distribution of agent types in the domain. Default: 2 types equally distributed (0.3, 0.7).
@@ -104,7 +104,7 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
         self,
         num_timesteps=1,
         num_agents=100,
-        reward_scheme="local",
+        reward_mode="individual",
         sections=6,
         capacity=7,
         type_distribution=(0.3, 0.7),
@@ -121,22 +121,23 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
             position_distribution: the initial distribution of agents in the domain. Default: uniform over all sections.
             num_timesteps: number of timesteps in the domain
             render_mode: render mode
-            reward_scheme: the reward scheme to use ('local', or 'global'). Default: local
+            reward_mode: the reward mode to use ('individual', or 'team'). Default: individual
         """
         EzPickle.__init__(
             self,
             num_timesteps,
             num_agents,
-            reward_scheme,
+            reward_mode,
             sections,
             capacity,
             type_distribution,
             position_distribution,
             render_mode,
         )
-        self.reward_scheme = reward_scheme
+        if reward_mode not in ["individual", "team"]:
+            raise ValueError("Invalid reward_mode. Must be either 'individual' or 'team'.")
+        self.reward_mode = reward_mode
         self.sections = sections
-        # TODO Extend to distinct capacities per section?
         self.resource_capacities = [capacity for _ in range(sections)]
         self.num_timesteps = num_timesteps
         self.episode_num = 0
@@ -296,13 +297,13 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
         reward_per_section = np.zeros((self.sections, NUM_OBJECTIVES), dtype=np.float32)
 
         if env_termination:
-            if self.reward_scheme == "local":
+            if self.reward_mode == "individual":
                 for i in range(self.sections):
                     lr_capacity = _local_capacity_reward(self.resource_capacities[i], section_consumptions[i])
                     lr_mixture = _local_mixture_reward(section_agent_types[i])
                     reward_per_section[i] = np.array([lr_capacity, lr_mixture])
 
-            elif self.reward_scheme == "global":
+            elif self.reward_mode == "team":
                 g_capacity = _global_capacity_reward(self.resource_capacities, section_consumptions)
                 g_mixture = _global_mixture_reward(section_agent_types)
                 reward_per_section = np.array([[g_capacity, g_mixture]] * self.sections)

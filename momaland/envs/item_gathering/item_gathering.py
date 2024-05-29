@@ -102,6 +102,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
     - 'num_timesteps': number of timesteps to run the environment for. Default: 10
     - 'initial_map': map of the environment. Default: 8x8 grid, 2 agents, 3 objectives (Källström and Heintz, 2019)
     - 'randomise': whether to randomise the map, at each episode. Default: False
+    - 'reward_mode': reward mode for the environment ('individual' or 'team'). Default: 'individual'
     - 'render_mode': render mode for the environment. Default: None
     """
 
@@ -127,7 +128,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
             num_timesteps: number of timesteps to run the environment for
             initial_map: map of the environment
             randomise: whether to randomise the map, at each episode
-            reward_mode: reward mode for the environment, 'individual' or 'team'
+            reward_mode: reward mode for the environment, 'individual' or 'team'. Default: 'individual'
             render_mode: render mode for the environment
         """
         EzPickle.__init__(
