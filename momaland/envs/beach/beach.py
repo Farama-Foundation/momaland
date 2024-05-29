@@ -5,6 +5,7 @@ From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping 
 
 import functools
 import random
+import warnings
 from typing_extensions import override
 
 import numpy as np
@@ -117,11 +118,11 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
             sections: number of beach sections in the domain
             capacity: capacity of each beach section
             num_agents: number of agents in the domain
+            reward_mode: the reward mode to use ('individual', or 'team'). Default: individual
             type_distribution: the distribution of agent types in the domain. Default: 2 types equally distributed.
             position_distribution: the initial distribution of agents in the domain. Default: uniform over all sections.
             num_timesteps: number of timesteps in the domain
             render_mode: render mode
-            reward_mode: the reward mode to use ('individual', or 'team'). Default: individual
         """
         EzPickle.__init__(
             self,
@@ -135,8 +136,10 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
             render_mode,
         )
         if reward_mode not in ["individual", "team"]:
-            raise ValueError("Invalid reward_mode. Must be either 'individual' or 'team'.")
-        self.reward_mode = reward_mode
+            self.reward_mode = "individual"
+            warnings.warn("Invalid reward_mode. Must be either 'individual' or 'team'. Defaulting to 'individual'.")
+        else:
+            self.reward_mode = reward_mode
         self.sections = sections
         self.resource_capacities = [capacity for _ in range(sections)]
         self.num_timesteps = num_timesteps

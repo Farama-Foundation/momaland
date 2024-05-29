@@ -18,6 +18,7 @@ Central observation:
 """
 
 import random
+import warnings
 from copy import deepcopy
 from os import path
 from typing_extensions import override
@@ -136,6 +137,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
             num_timesteps,
             initial_map,
             randomise,
+            reward_mode,
             render_mode,
         )
         self.num_timesteps = num_timesteps
@@ -143,8 +145,10 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         self.render_mode = render_mode
         self.randomise = randomise
         if reward_mode not in ["individual", "team"]:
-            raise ValueError("reward_mode must be either 'individual' or 'team'.")
-        self.reward_mode = reward_mode
+            self.reward_mode = "individual"
+            warnings.warn("reward_mode must be either 'individual' or 'team', defaulting to 'individual'.")
+        else:
+            self.reward_mode = reward_mode
 
         # check if the initial map has any entries equal to 1
         assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
