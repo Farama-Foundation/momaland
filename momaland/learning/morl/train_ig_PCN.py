@@ -40,7 +40,7 @@ if __name__ == "__main__":
         batch_size=256,
         project_name=project_name,
         experiment_name="PCN",
-        log=True,
+        log=False,  # set this to True to turn on wandb logging
     )
     timesteps_per_iter = 10000
     agent.train(

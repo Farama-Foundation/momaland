@@ -44,6 +44,7 @@ if __name__ == "__main__":
         num_timesteps=50,
         initial_map=test_map,
         randomise=True,
+        reward_mode="test",
         render_mode=None,
     )
 
@@ -57,8 +58,8 @@ if __name__ == "__main__":
         reward_scheme="local",
     )
 
-    # train_random(ig_env)
+    train_random(ig_env)
     # train_random(mobpd_env)
 
     # train_sa_random(ig_env)
-    train_sa_random(mobpd_env)
+    # train_sa_random(mobpd_env)
