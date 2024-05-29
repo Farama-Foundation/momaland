@@ -65,9 +65,9 @@ class TabularMOBeachDomainWrapper(MOBeachDomain):
             np.array: the normalized reward
         """
         # Set the normalization constants
-        if reward_scheme == "local":
+        if reward_scheme == "individual":
             cap_min, cap_max, mix_min, mix_max = self.l_cap_min, self.l_cap_max, self.l_mix_min, self.l_mix_max
-        elif reward_scheme == "global":
+        elif reward_scheme == "team":
             cap_min, cap_max, mix_min, mix_max = self.g_cap_min, self.g_cap_max, self.g_mix_min, self.g_mix_max
         else:
             raise ValueError(f"Unknown reward scheme: {reward_scheme}")
@@ -108,7 +108,7 @@ class TabularMOBeachDomainWrapper(MOBeachDomain):
             section_agent_types[self._state[i]][self._types[i]] += 1
         g_capacity = _global_capacity_reward(self.resource_capacities, section_consumptions)
         g_mixture = _global_mixture_reward(section_agent_types)
-        g_capacity_norm, g_mixture_norm = self.normalize_objective_rewards(np.array([g_capacity, g_mixture]), "global")
+        g_capacity_norm, g_mixture_norm = self.normalize_objective_rewards(np.array([g_capacity, g_mixture]), "team")
         infos = {
             agent: {"g_cap": g_capacity, "g_mix": g_mixture, "g_cap_norm": g_capacity_norm, "g_mix_norm": g_mixture_norm}
             for agent in self.possible_agents
@@ -116,7 +116,7 @@ class TabularMOBeachDomainWrapper(MOBeachDomain):
 
         # Normalize the rewards
         for agent in self.possible_agents:
-            rewards[agent] = self.normalize_objective_rewards(rewards[agent], self.reward_scheme)
+            rewards[agent] = self.normalize_objective_rewards(rewards[agent], self.reward_mode)
 
         return observations, rewards, terminations, truncations, infos
 
