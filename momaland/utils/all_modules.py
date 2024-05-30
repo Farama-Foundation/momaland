@@ -7,7 +7,6 @@ Used for:
 
 from momaland.envs.beach import mobeach_v0
 from momaland.envs.breakthrough import mobreakthrough_v0
-from momaland.envs.congestion import mocongestion_v0
 from momaland.envs.connect4 import moconnect4_v0
 from momaland.envs.crazyrl.catch import catch_v0
 from momaland.envs.crazyrl.escort import escort_v0
@@ -18,6 +17,7 @@ from momaland.envs.item_gathering import moitem_gathering_v0
 from momaland.envs.multiwalker import momultiwalker_v0
 from momaland.envs.multiwalker_stability import momultiwalker_stability_v0
 from momaland.envs.pistonball import mopistonball_v0
+from momaland.envs.route_choice import moroute_choice_v0
 from momaland.envs.samegame import mosame_game_v0
 
 
@@ -31,7 +31,7 @@ all_environments = {
     "moitem_gathering_v0": moitem_gathering_v0,
     "moingenious_v0": moingenious_v0,
     "mopistonball_v0": mopistonball_v0,
-    "mocongestion_v0": mocongestion_v0,
+    "moroute_choice_v0": moroute_choice_v0,
     "moconnect4_v0": moconnect4_v0,
     "mobreakthrough_v0": mobreakthrough_v0,
     "mosame_game_v0": mosame_game_v0,

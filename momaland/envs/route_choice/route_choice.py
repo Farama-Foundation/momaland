@@ -1,6 +1,6 @@
-"""Multi-Objective Congestion Game.
+"""Multi-Objective Route Choice Game.
 
-From Ramos, G. D. O., Radulescu, R., Nowe, A., & Tavares, A. R. (2020). Toll-based learning for minimising congestion under heterogeneous preferences.
+From Ramos, G. D. O., Radulescu, R., Nowe, A., & Tavares, A. R. (2020). Toll-based learning for minimising route_choice under heterogeneous preferences.
 """
 
 import functools
@@ -22,12 +22,12 @@ from momaland.utils.env import MOParallelEnv
 
 
 def parallel_env(**kwargs):
-    """Env factory function for the congestion game."""
+    """Env factory function for the route choice game."""
     return raw_env(**kwargs)
 
 
 def env(**kwargs):
-    """Auto-wrapper for the congestion game.
+    """Auto-wrapper for the route choice game.
 
     Args:
         **kwargs: keyword args to forward to the parallel_env function.
@@ -45,12 +45,12 @@ def env(**kwargs):
 
 
 def raw_env(**kwargs):
-    """Env factory function for the congestion game."""
-    return MOCongestion(**kwargs)
+    """Env factory function for the route choice game."""
+    return MORouteChoice(**kwargs)
 
 
-class MOCongestion(MOParallelEnv):
-    """Environment for MO-Congestion problem.
+class MORouteChoice(MOParallelEnv):
+    """Environment for MO-RouteChoice problem.
 
     The init method takes in environment arguments and should define the following attributes:
     - possible_agents
@@ -68,7 +68,7 @@ class MOCongestion(MOParallelEnv):
         num_timesteps=1,
         render_mode=None,
     ):
-        """Initializes the congestion game.
+        """Initializes the route choice game.
 
         Args:
             problem_name: the name of the network that will be used
@@ -130,7 +130,7 @@ class MOCongestion(MOParallelEnv):
         self.cost_function = dict()
         self._create_latency_and_cost_function(nx.get_edge_attributes(self.graph, "latency_function"), num_agents)
 
-    metadata = {"render_modes": ["human"], "name": "mocongestion_v0"}
+    metadata = {"render_modes": ["human"], "name": "moroute_choice_v0"}
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected

@@ -1,4 +1,4 @@
-"""Contains utilities to converts congestion game networks from https://github.com/maslab-ufrgs/transportation_networks to NetworkX networks.
+"""Contains utilities to converts route choice game networks from https://github.com/maslab-ufrgs/transportation_networks to NetworkX networks.
 
 Each network in MASLAB consists of two files:
     * network.net: contains the definition of the network (nodes, edges, latency functions, and origin-destination pairs)
@@ -160,7 +160,7 @@ def read_routes_file(problem_name):
 
 
 def save_json(problem_name, graph, od, routes):
-    """Creates a .JSON file which contains a network of the mo-congestion-game environment.
+    """Creates a .JSON file which contains a network of the MORouteChoice game environment.
 
     Args:
         problem_name: the name of the problem that is parsed

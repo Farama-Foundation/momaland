@@ -21,7 +21,7 @@ def parse_args():
     # fmt: off
     parser = argparse.ArgumentParser()
     parser.add_argument("--env-id", type=str, help="MOMAland id of the environment to run (check all_modules.py)",
-                        required=True, default="mocongestion_v0")
+                        required=True, default="moroute_choice_v0")
     parser.add_argument('--exp-name', type=str, default=os.path.basename(__file__).rstrip(".py"),
                         help="the name of this experiment")
     parser.add_argument('--seed', type=int, default=1,
@@ -98,11 +98,11 @@ if __name__ == "__main__":
     # ---------------------- #
     # Saving Learning Curves #
     # ---------------------- #
-    mkdir_p("momaland/learning/iql/results/congestion")
+    mkdir_p("momaland/learning/iql/results/route_choice")
     if not args.random:
         df_total.to_csv(
-            f"momaland/learning/iql/results/congestion/iql_{args.problem_name}_{args.weights[0]}_{args.weights[1]}.csv",
+            f"momaland/learning/iql/results/route_choice/iql_{args.problem_name}_{args.weights[0]}_{args.weights[1]}.csv",
             index=False,
         )
     else:
-        df_total.to_csv(f"momaland/learning/iql/results/congestion/iql_{args.problem_name}_random.csv", index=False)
+        df_total.to_csv(f"momaland/learning/iql/results/route_choice/iql_{args.problem_name}_random.csv", index=False)

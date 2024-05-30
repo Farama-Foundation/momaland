@@ -1,4 +1,4 @@
-"""Implementation of stateless independent Q-learners. Implemented for the multi-objective congestion game and beach domain."""
+"""Implementation of stateless independent Q-learners. Implemented for the multi-objective route choice game and beach domain."""
 
 import random
 
@@ -124,7 +124,7 @@ def train(args, weights, env_args):
             new_reward = np.array([avg_obj1, avg_obj2])
             scal_rew = compute_utility(weights, np.array([avg_obj1_norm, avg_obj2_norm]))
             episode_returns.append((current_iter, avg_obj1_norm, avg_obj2_norm, scal_rew))
-        elif env.metadata["name"] == "mocongestion_v0":
+        elif env.metadata["name"] == "moroute_choice_v0":
             avg_obj1 = np.mean(np.array(list(rew.values()))[:, 0])
             avg_obj2 = np.mean(np.array(list(rew.values()))[:, 1])
             scal_rew = compute_utility(weights, np.array([avg_obj1, avg_obj2]))
