@@ -5,13 +5,12 @@ From Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018). Reward shaping 
 
 import functools
 import random
-
-# from gymnasium.utils import EzPickle
 from typing_extensions import override
 
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 
 from momaland.utils.conversions import mo_parallel_to_aec
@@ -52,7 +51,7 @@ def raw_env(**kwargs):
     return MOBeachDomain(**kwargs)
 
 
-class MOBeachDomain(MOParallelEnv):
+class MOBeachDomain(MOParallelEnv, EzPickle):
     """A `Parallel` 2-objective environment of the Beach problem domain.
 
     ## Observation Space
@@ -67,10 +66,7 @@ class MOBeachDomain(MOParallelEnv):
     `[a_type, section_id, section_capacity, section_consumption, %_of_a_of_current_type]`
 
     ## Action Space
-    The action space is a Discrete space, where:
-    - moving left is -1
-    - moving right is +1
-    - staying is 0
+    The action space is a Discrete space [0, 1, 2], corresponding to moving left, moving right, staying in place.
 
     ## Reward Space
     The reward space is a 2D vector containing rewards for two different schemes ('local' or 'global') for:
@@ -92,26 +88,26 @@ class MOBeachDomain(MOParallelEnv):
     The problem is not truncated. It has a maximum number of timesteps.
 
     ## Arguments
-    - 'num_timesteps (int)': number of timesteps in the domain. Default: 100
+    - 'num_timesteps (int)': number of timesteps in the domain. Default: 1
     - 'num_agents (int)': number of agents in the domain. Default: 100
     - 'reward_scheme (str)': the reward scheme to use ('local', or 'global'). Default: local
     - 'sections (int)': number of beach sections in the domain. Default: 6
-    - 'capacity (int)': capacity of each beach section. Default: 10
-    - 'type_distribution (tuple)': the distribution of agent types in the domain. Default: 2 types equally distributed (0.5, 0.5).
+    - 'capacity (int)': capacity of each beach section. Default: 7
+    - 'type_distribution (tuple)': the distribution of agent types in the domain. Default: 2 types equally distributed (0.3, 0.7).
     - 'position_distribution (tuple)': the initial distribution of agents in the domain. Default: uniform over all sections (None).
     - 'render_mode (str)': render mode. Default: None
     """
 
-    metadata = {"render_modes": ["human"], "name": "mobeach_v0"}
+    metadata = {"render_modes": ["human"], "name": "mobeach_v0", "central_observation": True}
 
     def __init__(
         self,
-        num_timesteps=10,
+        num_timesteps=1,
         num_agents=100,
         reward_scheme="local",
         sections=6,
-        capacity=10,
-        type_distribution=(0.5, 0.5),
+        capacity=7,
+        type_distribution=(0.3, 0.7),
         position_distribution=None,
         render_mode=None,
     ):
@@ -127,6 +123,17 @@ class MOBeachDomain(MOParallelEnv):
             render_mode: render mode
             reward_scheme: the reward scheme to use ('local', or 'global'). Default: local
         """
+        EzPickle.__init__(
+            self,
+            num_timesteps,
+            num_agents,
+            reward_scheme,
+            sections,
+            capacity,
+            type_distribution,
+            position_distribution,
+            render_mode,
+        )
         self.reward_scheme = reward_scheme
         self.sections = sections
         # TODO Extend to distinct capacities per section?
@@ -167,6 +174,15 @@ class MOBeachDomain(MOParallelEnv):
             )
         )
 
+        self.central_observation_space = Box(
+            low=0,
+            high=self.num_agents,
+            # Observation form:
+            # agents * [agent type, section id, section capacity, section consumption, % of agents of current type]
+            shape=(self.num_agents * 5,),
+            dtype=np.float32,
+        )
+
         # maximum capacity reward can be calculated  by calling the _global_capacity_reward()
         optimal_consumption = [capacity for _ in range(sections)]
         optimal_consumption[-1] = max(self.num_agents - ((sections - 1) * capacity), 0)
@@ -190,6 +206,10 @@ class MOBeachDomain(MOParallelEnv):
     def reward_space(self, agent):
         """Returns the reward space for the given agent."""
         return self.reward_spaces[agent]
+
+    def get_central_observation_space(self):
+        """Returns the central observation space."""
+        return self.central_observation_space
 
     @override
     def render(self):
@@ -310,7 +330,19 @@ class MOBeachDomain(MOParallelEnv):
 
     @override
     def state(self) -> np.ndarray:
-        return np.array(self._types + self._state, dtype=np.int32)
+        """Returns the global observation of the beach.
+
+        Returns: a 1D Numpy array with the following items in order:
+        [agentX_section, agentX_type, ...,
+        capacity, sectionY_consumption, sectionY_%_of_agents_of_current_type, ...]
+        """
+        # return np.array(self._types + self._state, dtype=np.int32)
+        section_consumptions, section_agent_types = self._get_stats()
+        global_obs = [self._get_obs(i, section_consumptions, section_agent_types) for i in range(len(self.agents))]
+        global_obs = np.array(global_obs, dtype=np.float32).flatten()
+        assert len(global_obs) == len(self.agents) * 5
+
+        return np.array(global_obs, dtype=np.float32).flatten()
 
     def _get_obs(self, i, section_consumptions, section_agent_types):
         total_same_type = section_agent_types[self._state[i]][self._types[i]]

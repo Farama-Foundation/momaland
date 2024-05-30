@@ -18,6 +18,7 @@ from typing_extensions import override
 import numpy as np
 from gymnasium import spaces
 from gymnasium.logger import warn
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import agent_selector, wrappers
 
 from momaland.utils.env import MOAECEnv
@@ -54,7 +55,7 @@ def raw_env(**kwargs):
     return MOBreakthrough(**kwargs)
 
 
-class MOBreakthrough(MOAECEnv):
+class MOBreakthrough(MOAECEnv, EzPickle):
     """Multi-objective Breakthrough.
 
     MO-Breakthrough is a multi-objective variant of the two-player, single-objective turn-based board game Breakthrough.
@@ -69,26 +70,22 @@ class MOBreakthrough(MOAECEnv):
     ## Observation Space
     The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
     below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
-
     The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
     Each plane represents a specific agent's pieces, and each location in the grid represents the placement of the
     corresponding agent's piece. 1 indicates that the agent has a piece placed in the given location, and 0 indicates they
     do not have a piece in that location (meaning that either the cell is empty, or the other agent has a piece in that
     location).
 
-
-    ### Legal Actions Mask
+    ## Legal Actions Mask
     The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
     The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
     or not; the action encoding is described in the Action Space section below.
-    The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
-    game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
+    The `action_mask` will be all zeros for any agent except the one whose turn it is.
 
     ## Action Space
     The action space is the set of integers from 0 to board_width*board_height*3 (exclusive). If a piece at coordinates
     (x,y) is moved, this is encoded as the integer x * 3 * board_height + y * 3 + z where z == 0 for left diagonal, 1 for
     straight, and 2 for right diagonal move.
-
 
     ## Rewards
     Dimension 0: If an agent moves one of their pieces to the opponent's home row, they will be rewarded 1 point. At the
@@ -98,6 +95,15 @@ class MOBreakthrough(MOAECEnv):
     Dimension 2: (optional) The number of opponent pieces (divided by the max number of pieces) an agent has captured.
     Dimension 3: (optional) The negative number of pieces (divided by the max number of pieces)
     an agent has lost to the opponent.
+
+    ## Starting State
+    The starting board is empty except for the first two rows that are filled with pieces of player 0, and the last two rows that are filled with pieces of player 1.
+
+    ## Arguments
+    - 'board_width': The width of the board (from 3 to 20)
+    - 'board_height': The height of the board (from 5 to 20)
+    - 'num_objectives': The number of objectives (from 1 to 4)
+    - 'render_mode': The render mode.
 
     ## Version History
     """
@@ -120,6 +126,13 @@ class MOBreakthrough(MOAECEnv):
             num_objectives: The number of objectives (from 1 to 4)
             render_mode: The render mode.
         """
+        EzPickle.__init__(
+            self,
+            board_width,
+            board_height,
+            num_objectives,
+            render_mode,
+        )
         if not (3 <= board_width <= 20):
             raise ValueError("Config parameter board_width must be between 3 and 20.")
 

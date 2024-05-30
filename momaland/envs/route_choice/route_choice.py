@@ -14,6 +14,7 @@ import networkx as nx
 import numpy as np
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 from sympy import diff, lambdify, sympify
 
@@ -49,14 +50,44 @@ def raw_env(**kwargs):
     return MORouteChoice(**kwargs)
 
 
-class MORouteChoice(MOParallelEnv):
-    """Environment for MO-RouteChoice problem.
+class MORouteChoice(MOParallelEnv, EzPickle):
+    """A `Parallel` environment where drivers learn to travel from a source to a destination while avoiding congestion.
 
-    The init method takes in environment arguments and should define the following attributes:
-    - possible_agents
-    - action_spaces
-    - observation_spaces
-    These attributes should not be changed after initialization.
+    Multi-objective version of Braess' Paradox where drivers have two objectives: travel time and monetary cost.
+    The environment is a road network and the agents are the drivers that needs to travel from an origin to a destination point.
+
+    ## Observation Space
+    This environment is stateless, so the observation space is a constant 0. (Discrete with shape (1,)).
+
+    ## Action Space
+    The action space is a discrete space representing the possible routes that the agent can take.
+    The number of routes is different for each agent, as it depends on the number of possible routes for the OD pair of the agent.
+    Selecting an action corresponds to choosing a route.
+
+    ## Reward Space
+    The reward space is a 2D vector containing rewards for:
+    - Minimizing travel time (latency).
+    - Minimizing monetary cost.
+
+    ## Starting State
+    The environment is stateless, so there is no starting state.
+
+    ## Episode Termination
+    The environment is stateless, so there are no episodes. Each "episode" is therefore terminated after each timestep.
+
+    ## Episode Truncation
+    Episodes are not truncated as there are terminated after each timestep.
+
+    ## Arguments
+    - `render_mode (str, optional)`: The mode to display the rendering of the environment. Can be human or None.
+    - `problem_name (str, optional)`: The name of the road network that will be used.
+    - `num_agents (int, optional)`: The number of drivers in the network.
+    - `toll_mode (str, optional)`: The tolling mode that is used, tolls are either placed randomly "random" or using marginal cost tolling "mct".
+    - `random_toll_percentage (float, optional)`: In the case of random tolling the percentage of roads that will be taxed.
+    - `num_timesteps (int, optional)`: The number of timesteps (stateless, therefore always 1 timestep).
+
+    ## Credits
+    The code was adapted from [codebase of "Toll-Based Learning for Minimising Congestion under Heterogeneous Preferences"](https://github.com/goramos/marl-route-choice).
     """
 
     def __init__(
@@ -78,6 +109,15 @@ class MORouteChoice(MOParallelEnv):
             num_timesteps: number of timesteps (stateless, therefore always 1 timestep)
             render_mode: render mode
         """
+        EzPickle.__init__(
+            self,
+            problem_name,
+            num_agents,
+            toll_mode,
+            random_toll_percentage,
+            num_timesteps,
+            render_mode,
+        )
         # Read in the problem from the corresponding .json file in the networks directory
         self.graph, self.od, self.routes, self._max_route_length = self._read_problem(problem_name)
         # Keep track of the current flow on each link the network

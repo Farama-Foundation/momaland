@@ -166,7 +166,7 @@ if __name__ == "__main__":
     capacity = args.capacity
     type_distribution = args.type_distribution
 
-    folder = "momaland/learning/discrete/results/pf"
+    folder = "pf"
     mkdir_p(folder)
 
     # generate all combinations of distributions for each type

@@ -1,4 +1,4 @@
-[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![tests](https://github.com/rradules/momaland/workflows/Python%20tests/badge.svg)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -31,10 +31,10 @@ This does not include dependencies for all components of MOMAland (not everythin
 
 ## API
 <!-- start snippet-usage -->
-Similar to [PettingZoo](https://pettingzoo.farama.org), the MOMAland API models environments as simple Python `env` classes. Creating environment instances and interacting with them is very simple - here's an example using the "momultiwalker_v0" environment:
+Similar to [PettingZoo](https://pettingzoo.farama.org), the MOMAland API models environments as simple Python `env` classes. Creating environment instances and interacting with them is very simple - here's an example using the "momultiwalker_stability_v0" environment:
 
 ```python
-from momaland.envs.momultiwalker import momultiwalker_v0 as _env
+from momaland.envs.momultiwalker_stability import momultiwalker_stability_v0 as _env
 import numpy as np
 
 # .env() function will return an AEC environment, as per PZ standard
@@ -57,9 +57,9 @@ env.close()
 # Making the vector reward a scalar reward to shift to single-objective multi-agent (aka PettingZoo)
 # We can assign different weights to the objectives of each agent.
 weights = {
-    "walker_0": np.array([0.1, 0.7, 0.2]),
-    "walker_1": np.array([0.6, 0.1, 0.3]),
-    "walker_2": np.array([0.2, 0.2, 0.6]),
+    "walker_0": np.array([0.7, 0.3]),
+    "walker_1": np.array([0.5, 0.5]),
+    "walker_2": np.array([0.2, 0.8]),
 }
 env = LinearizeReward(env, weights)
 ```
@@ -77,9 +77,12 @@ Nevertheless, we reuse tools provided by other libraries, like multi-objective e
 
 Here is a list of algorithms that are currently implemented:
 
-| **Name**                                                                                                                                                                                                                                                            | Single/Multi-policy | Reward | Utility       | Observation space | Action space | Paper |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|--------|---------------|-------------------|--------------|-------|
-| MOMAPPO (OLS) [continuous](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/continuous/cooperative_momappo.py),<br/> [discrete](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/discrete/cooperative_momappo.py) | Multi               | Team   | Team / Linear | Any               | Any          |       |
+| **Name**                                                                                                                                                                                                                                                            | Single/Multi-policy | Reward     | Utility             | Observation space | Action space | Paper |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|------------|---------------------|-------------------|--------------|-------|
+| MOMAPPO (OLS) [continuous](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/continuous/cooperative_momappo.py),<br/> [discrete](https://github.com/Farama-Foundation/momaland/blob/main/momaland/learning/discrete/cooperative_momappo.py) | Multi               | Team       | Team / Linear       | Any               | Any          |       |
+| [Scalarized IQL](https://github.com/Farama-Foundation/momaland/tree/main/momaland/learning/iql)                                                                                                                                                                     | Single              | Individual | Individual / Linear | Discrete          | Discrete     |       |
+| [Centralization wrapper](https://github.com/Farama-Foundation/momaland/blob/main/momaland/utils/parallel_wrappers.py#L149)                                                                                                                                          | Any                 | Team       | Team / Any          | Discrete          | Discrete     |       |
+| [Linearization wrapper](https://github.com/Farama-Foundation/momaland/blob/main/momaland/utils/parallel_wrappers.py#L49)                                                                                                                                            | Single              | Any        | Individual / Linear | Any               | Any          |       |
 
 
 <!-- end learning-algorithms -->
@@ -88,10 +91,10 @@ Here is a list of algorithms that are currently implemented:
 MOMAland keeps strict versioning for reproducibility reasons. All environments end in a suffix like "_v0".  When changes are made to environments that might impact learning results, the number is increased by one to prevent potential confusion.
 
 ## Development Roadmap
-We have a roadmap for future development available here: TODO.
+We have a roadmap for future development available [here](https://github.com/Farama-Foundation/momaland/issues/56).
 
 ## Project Maintainers
-Project Managers:  TODO
+Project Managers:  Florian Felten (@ffelten)
 
 Maintenance for this project is also contributed by the broader Farama team: [farama.org/team](https://farama.org/team).
 

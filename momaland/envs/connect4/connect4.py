@@ -84,7 +84,6 @@ class MOConnect4(MOAECEnv, EzPickle):
     ## Observation Space
     The observation is a dictionary which contains an `'observation'` element which is the usual RL observation described
     below, and an  `'action_mask'` which holds the legal moves, described in the Legal Actions Mask section below.
-
     The main observation space is 2 planes of a board_height * board_width grid (a board_height * board_width * 2 tensor).
     Each plane represents a specific agent's tokens, and each location in the grid represents the placement of the
     corresponding agent's token. 1 indicates that the agent has a token placed in the given location, and 0 indicates they
@@ -95,9 +94,7 @@ class MOConnect4(MOAECEnv, EzPickle):
     The legal moves available to the current agent are found in the `action_mask` element of the dictionary observation.
     The `action_mask` is a binary vector where each index of the vector represents whether the represented action is legal
     or not; the action encoding is described in the Action Space section below.
-    The `action_mask` will be all zeros for any agent except the one whose turn it is. Taking an illegal action ends the
-    game with a reward of -1 for the illegally moving agent and a reward of 0 for all other agents. #TODO this isn't happening anymore because of missing TerminateIllegalWrapper
-
+    The `action_mask` will be all zeros for any agent except the one whose turn it is.
 
     ## Action Space
     The action space is the set of integers from 0 to board_width (exclusive), where the number represents which column
@@ -110,6 +107,16 @@ class MOConnect4(MOAECEnv, EzPickle):
     Dimension 2 to board_width+1 (default 8): (optional) If at game end, an agent has more tokens than their opponent in
     column X, they will be rewarded 1 point in reward dimension 2+X. The opponent agent will be rewarded -1 point. If the
     column has an equal number of tokens from both players, both players are rewarded 0.
+
+    ## Starting State
+    The game starts with an empty board.
+
+    ## Arguments
+    - 'render_mode': The mode to render with. Can be 'human' or 'rgb_array'.
+    - 'screen_scaling': The factor by which to scale the screen.
+    - 'board_width': The width of the board (from 4 to 20)
+    - 'board_height': The height of the board (from 4 to 20)
+    - 'column_objectives': Whether to use column objectives or not (without them, there are 2 objectives. With them, there are 2+board_width objectives)
 
     ## Version History
     """
@@ -138,7 +145,14 @@ class MOConnect4(MOAECEnv, EzPickle):
             board_height: The height of the board (from 4 to 20)
             column_objectives: Whether to use column objectives or not (without them, there are 2 objectives. With them, there are 2+board_width objectives)
         """
-        EzPickle.__init__(self, render_mode, screen_scaling)
+        EzPickle.__init__(
+            self,
+            render_mode,
+            screen_scaling,
+            board_width,
+            board_height,
+            column_objectives,
+        )
         self.env = super().__init__()
 
         if not (4 <= board_width <= 20):

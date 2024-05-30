@@ -155,17 +155,19 @@ class CentraliseAgent(BaseParallelWrapper):
     for each agent in the original environment.
     """
 
-    def __init__(self, env: MOParallelEnv, action_mapping=False):
+    def __init__(self, env: MOParallelEnv, action_mapping=False, reward_type="sum"):
         """Central agent wrapper class initializer.
 
         Args:
             env: The parallel environment to apply the wrapper
             action_mapping: Whether to use an action mapping to Discrete spaces of not
+            reward_type: The type of reward grouping to use, either 'sum' or 'mean'
         """
         super().__init__(env)
         self.action_mapping = action_mapping
         self.unwrapped.spec = namedtuple("Spec", ["id"])
         self.unwrapped.spec.id = self.env.metadata.get("name")
+        self._reward_type = reward_type
         if self.env.metadata.get("central_observation"):
             self.observation_space = env.get_central_observation_space()
             self.unwrapped.observation_space = env.get_central_observation_space()
@@ -203,7 +205,10 @@ class CentraliseAgent(BaseParallelWrapper):
         observations, rewards, terminations, truncations, infos = self.env.step(actions)
         if self.env.metadata.get("central_observation"):
             observations = self.env.state().flatten()
-        joint_reward = np.sum(list(rewards.values()), axis=0)
+        if self._reward_type == "sum":
+            joint_reward = np.sum(list(rewards.values()), axis=0)
+        else:
+            joint_reward = np.mean(list(rewards.values()), axis=0)
         return (
             observations,
             joint_reward,

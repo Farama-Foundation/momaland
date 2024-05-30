@@ -20,17 +20,16 @@ Central observation:
 import random
 from copy import deepcopy
 from os import path
-
-# from gymnasium.utils import EzPickle
 from typing_extensions import override
 
 import numpy as np
 import pygame
 from gymnasium.logger import warn
 from gymnasium.spaces import Box, Discrete, Tuple
+from gymnasium.utils import EzPickle
 from pettingzoo.utils import wrappers
 
-from momaland.envs.item_gathering.asset_utils import del_colored, get_colored
+from momaland.envs.item_gathering.asset_utils import get_colored
 from momaland.envs.item_gathering.map_utils import DEFAULT_MAP, randomise_map
 from momaland.utils.conversions import mo_parallel_to_aec
 from momaland.utils.env import MOParallelEnv
@@ -72,7 +71,7 @@ def raw_env(**kwargs):
     return MOItemGathering(**kwargs)
 
 
-class MOItemGathering(MOParallelEnv):
+class MOItemGathering(MOParallelEnv, EzPickle):
     """A `Parallel` multi-objective environment of the Item Gathering problem.
 
     ## Observation Space
@@ -111,6 +110,7 @@ class MOItemGathering(MOParallelEnv):
         "name": "moitem_gathering_v0",
         "is_parallelizable": True,
         "central_observation": True,
+        "render_fps": 30,
     }
 
     def __init__(
@@ -128,6 +128,13 @@ class MOItemGathering(MOParallelEnv):
             randomise: whether to randomise the map, at each episode
             render_mode: render mode for the environment
         """
+        EzPickle.__init__(
+            self,
+            num_timesteps,
+            initial_map,
+            randomise,
+            render_mode,
+        )
         self.num_timesteps = num_timesteps
         self.current_timestep = 0
         self.render_mode = render_mode
@@ -297,9 +304,10 @@ class MOItemGathering(MOParallelEnv):
 
     @override
     def close(self):
-        if self.render_mode is not None:
-            del_colored()
         pass
+        # This breaks the pickle tests
+        # if self.render_mode is not None:
+        #     del_colored()
 
     @override
     def reset(self, seed=None, options=None):
