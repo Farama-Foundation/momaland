@@ -82,6 +82,7 @@ class MOCongestion(MOParallelEnv):
         self.graph, self.od, self.routes, self._max_route_length = self._read_problem(problem_name)
         # Keep track of the current flow on each link the network
         self.flows = {f"{edge[0]}-{edge[1]}": 0 for edge in self.graph.edges}
+        self.avg_tt = 0.0
 
         # Episodes/Timesteps
         self.num_timesteps = num_timesteps
@@ -219,23 +220,31 @@ class MOCongestion(MOParallelEnv):
         # return constant observations '0' as this is a stateless setting
         observations = {agent: 0 for agent in self.agents}
 
+        # - Infos -#
+        # Infos contain the actual (unscaled) travel time and tolling of each agent
+        infos = {agent: {} for agent in self.agents}
+
         # - Rewards -#
         # compute latency and cost of each route
-        latency_routes, cost_routes = self._compute_latency_and_cost(agents_on_routes)
+        latency_routes, cost_routes, latency_routes_scaled, cost_routes_scaled = self._compute_latency_and_cost(
+            agents_on_routes
+        )
+        # reset avg_tt
+        self.avg_tt = 0.0
 
         rewards = dict()
         for i in range(len(self.agents)):
             # get the route which was taken by the agent
             agent_route = agent_routes[i]
-            latency_reward = latency_routes[agent_route]
-            cost_reward = cost_routes[agent_route]
+            latency_reward = latency_routes_scaled[agent_route]
+            cost_reward = cost_routes_scaled[agent_route]
             # retrieve the ID of the agent
             agent_id = self.agents[i]
+            infos[agent_id] = {"latency": latency_routes[agent_route], "cost": cost_routes[agent_route]}
+            self.avg_tt += latency_routes[agent_route]
             rewards[agent_id] = np.array([-latency_reward, -cost_reward], dtype=np.float32)
-
-        # - Infos -#
-        # typically there won't be any information in the infos, but there must still be an entry for each agent
-        infos = {agent: {} for agent in self.agents}
+        # compute the average travel time of all agents
+        self.avg_tt /= len(self.agents)
 
         # stateless bandit setting where each episode only lasts 1 timestep
         self.terminations = {agent: True for agent in self.agents}
@@ -368,39 +377,49 @@ class MOCongestion(MOParallelEnv):
         """
         all_used_routes = list(routes.keys())
         total_latencies = {route: 0 for route in all_used_routes}
+        total_latencies_scaled = {route: 0 for route in all_used_routes}
         total_cost = {route: 0 for route in all_used_routes}
+        total_cost_scaled = {route: 0 for route in all_used_routes}
         for route in routes:
             # get links of route
             links_of_route = route.split(",")
-            total_latencies[route] = sum(map(lambda link: self._get_scaled_link_latency(link), links_of_route))
-            total_cost[route] = sum(map(lambda link: self._get_scaled_link_cost(link), links_of_route))
+            # compute the total latency and cost of this specific route
+            total_latencies[route] = sum(map(lambda link: self._get_link_latency(link), links_of_route))
+            total_latencies_scaled[route] = (
+                sum(map(lambda link: self._get_link_latency(link) / self._max_link_latency, links_of_route))
+                / self._max_route_length
+            )
+            total_cost[route] = sum(map(lambda link: self._get_link_cost(link) / self._max_link_cost, links_of_route))
+            total_cost_scaled[route] = (
+                sum(map(lambda link: self._get_link_cost(link) / self._max_link_cost, links_of_route)) / self._max_route_length
+            )
         # return the total (sum) latency and cost of this specific route
-        return total_latencies, total_cost
+        return total_latencies, total_cost, total_latencies_scaled, total_cost_scaled
 
-    def _get_scaled_link_latency(self, link):
-        """Computes the scaled latency of a link in the network.
+    def _get_link_latency(self, link):
+        """Computes the latency of a link in the network.
 
-        The scaled latency of a link is its current latency (based on its flow) divided by the maximum latency possible on any link
+        The latency of a link is its current latency (based on its flow)
 
         Args:
             link: the link for which the latency is computed
 
         Returns:
-            scaled_latency: the scaled latency
+            link_latency: the latency of the link
         """
         latency_c = lambdify("f", self.latency_functions[link])
-        return latency_c(self.flows[link]) / self._max_link_latency
+        return latency_c(self.flows[link])
 
-    def _get_scaled_link_cost(self, link):
-        """Computes the scaled (monetary) cost of a link in the network.
+    def _get_link_cost(self, link):
+        """Computes the monetary cost of a link in the network.
 
-        The scaled cost of a link is its current cost (based on its flow) divided by the maximum cost possible on any link
+        The monetary cost of a link is its current cost (based on its flow)
 
         Args:
             link: the link for which the cost is computed
 
         Returns:
-            scaled_cost: the scaled cost
+            link_cost: the cost of the link
         """
         cost_c = lambdify("f", self.cost_function[link])
-        return cost_c(self.flows[link]) / self._max_link_cost
+        return cost_c(self.flows[link])
