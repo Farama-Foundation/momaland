@@ -345,12 +345,12 @@
 </section>
 <section id="reward-space">
 <h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
-<p>The reward space is a 2D vector containing rewards for two different schemes (‘local’ or ‘global’) for:</p>
+<p>The reward space is a 2D vector containing rewards for two different modes (‘individual’ or ‘team’) for:</p>
 <ul class="simple">
 <li><p>the occupation level</p></li>
 <li><p>the mixture level
-If the scheme is ‘local’, the reward is given for the currently occupied section.
-If the scheme is ‘global’, the reward is summed over all sections.</p></li>
+If the mode is ‘individual’, the reward is given for the currently occupied section.
+If the mode is ‘team’, the reward is summed over all sections.</p></li>
 </ul>
 </section>
 <section id="starting-state">
@@ -373,7 +373,7 @@ Agents only receive the reward after the last timestep.</p>
 <ul class="simple">
 <li><p>‘num_timesteps (int)’: number of timesteps in the domain. Default: 1</p></li>
 <li><p>‘num_agents (int)’: number of agents in the domain. Default: 100</p></li>
-<li><p>‘reward_scheme (str)’: the reward scheme to use (‘local’, or ‘global’). Default: local</p></li>
+<li><p>‘reward_mode (str)’: the reward mode to use (‘individual’, or ‘team’). Default: individual</p></li>
 <li><p>‘sections (int)’: number of beach sections in the domain. Default: 6</p></li>
 <li><p>‘capacity (int)’: capacity of each beach section. Default: 7</p></li>
 <li><p>‘type_distribution (tuple)’: the distribution of agent types in the domain. Default: 2 types equally distributed (0.3, 0.7).</p></li>
