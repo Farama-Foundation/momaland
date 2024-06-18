@@ -681,7 +681,7 @@
             {
                 "name": "1-31",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -696,7 +696,7 @@
             {
                 "name": "1-32",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -711,7 +711,7 @@
             {
                 "name": "1-159",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -726,7 +726,7 @@
             {
                 "name": "1-161",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -741,7 +741,7 @@
             {
                 "name": "2-31",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -756,7 +756,7 @@
             {
                 "name": "2-32",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -771,7 +771,7 @@
             {
                 "name": "2-37",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -786,7 +786,7 @@
             {
                 "name": "2-216",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -801,7 +801,7 @@
             {
                 "name": "3-42",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -816,7 +816,7 @@
             {
                 "name": "3-44",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -831,7 +831,7 @@
             {
                 "name": "3-61",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -846,7 +846,7 @@
             {
                 "name": "3-62",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -861,7 +861,7 @@
             {
                 "name": "4-70",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -876,7 +876,7 @@
             {
                 "name": "4-71",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -891,7 +891,7 @@
             {
                 "name": "4-75",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -906,7 +906,7 @@
             {
                 "name": "4-82",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -921,7 +921,7 @@
             {
                 "name": "5-73",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -936,7 +936,7 @@
             {
                 "name": "5-77",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -951,7 +951,7 @@
             {
                 "name": "5-78",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -966,7 +966,7 @@
             {
                 "name": "5-96",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -981,7 +981,7 @@
             {
                 "name": "6-193",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -996,7 +996,7 @@
             {
                 "name": "6-194",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1011,7 +1011,7 @@
             {
                 "name": "6-195",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1026,7 +1026,7 @@
             {
                 "name": "6-198",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1041,7 +1041,7 @@
             {
                 "name": "7-179",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1056,7 +1056,7 @@
             {
                 "name": "7-200",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1071,7 +1071,7 @@
             {
                 "name": "7-201",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1086,7 +1086,7 @@
             {
                 "name": "7-202",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1101,7 +1101,7 @@
             {
                 "name": "8-99",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1116,7 +1116,7 @@
             {
                 "name": "8-113",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1131,7 +1131,7 @@
             {
                 "name": "8-114",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1146,7 +1146,7 @@
             {
                 "name": "8-116",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1161,7 +1161,7 @@
             {
                 "name": "9-29",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1176,7 +1176,7 @@
             {
                 "name": "9-39",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1191,7 +1191,7 @@
             {
                 "name": "9-47",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1206,7 +1206,7 @@
             {
                 "name": "9-140",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1221,7 +1221,7 @@
             {
                 "name": "10-74",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1236,7 +1236,7 @@
             {
                 "name": "10-76",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1251,7 +1251,7 @@
             {
                 "name": "10-79",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1266,7 +1266,7 @@
             {
                 "name": "10-80",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1281,7 +1281,7 @@
             {
                 "name": "11-134",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1296,7 +1296,7 @@
             {
                 "name": "11-142",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1311,7 +1311,7 @@
             {
                 "name": "11-144",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1326,7 +1326,7 @@
             {
                 "name": "11-145",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1341,7 +1341,7 @@
             {
                 "name": "12-92",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1356,7 +1356,7 @@
             {
                 "name": "12-94",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1371,7 +1371,7 @@
             {
                 "name": "12-126",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1386,7 +1386,7 @@
             {
                 "name": "12-127",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1401,7 +1401,7 @@
             {
                 "name": "13-68",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1416,7 +1416,7 @@
             {
                 "name": "13-72",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1431,7 +1431,7 @@
             {
                 "name": "13-128",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1446,7 +1446,7 @@
             {
                 "name": "13-220",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1461,7 +1461,7 @@
             {
                 "name": "14-164",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1476,7 +1476,7 @@
             {
                 "name": "14-165",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1491,7 +1491,7 @@
             {
                 "name": "14-173",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1506,7 +1506,7 @@
             {
                 "name": "14-189",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1521,7 +1521,7 @@
             {
                 "name": "15-151",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1536,7 +1536,7 @@
             {
                 "name": "15-157",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1551,7 +1551,7 @@
             {
                 "name": "15-183",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1566,7 +1566,7 @@
             {
                 "name": "15-184",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1581,7 +1581,7 @@
             {
                 "name": "16-99",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1596,7 +1596,7 @@
             {
                 "name": "16-100",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1611,7 +1611,7 @@
             {
                 "name": "16-103",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1626,7 +1626,7 @@
             {
                 "name": "16-104",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1641,7 +1641,7 @@
             {
                 "name": "17-88",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1656,7 +1656,7 @@
             {
                 "name": "17-89",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1671,7 +1671,7 @@
             {
                 "name": "17-159",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1686,7 +1686,7 @@
             {
                 "name": "17-160",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1701,7 +1701,7 @@
             {
                 "name": "18-29",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1716,7 +1716,7 @@
             {
                 "name": "18-30",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1731,7 +1731,7 @@
             {
                 "name": "18-39",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1746,7 +1746,7 @@
             {
                 "name": "18-47",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1761,7 +1761,7 @@
             {
                 "name": "19-26",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1776,7 +1776,7 @@
             {
                 "name": "19-136",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1791,7 +1791,7 @@
             {
                 "name": "19-138",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1806,7 +1806,7 @@
             {
                 "name": "19-139",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1821,7 +1821,7 @@
             {
                 "name": "20-52",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1836,7 +1836,7 @@
             {
                 "name": "20-53",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1851,7 +1851,7 @@
             {
                 "name": "20-60",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1866,7 +1866,7 @@
             {
                 "name": "20-190",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1881,7 +1881,7 @@
             {
                 "name": "21-65",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1896,7 +1896,7 @@
             {
                 "name": "21-190",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1911,7 +1911,7 @@
             {
                 "name": "21-201",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1926,7 +1926,7 @@
             {
                 "name": "21-208",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1941,7 +1941,7 @@
             {
                 "name": "22-179",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1956,7 +1956,7 @@
             {
                 "name": "22-190",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1971,7 +1971,7 @@
             {
                 "name": "22-200",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -1986,7 +1986,7 @@
             {
                 "name": "22-206",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2001,7 +2001,7 @@
             {
                 "name": "23-25",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2016,7 +2016,7 @@
             {
                 "name": "23-54",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2031,7 +2031,7 @@
             {
                 "name": "23-57",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2046,7 +2046,7 @@
             {
                 "name": "23-223",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2061,7 +2061,7 @@
             {
                 "name": "24-27",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -2076,7 +2076,7 @@
             {
                 "name": "24-28",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.666667,
@@ -2091,7 +2091,7 @@
             {
                 "name": "25-23",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2106,7 +2106,7 @@
             {
                 "name": "25-26",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 14.0,
@@ -2121,7 +2121,7 @@
             {
                 "name": "26-19",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2136,7 +2136,7 @@
             {
                 "name": "26-27",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.666667,
@@ -2151,7 +2151,7 @@
             {
                 "name": "27-24",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -2166,7 +2166,7 @@
             {
                 "name": "27-42",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 22.0,
@@ -2181,7 +2181,7 @@
             {
                 "name": "27-141",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -2196,7 +2196,7 @@
             {
                 "name": "28-57",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.333333,
@@ -2211,7 +2211,7 @@
             {
                 "name": "29-9",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2226,7 +2226,7 @@
             {
                 "name": "29-18",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2241,7 +2241,7 @@
             {
                 "name": "29-30",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.666667,
@@ -2256,7 +2256,7 @@
             {
                 "name": "29-39",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -2271,7 +2271,7 @@
             {
                 "name": "30-18",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2286,7 +2286,7 @@
             {
                 "name": "30-36",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.0,
@@ -2301,7 +2301,7 @@
             {
                 "name": "31-1",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2316,7 +2316,7 @@
             {
                 "name": "31-2",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2331,7 +2331,7 @@
             {
                 "name": "31-40",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.0,
@@ -2346,7 +2346,7 @@
             {
                 "name": "31-216",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.0,
@@ -2361,7 +2361,7 @@
             {
                 "name": "32-1",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2376,7 +2376,7 @@
             {
                 "name": "32-2",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2391,7 +2391,7 @@
             {
                 "name": "32-31",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -2406,7 +2406,7 @@
             {
                 "name": "32-38",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -2421,7 +2421,7 @@
             {
                 "name": "33-32",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.666667,
@@ -2436,7 +2436,7 @@
             {
                 "name": "34-35",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -2451,7 +2451,7 @@
             {
                 "name": "35-41",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -2466,7 +2466,7 @@
             {
                 "name": "35-180",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -2481,7 +2481,7 @@
             {
                 "name": "36-37",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -2496,7 +2496,7 @@
             {
                 "name": "36-38",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -2511,7 +2511,7 @@
             {
                 "name": "37-2",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2526,7 +2526,7 @@
             {
                 "name": "37-31",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 15.333333,
@@ -2541,7 +2541,7 @@
             {
                 "name": "38-36",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -2556,7 +2556,7 @@
             {
                 "name": "38-39",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.333333,
@@ -2571,7 +2571,7 @@
             {
                 "name": "38-162",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -2586,7 +2586,7 @@
             {
                 "name": "39-9",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2601,7 +2601,7 @@
             {
                 "name": "39-18",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2616,7 +2616,7 @@
             {
                 "name": "39-49",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -2631,7 +2631,7 @@
             {
                 "name": "40-34",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -2646,7 +2646,7 @@
             {
                 "name": "40-84",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -2661,7 +2661,7 @@
             {
                 "name": "41-33",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.333333,
@@ -2676,7 +2676,7 @@
             {
                 "name": "41-40",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -2691,7 +2691,7 @@
             {
                 "name": "42-3",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2706,7 +2706,7 @@
             {
                 "name": "42-43",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -2721,7 +2721,7 @@
             {
                 "name": "42-50",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -2736,7 +2736,7 @@
             {
                 "name": "43-47",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -2751,7 +2751,7 @@
             {
                 "name": "44-3",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2766,7 +2766,7 @@
             {
                 "name": "44-24",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 14.333333,
@@ -2781,7 +2781,7 @@
             {
                 "name": "44-42",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -2796,7 +2796,7 @@
             {
                 "name": "45-46",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.333333,
@@ -2811,7 +2811,7 @@
             {
                 "name": "45-60",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 18.0,
@@ -2826,7 +2826,7 @@
             {
                 "name": "45-187",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -2841,7 +2841,7 @@
             {
                 "name": "46-45",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -2856,7 +2856,7 @@
             {
                 "name": "46-62",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.0,
@@ -2871,7 +2871,7 @@
             {
                 "name": "46-95",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.666667,
@@ -2886,7 +2886,7 @@
             {
                 "name": "47-9",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2901,7 +2901,7 @@
             {
                 "name": "47-18",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -2916,7 +2916,7 @@
             {
                 "name": "47-48",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -2931,7 +2931,7 @@
             {
                 "name": "48-29",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -2946,7 +2946,7 @@
             {
                 "name": "49-47",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -2961,7 +2961,7 @@
             {
                 "name": "49-50",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 21.666667,
@@ -2976,7 +2976,7 @@
             {
                 "name": "50-51",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -2991,7 +2991,7 @@
             {
                 "name": "50-63",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.0,
@@ -3006,7 +3006,7 @@
             {
                 "name": "51-44",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -3021,7 +3021,7 @@
             {
                 "name": "51-45",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 18.0,
@@ -3036,7 +3036,7 @@
             {
                 "name": "52-20",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3051,7 +3051,7 @@
             {
                 "name": "53-20",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3066,7 +3066,7 @@
             {
                 "name": "53-46",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.0,
@@ -3081,7 +3081,7 @@
             {
                 "name": "53-52",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -3096,7 +3096,7 @@
             {
                 "name": "53-127",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 20.666667,
@@ -3111,7 +3111,7 @@
             {
                 "name": "54-23",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3126,7 +3126,7 @@
             {
                 "name": "54-25",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 19.666667,
@@ -3141,7 +3141,7 @@
             {
                 "name": "54-55",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.333333,
@@ -3156,7 +3156,7 @@
             {
                 "name": "55-54",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -3171,7 +3171,7 @@
             {
                 "name": "55-145",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.0,
@@ -3186,7 +3186,7 @@
             {
                 "name": "55-222",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -3201,7 +3201,7 @@
             {
                 "name": "56-54",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.0,
@@ -3216,7 +3216,7 @@
             {
                 "name": "57-23",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3231,7 +3231,7 @@
             {
                 "name": "57-55",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.666667,
@@ -3246,7 +3246,7 @@
             {
                 "name": "57-144",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -3261,7 +3261,7 @@
             {
                 "name": "58-59",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.666667,
@@ -3276,7 +3276,7 @@
             {
                 "name": "58-122",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 18.666667,
@@ -3291,7 +3291,7 @@
             {
                 "name": "59-53",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.333333,
@@ -3306,7 +3306,7 @@
             {
                 "name": "59-60",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -3321,7 +3321,7 @@
             {
                 "name": "59-93",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -3336,7 +3336,7 @@
             {
                 "name": "60-20",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3351,7 +3351,7 @@
             {
                 "name": "60-58",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 15.0,
@@ -3366,7 +3366,7 @@
             {
                 "name": "60-59",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -3381,7 +3381,7 @@
             {
                 "name": "61-3",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3396,7 +3396,7 @@
             {
                 "name": "61-44",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 19.666667,
@@ -3411,7 +3411,7 @@
             {
                 "name": "62-3",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3426,7 +3426,7 @@
             {
                 "name": "62-61",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -3441,7 +3441,7 @@
             {
                 "name": "62-82",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.0,
@@ -3456,7 +3456,7 @@
             {
                 "name": "63-64",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 16.666667,
@@ -3471,7 +3471,7 @@
             {
                 "name": "64-67",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -3486,7 +3486,7 @@
             {
                 "name": "64-88",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.666667,
@@ -3501,7 +3501,7 @@
             {
                 "name": "65-21",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3516,7 +3516,7 @@
             {
                 "name": "65-51",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 17.666667,
@@ -3531,7 +3531,7 @@
             {
                 "name": "66-64",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -3546,7 +3546,7 @@
             {
                 "name": "66-65",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.333333,
@@ -3561,7 +3561,7 @@
             {
                 "name": "66-208",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -3576,7 +3576,7 @@
             {
                 "name": "67-66",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -3591,7 +3591,7 @@
             {
                 "name": "67-185",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -3606,7 +3606,7 @@
             {
                 "name": "68-13",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3621,7 +3621,7 @@
             {
                 "name": "68-69",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -3636,7 +3636,7 @@
             {
                 "name": "68-77",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.0,
@@ -3651,7 +3651,7 @@
             {
                 "name": "68-220",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -3666,7 +3666,7 @@
             {
                 "name": "69-68",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -3681,7 +3681,7 @@
             {
                 "name": "69-72",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -3696,7 +3696,7 @@
             {
                 "name": "69-111",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -3711,7 +3711,7 @@
             {
                 "name": "70-4",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3726,7 +3726,7 @@
             {
                 "name": "70-71",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -3741,7 +3741,7 @@
             {
                 "name": "70-75",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -3756,7 +3756,7 @@
             {
                 "name": "71-4",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3771,7 +3771,7 @@
             {
                 "name": "71-24",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -3786,7 +3786,7 @@
             {
                 "name": "71-61",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -3801,7 +3801,7 @@
             {
                 "name": "72-13",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3816,7 +3816,7 @@
             {
                 "name": "72-80",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -3831,7 +3831,7 @@
             {
                 "name": "73-5",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3846,7 +3846,7 @@
             {
                 "name": "73-69",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.666667,
@@ -3861,7 +3861,7 @@
             {
                 "name": "74-10",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3876,7 +3876,7 @@
             {
                 "name": "74-70",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -3891,7 +3891,7 @@
             {
                 "name": "75-4",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3906,7 +3906,7 @@
             {
                 "name": "75-70",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -3921,7 +3921,7 @@
             {
                 "name": "75-76",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -3936,7 +3936,7 @@
             {
                 "name": "75-123",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -3951,7 +3951,7 @@
             {
                 "name": "76-10",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3966,7 +3966,7 @@
             {
                 "name": "76-79",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.0,
@@ -3981,7 +3981,7 @@
             {
                 "name": "77-5",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -3996,7 +3996,7 @@
             {
                 "name": "77-78",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4011,7 +4011,7 @@
             {
                 "name": "78-5",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4026,7 +4026,7 @@
             {
                 "name": "78-96",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.0,
@@ -4041,7 +4041,7 @@
             {
                 "name": "79-10",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4056,7 +4056,7 @@
             {
                 "name": "79-68",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.666667,
@@ -4071,7 +4071,7 @@
             {
                 "name": "79-80",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4086,7 +4086,7 @@
             {
                 "name": "79-123",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -4101,7 +4101,7 @@
             {
                 "name": "80-10",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4116,7 +4116,7 @@
             {
                 "name": "80-79",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4131,7 +4131,7 @@
             {
                 "name": "80-81",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -4146,7 +4146,7 @@
             {
                 "name": "81-74",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -4161,7 +4161,7 @@
             {
                 "name": "82-4",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4176,7 +4176,7 @@
             {
                 "name": "82-75",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -4191,7 +4191,7 @@
             {
                 "name": "84-83",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -4206,7 +4206,7 @@
             {
                 "name": "84-85",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4221,7 +4221,7 @@
             {
                 "name": "84-216",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -4236,7 +4236,7 @@
             {
                 "name": "85-34",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -4251,7 +4251,7 @@
             {
                 "name": "85-84",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4266,7 +4266,7 @@
             {
                 "name": "86-119",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -4281,7 +4281,7 @@
             {
                 "name": "86-120",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.666667,
@@ -4296,7 +4296,7 @@
             {
                 "name": "86-191",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.0,
@@ -4311,7 +4311,7 @@
             {
                 "name": "87-86",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.0,
@@ -4326,7 +4326,7 @@
             {
                 "name": "88-17",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4341,7 +4341,7 @@
             {
                 "name": "88-89",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4356,7 +4356,7 @@
             {
                 "name": "88-91",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -4371,7 +4371,7 @@
             {
                 "name": "88-213",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 14.333333,
@@ -4386,7 +4386,7 @@
             {
                 "name": "89-17",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4401,7 +4401,7 @@
             {
                 "name": "89-88",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -4416,7 +4416,7 @@
             {
                 "name": "89-90",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -4431,7 +4431,7 @@
             {
                 "name": "90-67",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -4446,7 +4446,7 @@
             {
                 "name": "91-160",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 23.666667,
@@ -4461,7 +4461,7 @@
             {
                 "name": "92-12",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4476,7 +4476,7 @@
             {
                 "name": "92-59",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -4491,7 +4491,7 @@
             {
                 "name": "93-125",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.666667,
@@ -4506,7 +4506,7 @@
             {
                 "name": "94-12",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4521,7 +4521,7 @@
             {
                 "name": "94-53",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.666667,
@@ -4536,7 +4536,7 @@
             {
                 "name": "95-46",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -4551,7 +4551,7 @@
             {
                 "name": "95-129",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -4566,7 +4566,7 @@
             {
                 "name": "96-5",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4581,7 +4581,7 @@
             {
                 "name": "96-97",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4596,7 +4596,7 @@
             {
                 "name": "97-73",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.666667,
@@ -4611,7 +4611,7 @@
             {
                 "name": "97-96",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -4626,7 +4626,7 @@
             {
                 "name": "97-133",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -4641,7 +4641,7 @@
             {
                 "name": "98-108",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -4656,7 +4656,7 @@
             {
                 "name": "99-8",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4671,7 +4671,7 @@
             {
                 "name": "99-16",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4686,7 +4686,7 @@
             {
                 "name": "99-100",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -4701,7 +4701,7 @@
             {
                 "name": "99-110",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -4716,7 +4716,7 @@
             {
                 "name": "99-114",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -4731,7 +4731,7 @@
             {
                 "name": "100-16",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4746,7 +4746,7 @@
             {
                 "name": "100-99",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -4761,7 +4761,7 @@
             {
                 "name": "100-106",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -4776,7 +4776,7 @@
             {
                 "name": "100-107",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.666667,
@@ -4791,7 +4791,7 @@
             {
                 "name": "101-111",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -4806,7 +4806,7 @@
             {
                 "name": "101-144",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -4821,7 +4821,7 @@
             {
                 "name": "102-112",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.0,
@@ -4836,7 +4836,7 @@
             {
                 "name": "103-16",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4851,7 +4851,7 @@
             {
                 "name": "103-99",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -4866,7 +4866,7 @@
             {
                 "name": "104-16",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -4881,7 +4881,7 @@
             {
                 "name": "104-116",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -4896,7 +4896,7 @@
             {
                 "name": "105-107",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -4911,7 +4911,7 @@
             {
                 "name": "106-100",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.666667,
@@ -4926,7 +4926,7 @@
             {
                 "name": "106-107",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.666667,
@@ -4941,7 +4941,7 @@
             {
                 "name": "106-118",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -4956,7 +4956,7 @@
             {
                 "name": "107-100",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.666667,
@@ -4971,7 +4971,7 @@
             {
                 "name": "107-102",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -4986,7 +4986,7 @@
             {
                 "name": "107-106",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.0,
@@ -5001,7 +5001,7 @@
             {
                 "name": "108-74",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -5016,7 +5016,7 @@
             {
                 "name": "109-106",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.0,
@@ -5031,7 +5031,7 @@
             {
                 "name": "109-115",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -5046,7 +5046,7 @@
             {
                 "name": "109-117",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.0,
@@ -5061,7 +5061,7 @@
             {
                 "name": "110-99",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -5076,7 +5076,7 @@
             {
                 "name": "110-117",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -5091,7 +5091,7 @@
             {
                 "name": "111-69",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.333333,
@@ -5106,7 +5106,7 @@
             {
                 "name": "111-98",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -5121,7 +5121,7 @@
             {
                 "name": "111-101",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -5136,7 +5136,7 @@
             {
                 "name": "112-105",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.0,
@@ -5151,7 +5151,7 @@
             {
                 "name": "112-115",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 17.0,
@@ -5166,7 +5166,7 @@
             {
                 "name": "112-130",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -5181,7 +5181,7 @@
             {
                 "name": "113-8",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5196,7 +5196,7 @@
             {
                 "name": "113-103",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.0,
@@ -5211,7 +5211,7 @@
             {
                 "name": "114-8",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5226,7 +5226,7 @@
             {
                 "name": "114-120",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 15.333333,
@@ -5241,7 +5241,7 @@
             {
                 "name": "115-109",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -5256,7 +5256,7 @@
             {
                 "name": "115-112",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 33.666667,
@@ -5271,7 +5271,7 @@
             {
                 "name": "116-8",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5286,7 +5286,7 @@
             {
                 "name": "116-110",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -5301,7 +5301,7 @@
             {
                 "name": "116-114",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.333333,
@@ -5316,7 +5316,7 @@
             {
                 "name": "117-109",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 19.666667,
@@ -5331,7 +5331,7 @@
             {
                 "name": "117-110",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -5346,7 +5346,7 @@
             {
                 "name": "117-119",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -5361,7 +5361,7 @@
             {
                 "name": "118-109",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 21.0,
@@ -5376,7 +5376,7 @@
             {
                 "name": "119-86",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -5391,7 +5391,7 @@
             {
                 "name": "119-116",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -5406,7 +5406,7 @@
             {
                 "name": "119-117",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -5421,7 +5421,7 @@
             {
                 "name": "120-86",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -5436,7 +5436,7 @@
             {
                 "name": "120-116",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -5451,7 +5451,7 @@
             {
                 "name": "120-121",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -5466,7 +5466,7 @@
             {
                 "name": "121-120",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -5481,7 +5481,7 @@
             {
                 "name": "121-125",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.333333,
@@ -5496,7 +5496,7 @@
             {
                 "name": "122-192",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 16.333333,
@@ -5511,7 +5511,7 @@
             {
                 "name": "123-79",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.666667,
@@ -5526,7 +5526,7 @@
             {
                 "name": "123-95",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -5541,7 +5541,7 @@
             {
                 "name": "123-124",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -5556,7 +5556,7 @@
             {
                 "name": "124-123",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -5571,7 +5571,7 @@
             {
                 "name": "124-127",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -5586,7 +5586,7 @@
             {
                 "name": "125-92",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -5601,7 +5601,7 @@
             {
                 "name": "125-126",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -5616,7 +5616,7 @@
             {
                 "name": "125-221",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -5631,7 +5631,7 @@
             {
                 "name": "126-12",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5646,7 +5646,7 @@
             {
                 "name": "126-125",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -5661,7 +5661,7 @@
             {
                 "name": "126-127",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -5676,7 +5676,7 @@
             {
                 "name": "127-12",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5691,7 +5691,7 @@
             {
                 "name": "127-94",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -5706,7 +5706,7 @@
             {
                 "name": "127-124",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -5721,7 +5721,7 @@
             {
                 "name": "127-126",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -5736,7 +5736,7 @@
             {
                 "name": "127-220",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.666667,
@@ -5751,7 +5751,7 @@
             {
                 "name": "128-13",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5766,7 +5766,7 @@
             {
                 "name": "128-127",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -5781,7 +5781,7 @@
             {
                 "name": "129-123",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -5796,7 +5796,7 @@
             {
                 "name": "131-132",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -5811,7 +5811,7 @@
             {
                 "name": "132-97",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 19.666667,
@@ -5826,7 +5826,7 @@
             {
                 "name": "132-135",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -5841,7 +5841,7 @@
             {
                 "name": "133-132",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -5856,7 +5856,7 @@
             {
                 "name": "134-11",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5871,7 +5871,7 @@
             {
                 "name": "134-132",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.666667,
@@ -5886,7 +5886,7 @@
             {
                 "name": "134-143",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -5901,7 +5901,7 @@
             {
                 "name": "135-134",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -5916,7 +5916,7 @@
             {
                 "name": "136-19",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5931,7 +5931,7 @@
             {
                 "name": "136-138",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.0,
@@ -5946,7 +5946,7 @@
             {
                 "name": "136-140",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 20.666667,
@@ -5961,7 +5961,7 @@
             {
                 "name": "137-136",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.0,
@@ -5976,7 +5976,7 @@
             {
                 "name": "138-19",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -5991,7 +5991,7 @@
             {
                 "name": "138-139",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -6006,7 +6006,7 @@
             {
                 "name": "139-19",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6021,7 +6021,7 @@
             {
                 "name": "139-141",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -6036,7 +6036,7 @@
             {
                 "name": "140-9",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6051,7 +6051,7 @@
             {
                 "name": "140-219",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -6066,7 +6066,7 @@
             {
                 "name": "141-27",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 26.666667,
@@ -6081,7 +6081,7 @@
             {
                 "name": "141-136",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.0,
@@ -6096,7 +6096,7 @@
             {
                 "name": "142-11",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6111,7 +6111,7 @@
             {
                 "name": "142-101",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.0,
@@ -6126,7 +6126,7 @@
             {
                 "name": "143-134",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -6141,7 +6141,7 @@
             {
                 "name": "143-145",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.666667,
@@ -6156,7 +6156,7 @@
             {
                 "name": "144-11",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6171,7 +6171,7 @@
             {
                 "name": "144-57",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -6186,7 +6186,7 @@
             {
                 "name": "144-142",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -6201,7 +6201,7 @@
             {
                 "name": "144-146",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -6216,7 +6216,7 @@
             {
                 "name": "145-11",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6231,7 +6231,7 @@
             {
                 "name": "145-55",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -6246,7 +6246,7 @@
             {
                 "name": "145-143",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -6261,7 +6261,7 @@
             {
                 "name": "145-146",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.0,
@@ -6276,7 +6276,7 @@
             {
                 "name": "146-144",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -6291,7 +6291,7 @@
             {
                 "name": "146-145",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.0,
@@ -6306,7 +6306,7 @@
             {
                 "name": "147-148",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -6321,7 +6321,7 @@
             {
                 "name": "148-147",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -6336,7 +6336,7 @@
             {
                 "name": "148-149",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -6351,7 +6351,7 @@
             {
                 "name": "149-151",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -6366,7 +6366,7 @@
             {
                 "name": "150-153",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 15.0,
@@ -6381,7 +6381,7 @@
             {
                 "name": "151-15",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6396,7 +6396,7 @@
             {
                 "name": "151-152",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.333333,
@@ -6411,7 +6411,7 @@
             {
                 "name": "151-153",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -6426,7 +6426,7 @@
             {
                 "name": "152-170",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 22.333333,
@@ -6441,7 +6441,7 @@
             {
                 "name": "153-157",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -6456,7 +6456,7 @@
             {
                 "name": "154-155",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.333333,
@@ -6471,7 +6471,7 @@
             {
                 "name": "155-156",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -6486,7 +6486,7 @@
             {
                 "name": "156-158",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -6501,7 +6501,7 @@
             {
                 "name": "157-15",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6516,7 +6516,7 @@
             {
                 "name": "157-154",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -6531,7 +6531,7 @@
             {
                 "name": "157-184",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -6546,7 +6546,7 @@
             {
                 "name": "158-147",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -6561,7 +6561,7 @@
             {
                 "name": "158-149",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -6576,7 +6576,7 @@
             {
                 "name": "159-1",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6591,7 +6591,7 @@
             {
                 "name": "159-17",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6606,7 +6606,7 @@
             {
                 "name": "159-160",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.0,
@@ -6621,7 +6621,7 @@
             {
                 "name": "159-161",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -6636,7 +6636,7 @@
             {
                 "name": "159-174",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -6651,7 +6651,7 @@
             {
                 "name": "160-17",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6666,7 +6666,7 @@
             {
                 "name": "160-159",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 16.666667,
@@ -6681,7 +6681,7 @@
             {
                 "name": "160-163",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -6696,7 +6696,7 @@
             {
                 "name": "161-1",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6711,7 +6711,7 @@
             {
                 "name": "161-32",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.0,
@@ -6726,7 +6726,7 @@
             {
                 "name": "162-160",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.0,
@@ -6741,7 +6741,7 @@
             {
                 "name": "163-38",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.333333,
@@ -6756,7 +6756,7 @@
             {
                 "name": "164-14",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6771,7 +6771,7 @@
             {
                 "name": "164-168",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.333333,
@@ -6786,7 +6786,7 @@
             {
                 "name": "165-14",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -6801,7 +6801,7 @@
             {
                 "name": "165-166",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.333333,
@@ -6816,7 +6816,7 @@
             {
                 "name": "166-167",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.333333,
@@ -6831,7 +6831,7 @@
             {
                 "name": "166-198",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 15.0,
@@ -6846,7 +6846,7 @@
             {
                 "name": "167-164",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -6861,7 +6861,7 @@
             {
                 "name": "167-166",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -6876,7 +6876,7 @@
             {
                 "name": "167-186",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 16.333333,
@@ -6891,7 +6891,7 @@
             {
                 "name": "168-169",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -6906,7 +6906,7 @@
             {
                 "name": "168-172",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -6921,7 +6921,7 @@
             {
                 "name": "169-150",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.666667,
@@ -6936,7 +6936,7 @@
             {
                 "name": "170-171",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -6951,7 +6951,7 @@
             {
                 "name": "171-165",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.666667,
@@ -6966,7 +6966,7 @@
             {
                 "name": "171-172",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -6981,7 +6981,7 @@
             {
                 "name": "171-224",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -6996,7 +6996,7 @@
             {
                 "name": "172-169",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.0,
@@ -7011,7 +7011,7 @@
             {
                 "name": "172-170",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -7026,7 +7026,7 @@
             {
                 "name": "173-14",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7041,7 +7041,7 @@
             {
                 "name": "173-167",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.0,
@@ -7056,7 +7056,7 @@
             {
                 "name": "174-159",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -7071,7 +7071,7 @@
             {
                 "name": "174-176",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -7086,7 +7086,7 @@
             {
                 "name": "175-41",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.0,
@@ -7101,7 +7101,7 @@
             {
                 "name": "176-174",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -7116,7 +7116,7 @@
             {
                 "name": "176-175",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.0,
@@ -7131,7 +7131,7 @@
             {
                 "name": "176-177",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -7146,7 +7146,7 @@
             {
                 "name": "177-176",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -7161,7 +7161,7 @@
             {
                 "name": "177-178",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.333333,
@@ -7176,7 +7176,7 @@
             {
                 "name": "178-182",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -7191,7 +7191,7 @@
             {
                 "name": "179-7",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7206,7 +7206,7 @@
             {
                 "name": "179-22",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7221,7 +7221,7 @@
             {
                 "name": "179-202",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -7236,7 +7236,7 @@
             {
                 "name": "179-214",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -7251,7 +7251,7 @@
             {
                 "name": "180-177",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.0,
@@ -7266,7 +7266,7 @@
             {
                 "name": "181-176",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.0,
@@ -7281,7 +7281,7 @@
             {
                 "name": "181-182",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.0,
@@ -7296,7 +7296,7 @@
             {
                 "name": "182-181",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -7311,7 +7311,7 @@
             {
                 "name": "182-212",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -7326,7 +7326,7 @@
             {
                 "name": "183-15",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7341,7 +7341,7 @@
             {
                 "name": "183-154",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.0,
@@ -7356,7 +7356,7 @@
             {
                 "name": "183-184",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -7371,7 +7371,7 @@
             {
                 "name": "184-15",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7386,7 +7386,7 @@
             {
                 "name": "184-66",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 16.333333,
@@ -7401,7 +7401,7 @@
             {
                 "name": "184-183",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -7416,7 +7416,7 @@
             {
                 "name": "184-204",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.0,
@@ -7431,7 +7431,7 @@
             {
                 "name": "185-183",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -7446,7 +7446,7 @@
             {
                 "name": "186-189",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -7461,7 +7461,7 @@
             {
                 "name": "186-204",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.666667,
@@ -7476,7 +7476,7 @@
             {
                 "name": "187-190",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.0,
@@ -7491,7 +7491,7 @@
             {
                 "name": "188-45",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -7506,7 +7506,7 @@
             {
                 "name": "189-14",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7521,7 +7521,7 @@
             {
                 "name": "189-173",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -7536,7 +7536,7 @@
             {
                 "name": "190-20",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7551,7 +7551,7 @@
             {
                 "name": "190-21",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7566,7 +7566,7 @@
             {
                 "name": "190-22",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7581,7 +7581,7 @@
             {
                 "name": "190-188",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.0,
@@ -7596,7 +7596,7 @@
             {
                 "name": "190-206",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -7611,7 +7611,7 @@
             {
                 "name": "191-192",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 14.333333,
@@ -7626,7 +7626,7 @@
             {
                 "name": "192-58",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 55.0,
@@ -7641,7 +7641,7 @@
             {
                 "name": "192-196",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -7656,7 +7656,7 @@
             {
                 "name": "192-197",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.333333,
@@ -7671,7 +7671,7 @@
             {
                 "name": "193-6",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7686,7 +7686,7 @@
             {
                 "name": "193-194",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.0,
@@ -7701,7 +7701,7 @@
             {
                 "name": "194-6",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7716,7 +7716,7 @@
             {
                 "name": "194-167",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 17.666667,
@@ -7731,7 +7731,7 @@
             {
                 "name": "194-179",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.666667,
@@ -7746,7 +7746,7 @@
             {
                 "name": "194-198",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.666667,
@@ -7761,7 +7761,7 @@
             {
                 "name": "195-6",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7776,7 +7776,7 @@
             {
                 "name": "195-199",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.0,
@@ -7791,7 +7791,7 @@
             {
                 "name": "196-87",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.0,
@@ -7806,7 +7806,7 @@
             {
                 "name": "197-193",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.666667,
@@ -7821,7 +7821,7 @@
             {
                 "name": "198-6",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7836,7 +7836,7 @@
             {
                 "name": "198-194",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -7851,7 +7851,7 @@
             {
                 "name": "198-195",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -7866,7 +7866,7 @@
             {
                 "name": "199-192",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.666667,
@@ -7881,7 +7881,7 @@
             {
                 "name": "199-197",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -7896,7 +7896,7 @@
             {
                 "name": "200-7",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7911,7 +7911,7 @@
             {
                 "name": "200-22",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7926,7 +7926,7 @@
             {
                 "name": "200-179",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.0,
@@ -7941,7 +7941,7 @@
             {
                 "name": "201-7",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7956,7 +7956,7 @@
             {
                 "name": "201-21",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -7971,7 +7971,7 @@
             {
                 "name": "201-200",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.333333,
@@ -7986,7 +7986,7 @@
             {
                 "name": "201-205",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -8001,7 +8001,7 @@
             {
                 "name": "201-208",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 13.333333,
@@ -8016,7 +8016,7 @@
             {
                 "name": "201-210",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 4.0,
@@ -8031,7 +8031,7 @@
             {
                 "name": "202-7",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -8046,7 +8046,7 @@
             {
                 "name": "202-201",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 19.0,
@@ -8061,7 +8061,7 @@
             {
                 "name": "203-207",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -8076,7 +8076,7 @@
             {
                 "name": "204-184",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 17.666667,
@@ -8091,7 +8091,7 @@
             {
                 "name": "204-186",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -8106,7 +8106,7 @@
             {
                 "name": "204-203",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.666667,
@@ -8121,7 +8121,7 @@
             {
                 "name": "205-204",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 8.333333,
@@ -8136,7 +8136,7 @@
             {
                 "name": "206-22",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -8151,7 +8151,7 @@
             {
                 "name": "206-210",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.666667,
@@ -8166,7 +8166,7 @@
             {
                 "name": "207-201",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 19.666667,
@@ -8181,7 +8181,7 @@
             {
                 "name": "208-21",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -8196,7 +8196,7 @@
             {
                 "name": "208-66",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 21.0,
@@ -8211,7 +8211,7 @@
             {
                 "name": "208-201",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 14.0,
@@ -8226,7 +8226,7 @@
             {
                 "name": "209-190",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.333333,
@@ -8241,7 +8241,7 @@
             {
                 "name": "210-190",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 10.0,
@@ -8256,7 +8256,7 @@
             {
                 "name": "210-201",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.333333,
@@ -8271,7 +8271,7 @@
             {
                 "name": "210-211",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 1.666667,
@@ -8286,7 +8286,7 @@
             {
                 "name": "211-209",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.333333,
@@ -8301,7 +8301,7 @@
             {
                 "name": "214-194",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 11.333333,
@@ -8316,7 +8316,7 @@
             {
                 "name": "215-216",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.0,
@@ -8331,7 +8331,7 @@
             {
                 "name": "215-217",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -8346,7 +8346,7 @@
             {
                 "name": "216-2",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -8361,7 +8361,7 @@
             {
                 "name": "216-83",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 17.333333,
@@ -8376,7 +8376,7 @@
             {
                 "name": "216-84",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 12.333333,
@@ -8391,7 +8391,7 @@
             {
                 "name": "216-218",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 3.666667,
@@ -8406,7 +8406,7 @@
             {
                 "name": "217-137",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 18.0,
@@ -8421,7 +8421,7 @@
             {
                 "name": "218-215",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 5.0,
@@ -8436,7 +8436,7 @@
             {
                 "name": "219-215",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 9.666667,
@@ -8451,7 +8451,7 @@
             {
                 "name": "220-13",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
@@ -8466,7 +8466,7 @@
             {
                 "name": "220-68",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 2.666667,
@@ -8481,7 +8481,7 @@
             {
                 "name": "220-128",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 7.333333,
@@ -8496,7 +8496,7 @@
             {
                 "name": "221-121",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 6.0,
@@ -8511,7 +8511,7 @@
             {
                 "name": "223-23",
                 "latency_function": {
-                    "expr": "t*(1+a*(f/c)^b)+f-f",
+                    "expr": "t*(1+a*(f/c)^b)",
                     "param": "f",
                     "constants": {
                         "t": 0.0,
