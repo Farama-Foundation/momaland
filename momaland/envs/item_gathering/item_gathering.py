@@ -6,18 +6,19 @@ https://liu.diva-portal.org/smash/record.jsf?pid=diva2%3A1362933&dswid=9018
 
 Notes:
     - In contrast to the original environment, the observation space is a 2D array of integers, i.e.,
-    the map of the environment, where each integer represents either agents (1 for the agent receiving the observation,
-     2 for the other agents) or items (3, 4, etc., depending on the number of items).
+    the map of the environment, with 0 for empty cells, negative integers for agents, positive integers for items.
     - The number of agents and items is configurable, by providing an initial map.
     - If no initial map is provided, the environment uses a default map
 
 Central observation:
-    - If the central_observation flag is set to True, then the environment implements:
+    - If the central_observation flag is set to True, then the environment includes in the implementation:
         - a central observation space: self.central_observation_space
         - a central observation function: self.state()
+    The central_observation flag and the associated methods described above are used by the CentralisedAgent wrapper
 """
 
 import random
+import warnings
 from copy import deepcopy
 from os import path
 from typing_extensions import override
@@ -102,6 +103,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
     - 'num_timesteps': number of timesteps to run the environment for. Default: 10
     - 'initial_map': map of the environment. Default: 8x8 grid, 2 agents, 3 objectives (Källström and Heintz, 2019)
     - 'randomise': whether to randomise the map, at each episode. Default: False
+    - 'reward_mode': reward mode for the environment ('individual' or 'team'). Default: 'individual'
     - 'render_mode': render mode for the environment. Default: None
     """
 
@@ -118,6 +120,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         num_timesteps=10,
         initial_map=DEFAULT_MAP,
         randomise=False,
+        reward_mode="individual",
         render_mode=None,
     ):
         """Initializes the item gathering domain.
@@ -126,6 +129,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
             num_timesteps: number of timesteps to run the environment for
             initial_map: map of the environment
             randomise: whether to randomise the map, at each episode
+            reward_mode: reward mode for the environment, 'individual' or 'team'. Default: 'individual'
             render_mode: render mode for the environment
         """
         EzPickle.__init__(
@@ -133,12 +137,18 @@ class MOItemGathering(MOParallelEnv, EzPickle):
             num_timesteps,
             initial_map,
             randomise,
+            reward_mode,
             render_mode,
         )
         self.num_timesteps = num_timesteps
         self.current_timestep = 0
         self.render_mode = render_mode
         self.randomise = randomise
+        if reward_mode not in ["individual", "team"]:
+            self.reward_mode = "individual"
+            warnings.warn("reward_mode must be either 'individual' or 'team', defaulting to 'individual'.")
+        else:
+            self.reward_mode = reward_mode
 
         # check if the initial map has any entries equal to 1
         assert len(np.argwhere(initial_map == 1).flatten()) > 0, "The initial map does not contain any agents (1s)."
@@ -391,6 +401,9 @@ class MOItemGathering(MOParallelEnv, EzPickle):
             if value_in_cell > 0:
                 rewards[self.agents[i]][self.item_dict[value_in_cell]] += 1
                 self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]] = 0
+        # if reward mode is teams, sum the rewards for all agents
+        if self.reward_mode == "team":
+            rewards = {agent: np.sum(list(rewards.values()), axis=0) for agent in self.agents}
 
         map_obs = self.state()
         observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}

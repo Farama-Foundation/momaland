@@ -38,7 +38,7 @@ def compute_normalization_constants(num_agents, sections, capacity, type_distrib
     # Maximum local capacity is achieved when there are 'capacity' agents in the section
     max_cap_local = _local_capacity_reward(capacity, capacity)
     cap_min = 0.0
-    cap_max = max_cap_local if reward_scheme == "local" else max_cap_global
+    cap_max = max_cap_local if reward_scheme == "individual" else max_cap_global
 
     #   Mixture
     # Maximum global mixture: one agent of each type in each section, except one where all other agents are
@@ -52,7 +52,7 @@ def compute_normalization_constants(num_agents, sections, capacity, type_distrib
     # Maximum local mixture is achieved when there is one agent of each type in the section
     max_mix_local = _local_mixture_reward([1, 1])
     mix_min = 0.0
-    mix_max = max_mix_local if reward_scheme == "local" else max_mix_global
+    mix_max = max_mix_local if reward_scheme == "individual" else max_mix_global
 
     return cap_min, cap_max, mix_min, mix_max
 
@@ -96,7 +96,7 @@ def parse_args():
     parser.add_argument('--position-distribution', type=float, nargs=5, default=[0., 0.5, 0., 0.5, 0.], )
     parser.add_argument('--sections', type=int, default=5, )
     parser.add_argument('--capacity', type=int, default=3, )
-    parser.add_argument('--reward-scheme', type=str, default="local", help="the reward scheme to use")
+    parser.add_argument('--reward-scheme', type=str, default="individual", help="the reward scheme to use")
 
     args = parser.parse_args()
     args.time = time.time()
@@ -114,13 +114,13 @@ if __name__ == "__main__":
         "position_distribution": args.position_distribution,
         "sections": args.sections,
         "capacity": args.capacity,
-        "reward_scheme": args.reward_scheme,
+        "reward_mode": args.reward_scheme,
         # Normalization constants
         "local_constants": compute_normalization_constants(
-            args.num_agents, args.sections, args.capacity, args.type_distribution, "local"
+            args.num_agents, args.sections, args.capacity, args.type_distribution, "individual"
         ),
         "global_constants": compute_normalization_constants(
-            args.num_agents, args.sections, args.capacity, args.type_distribution, "global"
+            args.num_agents, args.sections, args.capacity, args.type_distribution, "team"
         ),
     }
 
