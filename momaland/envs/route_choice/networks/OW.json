@@ -83,6 +83,13 @@
             },
             {
                 "name": "A-B",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 7.0
+                    }
+                },
                 "source": "B",
                 "target": "A"
             },
@@ -112,6 +119,13 @@
             },
             {
                 "name": "A-C",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 5.0
+                    }
+                },
                 "source": "C",
                 "target": "A"
             },
@@ -153,16 +167,37 @@
             },
             {
                 "name": "A-D",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 15.0
+                    }
+                },
                 "source": "D",
                 "target": "A"
             },
             {
                 "name": "B-D",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 11.0
+                    }
+                },
                 "source": "D",
                 "target": "B"
             },
             {
                 "name": "C-D",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 7.0
+                    }
+                },
                 "source": "D",
                 "target": "C"
             },
@@ -204,11 +239,25 @@
             },
             {
                 "name": "B-E",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 11.0
+                    }
+                },
                 "source": "E",
                 "target": "B"
             },
             {
                 "name": "D-E",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 7.0
+                    }
+                },
                 "source": "E",
                 "target": "D"
             },
@@ -226,6 +275,13 @@
             },
             {
                 "name": "C-F",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 11.0
+                    }
+                },
                 "source": "F",
                 "target": "C"
             },
@@ -255,16 +311,37 @@
             },
             {
                 "name": "C-G",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 9.0
+                    }
+                },
                 "source": "G",
                 "target": "C"
             },
             {
                 "name": "D-G",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 7.0
+                    }
+                },
                 "source": "G",
                 "target": "D"
             },
             {
                 "name": "F-G",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 9.0
+                    }
+                },
                 "source": "G",
                 "target": "F"
             },
@@ -306,16 +383,37 @@
             },
             {
                 "name": "D-H",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 9.0
+                    }
+                },
                 "source": "H",
                 "target": "D"
             },
             {
                 "name": "E-H",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 7.0
+                    }
+                },
                 "source": "H",
                 "target": "E"
             },
             {
                 "name": "G-H",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 9.0
+                    }
+                },
                 "source": "H",
                 "target": "G"
             },
@@ -333,6 +431,13 @@
             },
             {
                 "name": "F-I",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 13.0
+                    }
+                },
                 "source": "I",
                 "target": "F"
             },
@@ -362,11 +467,25 @@
             },
             {
                 "name": "G-J",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 3.0
+                    }
+                },
                 "source": "J",
                 "target": "G"
             },
             {
                 "name": "I-J",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 9.0
+                    }
+                },
                 "source": "J",
                 "target": "I"
             },
@@ -408,16 +527,37 @@
             },
             {
                 "name": "G-K",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 13.0
+                    }
+                },
                 "source": "K",
                 "target": "G"
             },
             {
                 "name": "H-K",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 3.0
+                    }
+                },
                 "source": "K",
                 "target": "H"
             },
             {
                 "name": "J-K",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 9.0
+                    }
+                },
                 "source": "K",
                 "target": "J"
             },
@@ -435,21 +575,49 @@
             },
             {
                 "name": "I-L",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 2.0
+                    }
+                },
                 "source": "L",
                 "target": "I"
             },
             {
                 "name": "J-L",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 12.0
+                    }
+                },
                 "source": "L",
                 "target": "J"
             },
             {
                 "name": "J-M",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 12.0
+                    }
+                },
                 "source": "M",
                 "target": "J"
             },
             {
                 "name": "K-M",
+                "latency_function": {
+                    "expr": "t+0.02*f",
+                    "param": "f",
+                    "constants": {
+                        "t": 2.0
+                    }
+                },
                 "source": "M",
                 "target": "K"
             }

@@ -1,12 +1,11 @@
-"""Implementation of stateless independent Q-learners. Implemented for the multi-objective congestion game and beach domain."""
+"""Implementation of stateless independent Q-learners. Implemented for the multi-objective route choice game and beach domain."""
 
 import random
 
 import numpy as np
-from tabular_bpd import TabularMOBeachDomainWrapper
 
-
-# from momaland.envs.congestion_game import mocongestion_v0 as CongestionGame
+from momaland.learning.iql.tabular_bpd import TabularMOBeachDomainWrapper
+from momaland.utils.all_modules import all_environments
 
 
 def compute_utility(weights, rewards):
@@ -48,13 +47,17 @@ class QAgent:
         q_value = self.q_values[state][action]
         # Compute the next max Q-value
         next_max_q_value = 0.0 if done else np.max(self.q_values[new_state])
-        self.q_values[state][action] = q_value + alpha * (reward + gamma * next_max_q_value - q_value)
+        self.q_values[state][action] = (1 - alpha) * q_value + alpha * (reward + gamma * next_max_q_value)
 
 
 def train(args, weights, env_args):
     """IQL scalarizing the vector reward using weights and weighted sum."""
     # Environment Initialization
-    env = TabularMOBeachDomainWrapper(**env_args)
+    if args.env_id == "mobeach_v0":
+        # Use the tabular version of the MO-Beach domain with IQL
+        env = TabularMOBeachDomainWrapper(**env_args)
+    else:
+        env = all_environments[args.env_id].parallel_env(**env_args)
     obs, infos = env.reset()
 
     agents = {
@@ -121,10 +124,18 @@ def train(args, weights, env_args):
             new_reward = np.array([avg_obj1, avg_obj2])
             scal_rew = compute_utility(weights, np.array([avg_obj1_norm, avg_obj2_norm]))
             episode_returns.append((current_iter, avg_obj1_norm, avg_obj2_norm, scal_rew))
+        elif env.metadata["name"] == "moroute_choice_v0":
+            avg_obj1 = np.mean(np.array(list(rew.values()))[:, 0])
+            avg_obj2 = np.mean(np.array(list(rew.values()))[:, 1])
+            scal_rew = compute_utility(weights, np.array([avg_obj1, avg_obj2]))
+            new_reward = np.array([avg_obj1, avg_obj2])
+            avg_tt = env.avg_tt
+            episode_returns.append((current_iter, avg_obj1, avg_obj2, scal_rew, avg_tt))
         else:
             avg_obj1 = np.mean(np.array(list(rew.values()))[:, 0])
             avg_obj2 = np.mean(np.array(list(rew.values()))[:, 1])
             scal_rew = compute_utility(weights, np.array([avg_obj1, avg_obj2]))
+            new_reward = np.array([avg_obj1, avg_obj2])
             episode_returns.append((current_iter, avg_obj1, avg_obj2, scal_rew))
 
         if scal_rew > best_reward_scal:

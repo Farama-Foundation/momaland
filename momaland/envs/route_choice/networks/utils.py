@@ -1,4 +1,4 @@
-"""Contains utilities to converts congestion game networks from https://github.com/maslab-ufrgs/transportation_networks to NetworkX networks.
+"""Contains utilities to converts route choice game networks from https://github.com/maslab-ufrgs/transportation_networks to NetworkX networks.
 
 Each network in MASLAB consists of two files:
     * network.net: contains the definition of the network (nodes, edges, latency functions, and origin-destination pairs)
@@ -100,7 +100,12 @@ def read_network_file(problem_name):
             )
             # if edge is not a directed edge also add the inverse directed edge
             if edge_type == "edge":
-                graph.add_edge(edge_destination, edge_origin, name=edge_name)
+                graph.add_edge(
+                    edge_destination,
+                    edge_origin,
+                    name=edge_name,
+                    latency_function={"expr": func_tuple[2], "param": func_tuple[0], "constants": param_values},
+                )
 
         # -- Origin/Destination pairs -- #
         # format of OD pairs definition: type name origin destination flow
@@ -155,7 +160,7 @@ def read_routes_file(problem_name):
 
 
 def save_json(problem_name, graph, od, routes):
-    """Creates a .JSON file which contains a network of the mo-congestion-game environment.
+    """Creates a .JSON file which contains a network of the MORouteChoice game environment.
 
     Args:
         problem_name: the name of the problem that is parsed
@@ -174,7 +179,7 @@ def save_json(problem_name, graph, od, routes):
 
 if __name__ == "__main__":
     # look for all .net files in the "./networks/" directory and generate NetworkX graphs saved as JSON files
-    all_net_files = [filename for filename in os.listdir("/") if filename.endswith(".net")]
+    all_net_files = [filename for filename in os.listdir("./") if filename.endswith(".net")]
     for problem_filename in all_net_files:
         found_problem_name = problem_filename.split(".net")[0]
         print(f"Creating NetworkX JSON file for {found_problem_name}")

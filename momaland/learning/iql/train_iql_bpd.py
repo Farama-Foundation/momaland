@@ -61,6 +61,8 @@ def parse_args():
     """Argument parsing for hyperparameter optimization."""
     # fmt: off
     parser = argparse.ArgumentParser()
+    parser.add_argument("--env-id", type=str, help="MOMAland id of the environment to run (check all_modules.py)",
+                        required=True, default="mobeach_v0")
     parser.add_argument('--exp-name', type=str, default="exp1",
                         help="the name of this experiment")
     parser.add_argument('--seed', type=int, default=1,
@@ -156,22 +158,24 @@ if __name__ == "__main__":
     # ---------------------- #
     # Saving Learning Curves #
     # ---------------------- #
-    mkdir_p("results/runs")
+    mkdir_p("momaland/learning/iql/results/beach/runs")
     if args.random:
-        df_total.to_csv(f"momaland/learning/iql/results/runs/BPD_{args.num_agents}_random.csv", index=False)
+        df_total.to_csv(f"momaland/learning/iql/results/beach/runs/BPD_{args.num_agents}_random.csv", index=False)
     else:
-        df_total.to_csv(f"momaland/learning/iql/results/runs/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False)
+        df_total.to_csv(
+            f"momaland/learning/iql/results/beach/runs/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False
+        )
 
     # ------------------------------ #
     # Saving Non-Dominated Solutions #
     # ------------------------------ #
-    mkdir_p("results/nds")
+    mkdir_p("momaland/learning/iql/results/beach/nds")
     # Remove dominated solutions
     best_rewards = fast_p_prune(best_rewards)
     # Save remaining solutions to csv
     df = pd.DataFrame(best_rewards, columns=["Capacity", "Mixture"])
     # Save to csv
     if args.random:
-        df.to_csv(f"momaland/learning/iql/results/nds/BPD_{args.num_agents}_random.csv", index=False)
+        df.to_csv(f"momaland/learning/iql/results/beach/nds/BPD_{args.num_agents}_random.csv", index=False)
     else:
-        df.to_csv(f"momaland/learning/iql/results/nds/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False)
+        df.to_csv(f"momaland/learning/iql/results/beach/nds/BPD_{args.num_agents}_{args.reward_scheme}.csv", index=False)
