@@ -98,6 +98,8 @@ def parse_args():
                         help="the activation function for the neural networks")
     parser.add_argument("--anneal-lr", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
                         help="whether to anneal the learning rate linearly")
+    parser.add_argument("--n-sample-weights", type=int, default=10,
+                        help="number of weights to sample for EUM and MUL computation")
 
     args = parser.parse_args()
     # fmt: on
@@ -590,6 +592,7 @@ if __name__ == "__main__":
                 hv_ref_point=np.array(args.ref_point),
                 reward_dim=reward_dim,
                 global_step=weight_number * args.timesteps_per_weight,
+                n_sample_weights=args.n_sample_weights,
             )
         if args.save_policies:
             save_actor(actor_state, w, args)
