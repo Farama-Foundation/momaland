@@ -91,7 +91,7 @@ class Catch(CrazyRLBaseParallelEnv, EzPickle):
     - `target_speed (float, optional)`: Distance traveled by the target at each timestep
 
     ## Credits
-    The code was adapted from [Felten's source](https://github.com/ffelten/CrazyRL).
+    The code was adapted from [Felten's source](https://github.com/ffelten/CrazyRL). See also the YouTube video [here](https://www.youtube.com/watch?v=4FeTjZnpgJI&t=4s&ab_channel=FlorianFelten).
     """
 
     metadata = {"render_modes": ["human"], "name": "catch_v0", "is_parallelizable": True, "render_fps": FPS}
