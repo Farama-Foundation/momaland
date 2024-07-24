@@ -102,7 +102,15 @@ Maintenance for this project is also contributed by the broader Farama team: [fa
 <!-- start citation -->
 If you use this repository in your research, please cite:
 ```bibtex
-@inproceedings{TODO}
+@misc{felten2024momaland,
+      title={MOMAland: A Set of Benchmarks for Multi-Objective Multi-Agent Reinforcement Learning}, 
+      author={Florian Felten and Umut Ucak and Hicham Azmani and Gao Peng and Willem Röpke and Hendrik Baier and Patrick Mannion and Diederik M. Roijers and Jordan K. Terry and El-Ghazali Talbi and Grégoire Danoy and Ann Nowé and Roxana Rădulescu},
+      year={2024},
+      eprint={2407.16312},
+      archivePrefix={arXiv},
+      primaryClass={cs.MA},
+      url={https://arxiv.org/abs/2407.16312}, 
+}
 ```
 <!-- end citation -->
 
