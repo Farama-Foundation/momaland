@@ -93,9 +93,10 @@ include-package-data = true
 include = ["momaland", "momaland.*"]
 
 [tool.setuptools.package-data]
-mo_gymnasium = [
+momaland = [
     "**/*.json",
     "**/assets/*",
+    "py.typed",
 ]
 
 # Linters and Test tools #######################################################
