@@ -343,7 +343,12 @@ def check_two_team():
         ig_env.step(action)
         observation, reward, termination, truncation, _ = ig_env.last()
         print("Observations: ", observation["observation"])
-        print("Rewards: ", reward, "_accumulate_reward(from gymnasium code)", ig_env._cumulative_rewards)
+        print(
+            "Rewards: ",
+            reward,
+            "_accumulate_reward(from gymnasium code)",
+            ig_env._cumulative_rewards,
+        )
         print("Truncation: ", truncation)
         print("Termination: ", termination)
         done = truncation or termination
@@ -372,7 +377,12 @@ def check_collaborative():
         ig_env.step(action)
         observation, reward, termination, truncation, _ = ig_env.last()
         print("Observations: ", observation["observation"])
-        print("Rewards: ", reward, "_accumulate_reward(from gymnasium code)", ig_env._cumulative_rewards)
+        print(
+            "Rewards: ",
+            reward,
+            "_accumulate_reward(from gymnasium code)",
+            ig_env._cumulative_rewards,
+        )
         print("Truncation: ", truncation)
         print("Termination: ", termination)
         done = truncation or termination
@@ -441,5 +451,5 @@ if __name__ == "__main__":
     # check collaborative mode through simulation, it could be found that every players always share the same score in score board.
     check_collaborative()
 
-    # check parameter range by ramdom choose.
+    # check parameter range by random choice.
     check_parameter_range()

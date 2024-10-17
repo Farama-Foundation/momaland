@@ -1,4 +1,5 @@
 """Various wrappers for AEC MO environments."""
+
 from typing import Optional
 
 import numpy as np

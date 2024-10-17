@@ -1,4 +1,5 @@
 """Surround environment for Crazyflie 2. Each agent is supposed to learn to surround a common target point."""
+
 from typing_extensions import override
 
 import numpy as np

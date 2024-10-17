@@ -6,6 +6,7 @@ by Mannion, P., Devlin, S., Duggan, J., and Howley, E. (2018) we need to derive 
 - exp1: 50 agents, 5 sections, 3 capacity, type distribution [35, 15]
 - exp2: 100 agents, 5 sections, 5 capacity, type distribution [70, 30]
 """
+
 import argparse
 from itertools import product
 

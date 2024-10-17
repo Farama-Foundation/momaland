@@ -11,6 +11,7 @@
 | Observation Values | [0,1]                                            |
 | Reward Shape       | (num_objectives=4,)                              |
 """
+
 from __future__ import annotations
 
 from typing_extensions import override

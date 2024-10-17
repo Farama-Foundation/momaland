@@ -1,4 +1,5 @@
 """Train IQL on the Beach Problem Domain, under linear scalarization, and save the results to a csv file."""
+
 import argparse
 import random
 import time
