@@ -1,4 +1,5 @@
 """Multi-objective Ingenious Game."""
+
 from momaland.envs.ingenious.ingenious import env, raw_env
 
 

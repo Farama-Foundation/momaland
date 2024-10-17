@@ -1,4 +1,5 @@
 """The Base environment inheriting from pettingZoo Parallel environment class."""
+
 from copy import copy
 from typing import Optional
 from typing_extensions import override

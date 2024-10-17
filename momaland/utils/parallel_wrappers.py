@@ -1,4 +1,5 @@
 """Various wrappers for Parallel MO environments."""
+
 from collections import namedtuple
 from typing import Optional
 

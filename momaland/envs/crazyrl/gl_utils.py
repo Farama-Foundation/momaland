@@ -1,4 +1,5 @@
 """Graphical representation of the UAV in 3D space. the reference is based on the Crazyflie position reference: https://www.bitcraze.io/documentation/repository/crazyflie-firmware/master/functional-areas/lighthouse/terminology_definitions/ ."""
+
 import numpy as np
 from OpenGL.GL import (
     GL_LINES,

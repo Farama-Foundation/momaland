@@ -11,6 +11,7 @@
 | Observation Values | [0,1]                                            |
 | Reward Shape       | (2,) or (2+board_width,)                         |
 """
+
 from __future__ import annotations
 
 import os
