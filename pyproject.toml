@@ -59,7 +59,8 @@ learning = [
     "tqdm >=4.66.1",
     "pandas >=2.0.3",
     "matplotlib >=3.7.4",
-    "morl_baselines[all]"
+    "morl_baselines[all]",
+    "pycddlib==2.1.6",
 ]
 all = [
     # All dependencies above except accept-rom-license
@@ -76,7 +77,8 @@ all = [
     "tqdm >=4.66.1",
     "pandas >=2.0.3",
     "matplotlib >=3.7.4",
-    "morl_baselines[all]"
+    "morl_baselines[all]",
+    "pycddlib==2.1.6",
 ]
 testing = ["pytest ==7.1.3"]
 
