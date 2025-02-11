@@ -12,9 +12,9 @@
 
     <link rel="shortcut icon" href="../../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>momaland.utils.conversions - MOMAland Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=49cbaffd" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -299,23 +299,23 @@
             <h1>Source code for momaland.utils.conversions</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Copied and pasted from PZ, adapted to handle vectorial rewards.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">override</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">override</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pettingzoo.utils</span> <span class="kn">import</span> <span class="n">agent_selector</span>
-<span class="kn">from</span> <span class="nn">pettingzoo.utils.conversions</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pettingzoo.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">agent_selector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pettingzoo.utils.conversions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ActionType</span><span class="p">,</span>
     <span class="n">aec_to_parallel_wrapper</span><span class="p">,</span>
     <span class="n">parallel_to_aec_wrapper</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pettingzoo.utils.env</span> <span class="kn">import</span> <span class="n">AECEnv</span><span class="p">,</span> <span class="n">ParallelEnv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pettingzoo.utils.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">AECEnv</span><span class="p">,</span> <span class="n">ParallelEnv</span>
 
-<span class="kn">from</span> <span class="nn">momaland.utils.env</span> <span class="kn">import</span> <span class="n">MOAECEnv</span><span class="p">,</span> <span class="n">MOParallelEnv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">momaland.utils.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOAECEnv</span><span class="p">,</span> <span class="n">MOParallelEnv</span>
 
 
-<span class="k">def</span> <span class="nf">mo_aec_to_parallel</span><span class="p">(</span><span class="n">aec_env</span><span class="p">:</span> <span class="n">AECEnv</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParallelEnv</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mo_aec_to_parallel</span><span class="p">(</span><span class="n">aec_env</span><span class="p">:</span> <span class="n">AECEnv</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParallelEnv</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a MO aec environment to a parallel environment.</span>
 
 <span class="sd">    In the case of an existing parallel environment wrapped using a `parallel_to_aec_wrapper`, this function will return the original parallel environment.</span>
@@ -328,7 +328,7 @@
         <span class="k">return</span> <span class="n">par_env</span>
 
 
-<span class="k">def</span> <span class="nf">mo_parallel_to_aec</span><span class="p">(</span><span class="n">par_env</span><span class="p">:</span> <span class="n">ParallelEnv</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AECEnv</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mo_parallel_to_aec</span><span class="p">(</span><span class="n">par_env</span><span class="p">:</span> <span class="n">ParallelEnv</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AECEnv</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a MO aec environment to a parallel environment.</span>
 
 <span class="sd">    In the case of an existing aec environment wrapped using a `aec_to_prallel_wrapper`, this function will return the original AEC environment.</span>
@@ -343,27 +343,27 @@
 
 <div class="viewcode-block" id="mo_aec_to_parallel_wrapper">
 <a class="viewcode-back" href="../../../../api/wrappers/#momaland.utils.conversions.mo_aec_to_parallel_wrapper">[docs]</a>
-<span class="k">class</span> <span class="nc">mo_aec_to_parallel_wrapper</span><span class="p">(</span><span class="n">aec_to_parallel_wrapper</span><span class="p">,</span> <span class="n">MOParallelEnv</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">mo_aec_to_parallel_wrapper</span><span class="p">(</span><span class="n">aec_to_parallel_wrapper</span><span class="p">,</span> <span class="n">MOParallelEnv</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an AEC environment into a Parallel environment.</span>
 
 <span class="sd">    Overrides PZ behavior to handle vectorial rewards. Keeping inheritance avoids code duplication and checks for instance type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aec_env</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aec_env</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts an MO AEC environment into a MO Parallel environment.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">aec_env</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reward_spaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reward_spaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the reward spaces of the environment.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aec_env</span><span class="o">.</span><span class="n">reward_spaces</span>
 
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">reward_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reward_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aec_env</span><span class="o">.</span><span class="n">reward_spaces</span><span class="p">[</span><span class="n">agent</span><span class="p">]</span>
 
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
         <span class="n">rewards</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aec_env</span><span class="o">.</span><span class="n">agents</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="n">terminations</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">truncations</span> <span class="o">=</span> <span class="p">{}</span>
@@ -400,27 +400,27 @@
 
 <div class="viewcode-block" id="mo_parallel_to_aec_wrapper">
 <a class="viewcode-back" href="../../../../api/wrappers/#momaland.utils.conversions.mo_parallel_to_aec_wrapper">[docs]</a>
-<span class="k">class</span> <span class="nc">mo_parallel_to_aec_wrapper</span><span class="p">(</span><span class="n">parallel_to_aec_wrapper</span><span class="p">,</span> <span class="n">MOAECEnv</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">mo_parallel_to_aec_wrapper</span><span class="p">(</span><span class="n">parallel_to_aec_wrapper</span><span class="p">,</span> <span class="n">MOAECEnv</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a parallel environment into an AEC environment.</span>
 
 <span class="sd">    Overrides PZ behavior to handle vectorial rewards. Keeping inheritance avoids code duplication and checks for instance type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parallel_env</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parallel_env</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a MO parallel environment into an MO AEC environment.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parallel_env</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reward_spaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reward_spaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the reward spaces of the environment.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reward_spaces</span>
 
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">reward_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reward_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reward_spaces</span><span class="p">[</span><span class="n">agent</span><span class="p">]</span>
 
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span> <span class="o">=</span> <span class="p">{</span><span class="n">agent</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span><span class="p">(</span><span class="n">agent</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agents</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cumulative_rewards</span> <span class="o">=</span> <span class="p">{</span>
@@ -428,13 +428,13 @@
         <span class="p">}</span>
 
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">add_new_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_new_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_agent</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_new_agent</span><span class="p">(</span><span class="n">new_agent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rewards</span><span class="p">[</span><span class="n">new_agent</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span><span class="p">(</span><span class="n">new_agent</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cumulative_rewards</span><span class="p">[</span><span class="n">new_agent</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span><span class="p">(</span><span class="n">new_agent</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">ActionType</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="n">ActionType</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_selection</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_selection</span><span class="p">]:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_selection</span><span class="p">]</span>
             <span class="k">assert</span> <span class="n">action</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -469,7 +469,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">agent_selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_agent_selector</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">_clear_rewards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_rewards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">MOAECEnv</span><span class="o">.</span><span class="n">_clear_rewards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 </pre></div>
