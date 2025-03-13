@@ -30,7 +30,7 @@ def mo_aec_to_parallel(aec_env: AECEnv) -> ParallelEnv:
 
 
 def mo_parallel_to_aec(par_env: ParallelEnv) -> AECEnv:
-    """Converts a MO aec environment to a parallel environment.
+    """Converts a MO Parallel environment to an AEC environment.
 
     In the case of an existing aec environment wrapped using a `aec_to_prallel_wrapper`, this function will return the original AEC environment.
     Otherwise, it will apply the `parallel_to_aec_wrapper` to convert the environment.
