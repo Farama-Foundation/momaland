@@ -191,7 +191,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -288,7 +288,7 @@
                 </svg>
               </button>
             </div>
-            <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
               <div class="visually-hidden">Toggle table of contents sidebar</div>
               <i class="icon"><svg>
                   <use href="#svg-toc"></use>
@@ -325,68 +325,7 @@
 </tbody>
 </table>
 </div>
-<p>Multi-objective Multi-agent SameGame.</p>
-<p>MO-SameGame is a multi-objective, multi-agent variant of the single-player, single-objective turn-based puzzle
-game called SameGame.
-1 to 5 agents can play (default is 1), on a rectangular board with width and height from 3 to 30 squares (
-defaults are 15), which are initially filled with randomly colored tiles in 2 to 10 different colors (default is
-5). Players move in sequential order by selecting any tile in a group of at least 2 vertically and/or
-horizontally connected tiles of the same color. This group then disappears from the board. Tiles that were above
-the removed group “fall down” to close any vertical gaps; when entire columns of tiles become empty, all columns
-to the right move left to close the horizontal gap.
-Single-player, single-objective SameGame rewards the player with n^2 points for removing any group of n tiles.
-MO-SameGame can extend this in two ways. Agents can either only get points for their own actions, or all rewards
-can be shared. Additionally, points for every color can be counted as separate objectives, or they can be
-accumulated in a single objective like in the default game variant.</p>
-<section id="observation-space">
-<h2>Observation Space<a class="headerlink" href="#observation-space" title="Link to this heading">¶</a></h2>
-<p>The observation is a dictionary which contains an <code class="docutils literal notranslate"><span class="pre">'observation'</span></code> element which is the usual RL observation described
-below, and an <code class="docutils literal notranslate"><span class="pre">'action_mask'</span></code> which holds the legal moves, described in the Legal Actions Mask section below.
-The main observation space is num_colors planes of a board_height * board_width grid (a board_height * board_width *
-num_colors tensor). Each plane represents the tiles of a specific color, and each location in the grid represents a
-location on the board. 1 indicates that a given location has a tile of the given plane’s color, and 0
-indicates there is no tile of that color at that location (meaning that either the board location is empty, or filled
-by a tile of another color).</p>
-</section>
-<section id="legal-actions-mask">
-<h2>Legal Actions Mask<a class="headerlink" href="#legal-actions-mask" title="Link to this heading">¶</a></h2>
-<p>The legal moves available to the current agent are found in the <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> element of the dictionary observation.
-The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> is a binary vector where each index of the vector represents whether the represented action is legal
-or not; the action encoding is described in the Action Space section below.
-The <code class="docutils literal notranslate"><span class="pre">action_mask</span></code> will be all zeros for any agent except the one whose turn it is.</p>
-</section>
-<section id="action-space">
-<h2>Action Space<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h2>
-<p>The action space is the set of integers from 0 to board_width * board_height (exclusive). If the group connected to the
-tile at coordinates (x,y) is removed, this is encoded as the integer y * board_width + x.</p>
-</section>
-<section id="rewards">
-<h2>Rewards<a class="headerlink" href="#rewards" title="Link to this heading">¶</a></h2>
-<p>Rewards can be team rewards or individual rewards (default is individual).
-If color_rewards = False:
-Dimension 0: n^2 points for the removal of any group of size n.
-If color_rewards = True (default):
-Dimensions d=0 to d=num_objectives-1: n^2 points for the removal of any group of size n in color d+1.</p>
-</section>
-<section id="starting-state">
-<h2>Starting State<a class="headerlink" href="#starting-state" title="Link to this heading">¶</a></h2>
-<p>The starting board is filled with randomly colored tiles in 2 to 10 different colors (default is 5).</p>
-</section>
-<section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>‘board_width’: The width of the board (between 3 and 30)</p></li>
-<li><p>‘board_height’: The height of the board (between 3 and 30)</p></li>
-<li><p>‘num_colors’: The number of colors (between 2 and 10)</p></li>
-<li><p>‘num_agents’: The number of agents (between 1 and 5)</p></li>
-<li><p>‘team_rewards’: True = agents share all rewards, False = agents get individual rewards</p></li>
-<li><p>‘color_rewards’: True = agents get separate rewards for each color, False = agents get a single reward accumulating all colors</p></li>
-<li><p>‘render_mode’: The render mode</p></li>
-</ul>
-</section>
-<section id="version-history">
-<h2>Version History<a class="headerlink" href="#version-history" title="Link to this heading">¶</a></h2>
-</section>
+<p>SameGame environment for multiple agents with multiple objectives.</p>
 </section>
 
           </article>
@@ -434,33 +373,8 @@ Dimensions d=0 to d=num_objectives-1: n^2 points for the removal of any group of
           
         </footer>
       </div>
-      <aside class="toc-drawer">
+      <aside class="toc-drawer no-toc">
         
-        
-        <div class="toc-sticky toc-scroll">
-          <div class="toc-title-container">
-            <span class="toc-title">
-              On this page
-            </span>
-          </div>
-          <div class="toc-tree-container">
-            <div class="toc-tree">
-              <ul>
-<li><a class="reference internal" href="#">MO-SameGame</a><ul>
-<li><a class="reference internal" href="#observation-space">Observation Space</a></li>
-<li><a class="reference internal" href="#legal-actions-mask">Legal Actions Mask</a></li>
-<li><a class="reference internal" href="#action-space">Action Space</a></li>
-<li><a class="reference internal" href="#rewards">Rewards</a></li>
-<li><a class="reference internal" href="#starting-state">Starting State</a></li>
-<li><a class="reference internal" href="#arguments">Arguments</a></li>
-<li><a class="reference internal" href="#version-history">Version History</a></li>
-</ul>
-</li>
-</ul>
-
-            </div>
-          </div>
-        </div>
         
         
       </aside>
