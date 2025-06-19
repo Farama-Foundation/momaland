@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing_extensions import override
 
 import numpy as np
-from pettingzoo.utils import agent_selector
+from pettingzoo.utils import AgentSelector
 from pettingzoo.utils.conversions import (
     ActionType,
     aec_to_parallel_wrapper,
@@ -154,7 +154,7 @@ class mo_parallel_to_aec_wrapper(parallel_to_aec_wrapper, MOAECEnv):
             ]
 
             if len(self.env.agents):
-                self._agent_selector = agent_selector(self.env.agents)
+                self._agent_selector = AgentSelector(self.env.agents)
                 self.agent_selection = self._agent_selector.reset()
 
             self._deads_step_first()

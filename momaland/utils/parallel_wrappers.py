@@ -5,7 +5,7 @@ from typing import Optional
 
 import numpy as np
 from gymnasium.spaces import Box, Dict, Discrete
-from gymnasium.wrappers.normalize import RunningMeanStd
+from gymnasium.wrappers.utils import RunningMeanStd
 from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
 
 from momaland.learning.utils import remap_actions

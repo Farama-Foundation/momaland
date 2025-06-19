@@ -22,7 +22,7 @@ import numpy as np
 import pygame
 from gymnasium import spaces
 from gymnasium.utils import EzPickle
-from pettingzoo.utils import agent_selector, wrappers
+from pettingzoo.utils import AgentSelector, wrappers
 
 from momaland.utils.env import MOAECEnv
 
@@ -182,7 +182,10 @@ class MOConnect4(MOAECEnv, EzPickle):
             agent: spaces.Dict(
                 {
                     "observation": spaces.Box(
-                        low=0, high=1, shape=(board_height, board_width, len(self.agents)), dtype=np.int8
+                        low=0,
+                        high=1,
+                        shape=(board_height, board_width, len(self.agents)),
+                        dtype=np.int8,
                     ),
                     "action_mask": spaces.Box(low=0, high=1, shape=(board_width,), dtype=np.int8),
                 }
@@ -190,7 +193,11 @@ class MOConnect4(MOAECEnv, EzPickle):
             for agent in self.agents
         }
         self.reward_spaces = dict(
-            zip(self.agents, [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents)), dtype=np.float32
+            zip(
+                self.agents,
+                [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents),
+            ),
+            dtype=np.float32,
         )
 
         if self.render_mode == "human":
@@ -285,7 +292,7 @@ class MOConnect4(MOAECEnv, EzPickle):
         self.terminations = {agent: False for agent in self.agents}
         self.truncations = {agent: False for agent in self.agents}
         self.infos = {agent: {} for agent in self.agents}
-        self._agent_selector = agent_selector(self.agents)
+        self._agent_selector = AgentSelector(self.agents)
         self.agent_selection = self._agent_selector.reset()
         self.move_count = 0
 

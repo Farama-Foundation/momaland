@@ -35,7 +35,7 @@ import numpy as np
 from gymnasium import spaces
 from gymnasium.logger import warn
 from gymnasium.utils import EzPickle
-from pettingzoo.utils import agent_selector, wrappers
+from pettingzoo.utils import AgentSelector, wrappers
 
 from momaland.utils.env import MOAECEnv
 
@@ -128,7 +128,11 @@ class MOSameGame(MOAECEnv, EzPickle):
     ## Version History
     """
 
-    metadata = {"render_modes": ["ansi"], "name": "mosame_game_v0", "is_parallelizable": False}
+    metadata = {
+        "render_modes": ["ansi"],
+        "name": "mosame_game_v0",
+        "is_parallelizable": False,
+    }
 
     BLANK = 0
 
@@ -195,7 +199,10 @@ class MOSameGame(MOAECEnv, EzPickle):
             agent: spaces.Dict(
                 {
                     "observation": spaces.Box(
-                        low=0, high=1, shape=(board_height, board_width, self.gameinfo["ncolors"]), dtype=np.int8
+                        low=0,
+                        high=1,
+                        shape=(board_height, board_width, self.gameinfo["ncolors"]),
+                        dtype=np.int8,
                     ),
                     "action_mask": spaces.Box(low=0, high=1, shape=(self.max_move,), dtype=np.int8),
                 }
@@ -205,7 +212,13 @@ class MOSameGame(MOAECEnv, EzPickle):
         self.reward_spaces = dict(
             zip(
                 self.agents,
-                [spaces.Box(low=0, high=self._score(board_height * board_width), shape=(self.num_objectives,))]
+                [
+                    spaces.Box(
+                        low=0,
+                        high=self._score(board_height * board_width),
+                        shape=(self.num_objectives,),
+                    )
+                ]
                 * len(self.agents),
             )
         )
@@ -227,9 +240,10 @@ class MOSameGame(MOAECEnv, EzPickle):
     @override
     def observe(self, agent):
         board = self.gameinfo["board"][self.gameinfo["curmove"]]
-        observation = np.stack(([np.equal(board, color + 1) for color in range(self.gameinfo["ncolors"])]), axis=2).astype(
-            np.int8
-        )
+        observation = np.stack(
+            ([np.equal(board, color + 1) for color in range(self.gameinfo["ncolors"])]),
+            axis=2,
+        ).astype(np.int8)
         actions = self.legal_moves if agent == self.agent_selection else []
         action_mask = np.zeros(self.max_move, "int8")
         for i in actions:
@@ -371,7 +385,7 @@ class MOSameGame(MOAECEnv, EzPickle):
         self.gameinfo["score"][self.gameinfo["curmove"]] = 0
         self.gameinfo["color"][self.gameinfo["curmove"]] = 0
         self.gameinfo["lastnremoved"] = 0
-        self._agent_selector = agent_selector(self.agents)
+        self._agent_selector = AgentSelector(self.agents)
         self.agent_selection = self._agent_selector.reset()
 
     def _game_won(self):
@@ -389,7 +403,11 @@ class MOSameGame(MOAECEnv, EzPickle):
                 if self.gameinfo["board"][self.gameinfo["curmove"]][col][row] == MOSameGame.BLANK:
                     print(".  ", end="")
                 else:
-                    print(self.gameinfo["board"][self.gameinfo["curmove"]][col][row], " ", end="")
+                    print(
+                        self.gameinfo["board"][self.gameinfo["curmove"]][col][row],
+                        " ",
+                        end="",
+                    )
             print()
         print()
 

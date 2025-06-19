@@ -99,7 +99,11 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
     - 'render_mode (str)': render mode. Default: None
     """
 
-    metadata = {"render_modes": ["human"], "name": "mobeach_v0", "central_observation": True}
+    metadata = {
+        "render_modes": ["human"],
+        "name": "mobeach_v0",
+        "central_observation": True,
+    }
 
     def __init__(
         self,
@@ -191,7 +195,12 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
         optimal_consumption = [capacity for _ in range(sections)]
         optimal_consumption[-1] = max(self.num_agents - ((sections - 1) * capacity), 0)
         max_r = _global_capacity_reward(self.resource_capacities, optimal_consumption)
-        self.reward_spaces = dict(zip(self.agents, [Box(low=0, high=max_r, shape=(NUM_OBJECTIVES,))] * num_agents))
+        self.reward_spaces = dict(
+            zip(
+                self.agents,
+                [Box(low=0, high=max_r, shape=(NUM_OBJECTIVES,))] * num_agents,
+            )
+        )
 
     # this cache ensures that same space object is returned for the same agent
     # allows action space seeding to work as expected
@@ -256,14 +265,18 @@ class MOBeachDomain(MOParallelEnv, EzPickle):
     def _init_state(self):
         """Initializes the state of the environment. This is called by reset()."""
         types = random.choices(
-            [i for i in range(len(self.type_distribution))], weights=self.type_distribution, k=self.num_agents
+            [i for i in range(len(self.type_distribution))],
+            weights=self.type_distribution,
+            k=self.num_agents,
         )
 
         if self.position_distribution is None:
             positions = [random.randint(0, self.sections - 1) for _ in self.agents]
         else:
             positions = random.choices(
-                [i for i in range(self.sections)], weights=self.position_distribution, k=self.num_agents
+                [i for i in range(self.sections)],
+                weights=self.position_distribution,
+                k=self.num_agents,
             )
         return types, positions
 
