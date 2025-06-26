@@ -12,9 +12,9 @@
 
     <link rel="shortcut icon" href="../../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>momaland.utils.parallel_wrappers - MOMAland Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=49cbaffd" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -299,24 +299,24 @@
             <h1>Source code for momaland.utils.parallel_wrappers</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Various wrappers for Parallel MO environments.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gymnasium.spaces</span> <span class="kn">import</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Discrete</span>
-<span class="kn">from</span> <span class="nn">gymnasium.wrappers.normalize</span> <span class="kn">import</span> <span class="n">RunningMeanStd</span>
-<span class="kn">from</span> <span class="nn">pettingzoo.utils.wrappers.base_parallel</span> <span class="kn">import</span> <span class="n">BaseParallelWrapper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium.spaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Discrete</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium.wrappers.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunningMeanStd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pettingzoo.utils.wrappers.base_parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseParallelWrapper</span>
 
-<span class="kn">from</span> <span class="nn">momaland.learning.utils</span> <span class="kn">import</span> <span class="n">remap_actions</span>
-<span class="kn">from</span> <span class="nn">momaland.utils.env</span> <span class="kn">import</span> <span class="n">MOParallelEnv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">momaland.learning.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">remap_actions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">momaland.utils.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOParallelEnv</span>
 
 
 <div class="viewcode-block" id="RecordEpisodeStatistics">
 <a class="viewcode-back" href="../../../../api/wrappers/#momaland.utils.parallel_wrappers.RecordEpisodeStatistics">[docs]</a>
-<span class="k">class</span> <span class="nc">RecordEpisodeStatistics</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecordEpisodeStatistics</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This wrapper will record episode statistics and print them at the end of each episode.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;This wrapper will record episode statistics and print them at the end of each episode.</span>
 
 <span class="sd">        Args:</span>
@@ -326,7 +326,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">episode_rewards</span> <span class="o">=</span> <span class="p">{</span><span class="n">agent</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">episode_lengths</span> <span class="o">=</span> <span class="p">{</span><span class="n">agent</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Steps through the environment, recording episode statistics.&quot;&quot;&quot;</span>
         <span class="n">obs</span><span class="p">,</span> <span class="n">rews</span><span class="p">,</span> <span class="n">terminateds</span><span class="p">,</span> <span class="n">truncateds</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">:</span>
@@ -339,7 +339,7 @@
             <span class="p">}</span>
         <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">rews</span><span class="p">,</span> <span class="n">terminateds</span><span class="p">,</span> <span class="n">truncateds</span><span class="p">,</span> <span class="n">infos</span>
 
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the environment and the episode statistics.&quot;&quot;&quot;</span>
         <span class="n">obs</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">:</span>
@@ -351,7 +351,7 @@
 
 <div class="viewcode-block" id="LinearizeReward">
 <a class="viewcode-back" href="../../../../api/wrappers/#momaland.utils.parallel_wrappers.LinearizeReward">[docs]</a>
-<span class="k">class</span> <span class="nc">LinearizeReward</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LinearizeReward</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert MO reward vector into scalar SO reward value.</span>
 
 <span class="sd">    `weights` represents the weights of each objective in the reward vector space for each agent.</span>
@@ -361,7 +361,7 @@
 <span class="sd">        ... env = LinearizeReward(env, weights)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reward linearization class initializer.</span>
 
 <span class="sd">        Args:</span>
@@ -371,7 +371,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a reward scalar from the reward vector.&quot;&quot;&quot;</span>
         <span class="n">observations</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">rewards</span><span class="p">:</span>
@@ -385,7 +385,7 @@
 
 <div class="viewcode-block" id="NormalizeReward">
 <a class="viewcode-back" href="../../../../api/wrappers/#momaland.utils.parallel_wrappers.NormalizeReward">[docs]</a>
-<span class="k">class</span> <span class="nc">NormalizeReward</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NormalizeReward</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This wrapper will normalize immediate rewards s.t. their exponential moving average has a fixed variance.</span>
 
 <span class="sd">    The exponential moving average will have variance :math:`(1 - \gamma)^2`.</span>
@@ -400,7 +400,7 @@
 <span class="sd">        ...         env = AECWrappers.NormalizeReward(env, agent, idx)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env</span><span class="p">,</span>
         <span class="n">agent</span><span class="p">,</span>
@@ -425,7 +425,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
 
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Steps through the environment, normalizing the rewards returned.&quot;&quot;&quot;</span>
         <span class="n">observations</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
 
@@ -448,14 +448,14 @@
 
         <span class="k">return</span> <span class="n">observations</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">terminations</span><span class="p">,</span> <span class="n">truncations</span><span class="p">,</span> <span class="n">infos</span>
 
-    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rews</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rews</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalizes the rewards with the running mean rewards and their variance.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_rms</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">returns</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rews</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_rms</span><span class="o">.</span><span class="n">var</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span></div>
 
 
 
-<span class="k">class</span> <span class="nc">CentraliseAgent</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CentraliseAgent</span><span class="p">(</span><span class="n">BaseParallelWrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This wrapper will create a central agent that observes the full state of the environment.</span>
 
 <span class="sd">    The central agent will receive the concatenation of all agents&#39; observations as its own observation (or a global</span>
@@ -464,7 +464,7 @@
 <span class="sd">    for each agent in the original environment.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">MOParallelEnv</span><span class="p">,</span> <span class="n">action_mapping</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reward_type</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">MOParallelEnv</span><span class="p">,</span> <span class="n">action_mapping</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reward_type</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Central agent wrapper class initializer.</span>
 
 <span class="sd">        Args:</span>
@@ -502,7 +502,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reward_space</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">reward_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_space</span>
 
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Steps through the environment, joining the returned values for the central agent.&quot;&quot;&quot;</span>
         <span class="c1"># Remake the action list into a dictionary compatible with MOMAland environments</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_mapping</span><span class="p">:</span>
@@ -526,7 +526,7 @@
             <span class="n">infos</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the environment, joining the returned values for the central agent.&quot;&quot;&quot;</span>
         <span class="n">observations</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;central_observation&quot;</span><span class="p">):</span>

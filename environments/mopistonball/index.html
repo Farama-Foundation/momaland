@@ -321,7 +321,7 @@
 <td><p>Box(0, 255, (457, 120, 3), uint8)</p></td>
 </tr>
 <tr class="row-odd"><td><p>Reward Space</p></td>
-<td><p>Box([-8.79e+04 -6.00e+01 -1.00e-01], [100.  60.   0.], (3,), float32)</p></td>
+<td><p>Box([-100.    -0.1], [100.   0.], (2,), float32)</p></td>
 </tr>
 <tr class="row-even"><td><p>Import</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">momaland.envs.mopistonball_v0</span></code></p></td>
@@ -340,10 +340,9 @@
 </section>
 <section id="reward-space">
 <h2>Reward Space<a class="headerlink" href="#reward-space" title="Link to this heading">¶</a></h2>
-<p>The reward disentangles the original components of the scalar reward in Pistonball. As such, the reward space is a 3D vector containing rewards for:</p>
+<p>The reward disentangles the original components of the scalar reward in Pistonball. As such, the reward space is a 2D vector containing rewards for:</p>
 <ul class="simple">
-<li><p>Maximising the global reward. The global reward specifies how close the ball is to the edge of the window.</p></li>
-<li><p>Maximising the local reward. The local reward is given when an agent moves the ball closer to the edge of the window.</p></li>
+<li><p>Maximising the distance reward. From the original documentation: “The distance component is the percentage of the initial total distance (i.e. at game-start) to the left-wall travelled in the past timestep”</p></li>
 <li><p>Minimizing the time penalty.</p></li>
 </ul>
 </section>
@@ -361,6 +360,7 @@
 </section>
 <section id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
+<p>The arguments are unchanged from the original Pistonball environment.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">n_pistons</span> <span class="pre">(int,</span> <span class="pre">optional)</span></code>: The number of pistons in the environment. Defaults to 20.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">time_penalty</span> <span class="pre">(int,</span> <span class="pre">optional)</span></code>: The time penalty for not finishing the episode. Defaults to -0.1.</p></li>
