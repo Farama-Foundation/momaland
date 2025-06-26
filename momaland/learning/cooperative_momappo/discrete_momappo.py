@@ -6,7 +6,6 @@ Utilizes OLS to generate weight vectors and learn a Pareto set of policies. Work
 import argparse
 import os
 import time
-from distutils.util import strtobool
 from typing import List, NamedTuple, Sequence, Tuple
 
 import chex
@@ -27,7 +26,11 @@ from morl_baselines.multi_policy.linear_support.linear_support import LinearSupp
 from supersuit import agent_indicator_v0
 from tqdm import tqdm
 
-from momaland.learning.cooperative_momappo.utils import policy_evaluation_mo, save_actor
+from momaland.learning.cooperative_momappo.utils import (
+    policy_evaluation_mo,
+    save_actor,
+    strtobool,
+)
 from momaland.learning.utils import autotag
 from momaland.utils.all_modules import all_environments
 from momaland.utils.env import ParallelEnv
@@ -121,10 +124,18 @@ class Actor(nn.Module):
         else:
             activation = nn.tanh
 
-        actor_mean = nn.Dense(self.net_arch[0], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(local_obs_and_id)
+        actor_mean = nn.Dense(
+            self.net_arch[0],
+            kernel_init=orthogonal(np.sqrt(2)),
+            bias_init=constant(0.0),
+        )(local_obs_and_id)
         actor_mean = activation(actor_mean)
         for i in range(1, len(self.net_arch)):
-            actor_mean = nn.Dense(self.net_arch[i], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(actor_mean)
+            actor_mean = nn.Dense(
+                self.net_arch[i],
+                kernel_init=orthogonal(np.sqrt(2)),
+                bias_init=constant(0.0),
+            )(actor_mean)
             actor_mean = activation(actor_mean)
         logits = nn.Dense(self.action_dim, kernel_init=orthogonal(0.01), bias_init=constant(0.0))(actor_mean)
         probs = distrax.Categorical(logits=logits)
@@ -146,10 +157,18 @@ class Critic(nn.Module):
         else:
             activation = nn.tanh
 
-        critic = nn.Dense(self.net_arch[0], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(global_obs)
+        critic = nn.Dense(
+            self.net_arch[0],
+            kernel_init=orthogonal(np.sqrt(2)),
+            bias_init=constant(0.0),
+        )(global_obs)
         critic = activation(critic)
         for i in range(1, len(self.net_arch)):
-            critic = nn.Dense(self.net_arch[i], kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0))(critic)
+            critic = nn.Dense(
+                self.net_arch[i],
+                kernel_init=orthogonal(np.sqrt(2)),
+                bias_init=constant(0.0),
+            )(critic)
             critic = activation(critic)
         critic = nn.Dense(1, kernel_init=orthogonal(1.0), bias_init=constant(0.0))(critic)
 
@@ -172,7 +191,14 @@ class Transition(NamedTuple):
 class Buffer:
     """A numpy buffer to accumulate the samples, normally faster than jax based because mutable."""
 
-    def __init__(self, batch_size: int, joint_actions_shape, obs_shape, global_obs_shape, num_agents):
+    def __init__(
+        self,
+        batch_size: int,
+        joint_actions_shape,
+        obs_shape,
+        global_obs_shape,
+        num_agents,
+    ):
         """Buffer initialization to keep track of data between episodes."""
         self.batch_size = batch_size
         self.joint_actions = np.zeros((batch_size, *joint_actions_shape))
@@ -312,7 +338,13 @@ def _update_minbatch(actor_critic_train_state, batch_info):
         return total_loss, (value_loss, loss_actors, entropy, approx_kl)
 
     grad_fn = jax.value_and_grad(_loss_fn, argnums=(0, 1), has_aux=True)
-    total_loss_and_debug, grads = grad_fn(actor_train_state.params, critic_train_state.params, traj_batch, advantages, targets)
+    total_loss_and_debug, grads = grad_fn(
+        actor_train_state.params,
+        critic_train_state.params,
+        traj_batch,
+        advantages,
+        targets,
+    )
     actor_train_state = actor_train_state.apply_gradients(grads=grads[0])
     critic_train_state = critic_train_state.apply_gradients(grads=grads[1])
     return (actor_train_state, critic_train_state), total_loss_and_debug
@@ -337,7 +369,14 @@ def _update_epoch(update_state, unused):
     actor_critic_state, total_loss_and_debug = jax.lax.scan(
         _update_minbatch, (actor_train_state, critic_train_state), minibatches
     )
-    update_state = (actor_critic_state[0], actor_critic_state[1], traj_batch, advantages, targets, key)
+    update_state = (
+        actor_critic_state[0],
+        actor_critic_state[1],
+        traj_batch,
+        advantages,
+        targets,
+        key,
+    )
     return update_state, total_loss_and_debug
 
 
@@ -444,7 +483,8 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
 
             reward = np.array(list(rewards.values())).sum(axis=-1)  # team reward
             terminated = np.logical_or(
-                np.any(np.array(list(terminateds.values())), axis=-1), np.any(np.array(list(truncateds.values())), axis=-1)
+                np.any(np.array(list(terminateds.values())), axis=-1),
+                np.any(np.array(list(truncateds.values())), axis=-1),
             )  # TODO handle truncations
 
             buffer.add(
@@ -488,7 +528,14 @@ def train(args, env, weights: np.ndarray, key: chex.PRNGKey):
         advantages, targets = _calculate_gae(traj_batch, last_val)
 
         # UPDATE NETWORK
-        update_state = (actor_train_state, critic_train_state, traj_batch, advantages, targets, key)
+        update_state = (
+            actor_train_state,
+            critic_train_state,
+            traj_batch,
+            advantages,
+            targets,
+            key,
+        )
         update_state, loss_info = jax.lax.scan(_update_epoch, update_state, None, args.update_epochs)
 
         # Updates the train states (don't forget)
@@ -580,7 +627,11 @@ if __name__ == "__main__":
         out = train(args, env, w, rng)
         actor_state = out["runner_state"][0]
         _, disc_vec_return = policy_evaluation_mo(
-            actor, actor_state, env=eval_env, num_obj=ols.num_objectives, gamma=args.gamma
+            actor,
+            actor_state,
+            env=eval_env,
+            num_obj=ols.num_objectives,
+            gamma=args.gamma,
         )
         value.append(disc_vec_return)
         print(f"Weight {weight_number}/{args.num_weights} done!")

@@ -15,6 +15,18 @@ from flax.training import orbax_utils
 from flax.training.train_state import TrainState
 
 
+def strtobool(value: str) -> bool:
+    """Converts a string to a boolean.
+
+    Args:
+        value (str): string to convert to boolean.
+    """
+    value = value.lower()
+    if value in ("y", "yes", "on", "1", "true", "t"):
+        return True
+    return False
+
+
 def _ma_get_pi(actor_module, params, obs: jnp.ndarray, num_agents):
     """Gets the actions for all agents at once. This is done with a for loop because distrax does not like vmapping.
 
@@ -57,12 +69,20 @@ def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[
     obs, _ = env.reset()
     np_obs = np.stack([obs[agent] for agent in env.possible_agents])
     done = False
-    vec_return, disc_vec_return = np.zeros(num_obj, dtype=np.float32), np.zeros(num_obj, dtype=np.float32)
+    vec_return, disc_vec_return = (
+        np.zeros(num_obj, dtype=np.float32),
+        np.zeros(num_obj, dtype=np.float32),
+    )
     gamma = 1.0
     key, subkey = jax.random.split(key)
     action_keys = jax.random.split(subkey, len(env.possible_agents))
     while not done:
-        pi = _ma_get_pi(actor_module, actor_state.params, jnp.array(np_obs), len(env.possible_agents))
+        pi = _ma_get_pi(
+            actor_module,
+            actor_state.params,
+            jnp.array(np_obs),
+            len(env.possible_agents),
+        )
         # for each agent sample an action
         actions = _ma_sample_from_pi(pi, len(env.possible_agents), action_keys)
         actions_dict = dict()
@@ -87,7 +107,12 @@ def eval_mo(actor_module, actor_state, env, num_obj, gamma_decay=0.99) -> Tuple[
 
 
 def policy_evaluation_mo(
-    actor_module, actor_state, env, num_obj: np.ndarray, rep: int = 5, gamma: float = 0.99
+    actor_module,
+    actor_state,
+    env,
+    num_obj: np.ndarray,
+    rep: int = 5,
+    gamma: float = 0.99,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Evaluates the value of a policy by running the policy for multiple episodes. Returns the average returns.
 
@@ -103,7 +128,13 @@ def policy_evaluation_mo(
     """
     env.reset(seed=42)
     evals = [
-        eval_mo(actor_module=actor_module, actor_state=actor_state, env=env, num_obj=num_obj, gamma_decay=gamma)
+        eval_mo(
+            actor_module=actor_module,
+            actor_state=actor_state,
+            env=env,
+            num_obj=num_obj,
+            gamma_decay=gamma,
+        )
         for _ in range(rep)
     ]
     avg_vec_return = np.mean([eval[0] for eval in evals], axis=0)

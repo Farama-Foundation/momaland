@@ -20,7 +20,7 @@ import numpy as np
 from gymnasium import spaces
 from gymnasium.logger import warn
 from gymnasium.utils import EzPickle
-from pettingzoo.utils import agent_selector, wrappers
+from pettingzoo.utils import AgentSelector, wrappers
 
 from momaland.utils.env import MOAECEnv
 
@@ -118,7 +118,13 @@ class MOBreakthrough(MOAECEnv, EzPickle):
     OFF_BOARD = -1
     ANGLES = ["LEFT", "STRAIGHT", "RIGHT"]
 
-    def __init__(self, board_width: int = 8, board_height: int = 8, num_objectives: int = 4, render_mode: str | None = None):
+    def __init__(
+        self,
+        board_width: int = 8,
+        board_height: int = 8,
+        num_objectives: int = 4,
+        render_mode: str | None = None,
+    ):
         """Initializes a new MOBreakthrough environment.
 
         Args:
@@ -164,7 +170,10 @@ class MOBreakthrough(MOAECEnv, EzPickle):
             agent: spaces.Dict(
                 {
                     "observation": spaces.Box(
-                        low=0, high=1, shape=(board_height, board_width, len(self.agents)), dtype=np.int8
+                        low=0,
+                        high=1,
+                        shape=(board_height, board_width, len(self.agents)),
+                        dtype=np.int8,
                     ),
                     "action_mask": spaces.MultiBinary(self.max_move),
                 }
@@ -172,7 +181,11 @@ class MOBreakthrough(MOAECEnv, EzPickle):
             for agent in self.agents
         }
         self.reward_spaces = dict(
-            zip(self.agents, [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents)), dtype=np.float32
+            zip(
+                self.agents,
+                [spaces.Box(low=-1, high=1, shape=(self.num_objectives,))] * len(self.agents),
+            ),
+            dtype=np.float32,
         )
 
     @override
@@ -328,7 +341,7 @@ class MOBreakthrough(MOAECEnv, EzPickle):
     def _initialize_board(self, board_height, board_width):
         """Initializes the board."""
         self.board = np.zeros((board_width, board_height))
-        self._agent_selector = agent_selector(self.agents)
+        self._agent_selector = AgentSelector(self.agents)
         self.agent_selection = self._agent_selector.reset()
         piece = self.agents.index(self.agent_selection) + 1
         next_agent_index = piece % 2
@@ -354,4 +367,8 @@ class MOBreakthrough(MOAECEnv, EzPickle):
 
     def _int_to_move(self, move):
         """Converts integer move encoding to move coordinates and direction."""
-        return (move // 3) // self.board_height, (move // 3) % self.board_height, MOBreakthrough.ANGLES[move % 3]
+        return (
+            (move // 3) // self.board_height,
+            (move // 3) % self.board_height,
+            MOBreakthrough.ANGLES[move % 3],
+        )
