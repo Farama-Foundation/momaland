@@ -8,14 +8,8 @@ description="A standard API for Multi-Objective Multi-Agent Decision making and 
 readme = "README.md"
 requires-python = ">= 3.9"
 authors = [
-    {name="Florian Felten", email="florian.felten@uni.lu"},
-    {name="Umut Ucak"},
-    {name="Hicham Azmani"},
-    {name="Roxana Radulescu", email="roxana.radulescu@vub.be"},
-    {name="Hendrik J. S. Baier", email="h.j.s.baier@tue.nl"},
-    {name="Willem Röpke", email="willem.ropke@vub.be"},
-    {name="Patrick Mannion", email="patrick.mannion@universityofgalway.ie"},
-    {name="Diederik M. Roijers",email="diederik.roijers@vub.be"},
+    {name="Florian Felten", email="ffelten@mavt.ethz.ch"},
+    {name="Roxana Radulescu", email="r.t.radulescu@uu.nl"},
 ]
 license = { text = "GNU General Public License v3.0" }
 keywords = ["Reinforcement Learning", "Multi-Objective", "Multi-Agent", "RL", "AI", "gymnasium", "pettingzoo"]
@@ -36,7 +30,7 @@ dependencies = [
     "numpy >=1.21.0",
     "networkx >=3.1",
     "sympy >=1.12",
-    "pygame >=2.6.0",
+    "pygame >=2.3.0",
     "PyOpenGL >=3.1.6",
     "PyOpenGL-accelerate >=3.1.1",
     "pillow >=8.3.1",
@@ -47,38 +41,22 @@ dynamic = ["version"]
 [project.optional-dependencies]
 # Update dependencies in `all` if any are added or removed
 learning = [
-    "jax >=0.4.13",
-    "chex >=0.1",
-    "distrax >= 0.1.3",
-    "flax >=0.6",
-    "optax >=0.1",
-    "orbax-checkpoint >=0.2.3",
-    "chex >=0.1",
-    "etils >=1.3",
-    "supersuit >=3.9",
-    "tqdm >=4.66.1",
+    "jax >=0.6.2",
+    "chex >=0.1.89",
+    "distrax >= 0.1.5",
+    "flax >=0.10.7",
+    "optax >=0.2.5",
+    "orbax-checkpoint >=0.11.19",
+    "etils >=1.13.0",
+    "supersuit >=3.10.0",
+    "tqdm >=4.67.1",
     "pandas >=2.0.3",
-    "matplotlib >=3.7.4",
-    "morl_baselines[all]",
+    "matplotlib >=3.10.0",
+    "morl_baselines[all] >=1.1.0",
     "pycddlib==2.1.6",
 ]
 all = [
-    # All dependencies above except accept-rom-license
-    # NOTE: No need to manually remove the duplicates, setuptools automatically does that
-    "jax >=0.4.13",
-    "chex >=0.1",
-    "distrax >=0.1.3",
-    "flax >=0.6",
-    "optax >=0.1",
-    "orbax-checkpoint >=0.2.3",
-    "chex >=0.1",
-    "etils >=1.3",
-    "supersuit >=3.9",
-    "tqdm >=4.66.1",
-    "pandas >=2.0.3",
-    "matplotlib >=3.7.4",
-    "morl_baselines[all]",
-    "pycddlib==2.1.6",
+    "momaland[learning]",
 ]
 testing = ["pytest ==7.1.3"]
 

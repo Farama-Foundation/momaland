@@ -53,7 +53,11 @@ def main():
     if args.continuous:
         from momaland.learning.cooperative_momappo.continuous_momappo import Actor
 
-        actor_module = Actor(single_action_space.shape[0], net_arch=args.actor_net_arch, activation=args.activation)
+        actor_module = Actor(
+            single_action_space.shape[0],
+            net_arch=args.actor_net_arch,
+            activation=args.activation,
+        )
         actor_state = TrainState.create(
             apply_fn=actor_module.apply,
             params=actor_module.init(actor_key, dummy_local_obs_and_id),
@@ -65,7 +69,11 @@ def main():
     else:
         from momaland.learning.cooperative_momappo.discrete_momappo import Actor
 
-        actor_module = Actor(single_action_space.shape[0], net_arch=args.actor_net_arch, activation=args.activation)
+        actor_module = Actor(
+            single_action_space.shape[0],
+            net_arch=args.actor_net_arch,
+            activation=args.activation,
+        )
         actor_state = TrainState.create(
             apply_fn=actor_module.apply,
             params=actor_module.init(actor_key, dummy_local_obs_and_id),
