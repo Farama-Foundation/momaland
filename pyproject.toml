@@ -10,8 +10,8 @@ requires-python = ">= 3.9"
 authors = [
     {name="Florian Felten", email="florian.felten@uni.lu"},
     {name="Umut Ucak"},
-    {name="Hicham Azmani"},
-    {name="Roxana Radulescu", email="roxana.radulescu@vub.be"},
+    {name="Hicham Azmani", email="hicham.azmani@vub.be"},
+    {name="Roxana Radulescu", email="r.t.radulescu@uu.nl"},
     {name="Hendrik J. S. Baier", email="h.j.s.baier@tue.nl"},
     {name="Willem Röpke", email="willem.ropke@vub.be"},
     {name="Patrick Mannion", email="patrick.mannion@universityofgalway.ie"},
