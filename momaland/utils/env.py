@@ -36,7 +36,13 @@ class MOAECEnv(AECEnv):
     def _clear_rewards(self) -> None:
         """Clears all items in .rewards."""
         for agent in self.rewards:
-            self.rewards[agent] = np.zeros(self.reward_space(agent).shape[0], dtype=np.float32)  # type: ignore
+            # if reward space is a gymnasium space (due to the centralised agent wrapper)
+            if isinstance(self.reward_space, gymnasium.spaces.Space):
+                # Reset the reward to a zero vector of the correct shape
+                self.rewards[agent] = np.zeros(self.reward_space.shape[0], dtype=np.float32)
+            # if reward space is a numpy array
+            else:
+                self.rewards[agent] = np.zeros(self.reward_space(agent).shape[0], dtype=np.float32)  # type: ignore
 
 
 class MOParallelEnv(ParallelEnv):
