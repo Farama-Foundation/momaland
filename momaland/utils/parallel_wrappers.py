@@ -168,6 +168,8 @@ class CentraliseAgent(BaseParallelWrapper):
         self.action_mapping = action_mapping
         self.unwrapped.spec = namedtuple("Spec", ["id"])
         self.unwrapped.spec.id = self.env.metadata.get("name")
+        self.spec = namedtuple("Spec", ["id"])
+        self.spec.id = self.env.metadata.get("name")
         self._reward_type = reward_type
         self.continuous_action_space = False
         # Auxiliary variable agent 0 for observation and action space concatenation
