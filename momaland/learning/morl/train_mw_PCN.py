@@ -35,10 +35,10 @@ if __name__ == "__main__":
         experiment_name="MOMAland-MW-Centralised",
         log=True,
     )
-    timesteps_per_iter = 10000
+    timesteps_per_iter = 1000000
     agent.train(
         eval_env=eval_env,
-        total_timesteps=15 * timesteps_per_iter,
+        total_timesteps=10 * timesteps_per_iter,
         ref_point=ref_point,
         num_er_episodes=20,
         num_model_updates=50,
