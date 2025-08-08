@@ -41,7 +41,7 @@ if __name__ == "__main__":
         seed=seed,
     )
 
-    timesteps_per_iter = 1e4
+    timesteps_per_iter = int(1e4)
     algo = "gpi-ls"
 
     agent.train(
