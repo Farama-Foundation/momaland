@@ -22,7 +22,7 @@ if __name__ == "__main__":
     project_name = args.project
     obj = 2  # Multiwalker has 2 objectives: stability and speed
 
-    ref_point = -110 * np.ones(obj)  # Reference point for Multiwalker
+    ref_point = np.full(obj, -300.0, dtype=np.float32)  # Reference point for Multiwalker
     print("Reference point: ", ref_point)
 
     agent = GPILSContinuousAction(
@@ -33,22 +33,19 @@ if __name__ == "__main__":
         net_arch=[256, 256],
         buffer_size=int(2e5),
         learning_starts=100,
-        min_priority=0.01,
-        per=False,
         use_gpi=True,
         gradient_updates=10,
-        tau=1,
         log=True,
         project_name=project_name,
         experiment_name="GPI",
         seed=seed,
     )
 
-    timesteps_per_iter = 1000000
+    timesteps_per_iter = 1e4
     algo = "gpi-ls"
 
     agent.train(
-        total_timesteps=10 * timesteps_per_iter,
+        total_timesteps=int(1e6 * timesteps_per_iter),
         eval_env=eval_env,
         ref_point=ref_point,
         weight_selection_algo=algo,

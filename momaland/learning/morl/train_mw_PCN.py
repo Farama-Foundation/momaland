@@ -20,7 +20,8 @@ if __name__ == "__main__":
     project_name = args.project
     obj = 2  # Multiwalker has 2 objectives: stability and speed
 
-    ref_point = -50 * np.ones(obj)  # Reference point for Multiwalker
+    ref_point = np.full(obj, -300.0, dtype=np.float32)  # Reference point for Multiwalker
+    max_return = np.full(obj, 200.0, dtype=np.float32)
     print("Reference point: ", ref_point)
 
     agent = PCN(
@@ -29,17 +30,18 @@ if __name__ == "__main__":
         gamma=0.99,
         scaling_factor=np.ones(obj + 1),
         learning_rate=1e-3,
-        hidden_dim=512,
+        hidden_dim=256,
         batch_size=256,
         project_name=project_name,
         experiment_name="PCN",
         log=True,
     )
-    timesteps_per_iter = 1000000
+    timesteps_per_iter = 1e4
     agent.train(
         eval_env=eval_env,
-        total_timesteps=10 * timesteps_per_iter,
+        total_timesteps=int(1e6 * timesteps_per_iter),
         ref_point=ref_point,
+        max_return=max_return,
         num_er_episodes=50,
         num_model_updates=100,
     )
