@@ -36,7 +36,7 @@ if __name__ == "__main__":
         experiment_name="PCN",
         log=True,
     )
-    timesteps_per_iter = 1e4
+    timesteps_per_iter = int(1e4)
     agent.train(
         eval_env=eval_env,
         total_timesteps=int(1e6 * timesteps_per_iter),
