@@ -21,7 +21,7 @@ if __name__ == "__main__":
     obj = 2  # Multiwalker has 2 objectives: stability and speed
 
     ref_point = np.full(obj, -300.0, dtype=np.float32)  # Reference point for Multiwalker
-    max_return = np.full(obj, 200.0, dtype=np.float32)
+    max_return = np.full(obj, 300.0, dtype=np.float32)
     print("Reference point: ", ref_point)
 
     agent = PCN(
