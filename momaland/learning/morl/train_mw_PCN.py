@@ -11,7 +11,7 @@ from momaland.learning.morl.sa_env_factory import make_single_agent_mw_env
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
-    parser.add_argument("-project", type=str, default="PCN-MW", help="Project name.")
+    parser.add_argument("-project", type=str, default="PCN-MW-sum", help="Project name.")
     parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
     args = parser.parse_args()
     seed = args.seed
