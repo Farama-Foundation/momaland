@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # timesteps_per_iter = 10 #int(1e4)
     agent.train(
         eval_env=eval_env,
-        total_timesteps=int(15e6),
+        total_timesteps=int(1e7),
         ref_point=ref_point,
         max_return=max_return,
         max_buffer_size=500,

@@ -13,12 +13,14 @@ from momaland.learning.morl.sa_env_factory import make_single_agent_mw_env
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
-    parser.add_argument("-project", type=str, default="GPI-MW", help="Project name.")
+    parser.add_argument("-project", type=str, default="GPI-MW-sum", help="Project name.")
+    parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
     args = parser.parse_args()
     seed = args.seed
+    reward_type = args.reward
 
-    env = make_single_agent_mw_env()
-    eval_env = make_single_agent_mw_env()
+    env = make_single_agent_mw_env(reward_type=reward_type)
+    eval_env = make_single_agent_mw_env(reward_type=reward_type)
     project_name = args.project
     obj = 2  # Multiwalker has 2 objectives: stability and speed
 
@@ -31,10 +33,10 @@ if __name__ == "__main__":
         gamma=0.99,
         batch_size=256,
         net_arch=[256, 256],
-        buffer_size=int(2e5),
+        buffer_size=int(1e3),
         learning_starts=100,
         use_gpi=True,
-        gradient_updates=10,
+        # gradient_updates=10,
         log=True,
         project_name=project_name,
         experiment_name="GPI",
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     algo = "gpi-ls"
 
     agent.train(
-        total_timesteps=int(15e5 * timesteps_per_iter),
+        total_timesteps=int(1e7 * timesteps_per_iter),
         eval_env=eval_env,
         ref_point=ref_point,
         weight_selection_algo=algo,
