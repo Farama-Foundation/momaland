@@ -36,7 +36,7 @@ if __name__ == "__main__":
         buffer_size=int(1e3),
         learning_starts=100,
         use_gpi=True,
-        gradient_updates=10,
+        gradient_updates=5,
         log=True,
         project_name=project_name,
         experiment_name="GPI",
