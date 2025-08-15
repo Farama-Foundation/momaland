@@ -12,16 +12,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
     parser.add_argument("-project", type=str, default="PCN-MW-sum", help="Project name.")
-    parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
+    parser.add_argument("-reward", type=str, default="sum", help="Reward type, sum or average.")
     args = parser.parse_args()
     seed = args.seed
     reward_type = args.reward
 
     env = make_single_agent_mw_env(reward_type=reward_type)
     eval_env = make_single_agent_mw_env(reward_type=reward_type)
-
     # env = make_single_agent_mw_env_small(reward_type=reward_type)
     # eval_env = make_single_agent_mw_env_small(reward_type=reward_type)
+    env.reset()
+    eval_env.reset()
     project_name = args.project
 
     obj = 2  # Multiwalker has 2 objectives: stability and speed
@@ -39,7 +40,7 @@ if __name__ == "__main__":
         learning_rate=1e-3,
         hidden_dim=256,
         batch_size=256,
-        noise=0.05,
+        noise=0.025,
         project_name=project_name,
         experiment_name="PCN",
         log=True,
@@ -50,8 +51,8 @@ if __name__ == "__main__":
         total_timesteps=int(1e7),
         ref_point=ref_point,
         max_return=max_return,
-        max_buffer_size=500,
-        num_er_episodes=10,
+        max_buffer_size=int(1e5),
+        num_er_episodes=50,
         num_step_episodes=10,
         num_model_updates=100,
     )

@@ -58,11 +58,11 @@ def make_single_agent_bpd_env(size="small"):
 
 def make_single_agent_mw_env(reward_type="average"):
     """Create a centralised agent environment for the Multiwalker domain."""
-    mw_env = momultiwalker_stability_v0.parallel_env()
+    mw_env = momultiwalker_stability_v0.parallel_env(remove_on_fall=False)
     return CentraliseAgent(mw_env, action_mapping=False, reward_type=reward_type)
 
 
 def make_single_agent_mw_env_small(reward_type="average"):
     """Create a centralised agent environment for the Multiwalker domain, with one walker."""
-    mw_env = momultiwalker_stability_v0.parallel_env(n_walkers=1, max_cycles=100)
+    mw_env = momultiwalker_stability_v0.parallel_env(n_walkers=1, max_cycles=100, remove_on_fall=False)
     return CentraliseAgent(mw_env, action_mapping=False, reward_type=reward_type)

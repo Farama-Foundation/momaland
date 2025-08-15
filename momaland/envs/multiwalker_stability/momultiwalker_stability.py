@@ -7,6 +7,7 @@ deep reinforcement learning. International Conference on Autonomous Agents and M
 from typing_extensions import override
 
 import numpy as np
+from gymnasium.spaces import Box
 from pettingzoo.sisl.multiwalker.multiwalker import FPS
 from pettingzoo.sisl.multiwalker.multiwalker import raw_env as pz_multiwalker
 from pettingzoo.utils import wrappers
@@ -92,6 +93,7 @@ class MOMultiwalkerStability(MOAECEnv, pz_multiwalker):
         "name": "momultiwalker_stability_v0",
         "is_parallelizable": True,
         "render_fps": FPS,
+        "central_observation": True,
     }
 
     @override
@@ -100,6 +102,16 @@ class MOMultiwalkerStability(MOAECEnv, pz_multiwalker):
         self.env = _env(*args, **kwargs)  # override engine
         # spaces
         self.reward_spaces = dict(zip(self.agents, self.env.reward_space))
+        self.central_observation_space = Box(
+            low=np.float32(-np.inf),
+            high=np.float32(np.inf),
+            shape=(75,),  # 75 is the size of the central observation space in MW
+            dtype=np.float32,
+        )
+
+    def get_central_observation_space(self):
+        """Returns the central observation space for the environment."""
+        return self.central_observation_space
 
     def reward_space(self, agent):
         """Returns the reward space for the given agent."""

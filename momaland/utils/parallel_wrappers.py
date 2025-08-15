@@ -257,9 +257,9 @@ class CentraliseAgent(BaseParallelWrapper):
             infos,
         )
 
-    def reset(self, seed=None):
+    def reset(self, seed=None, options=None):
         """Resets the environment, joining the returned values for the central agent."""
-        observations, infos = self.env.reset(seed)
+        observations, infos = super().reset(seed, options)
         if self.env.metadata.get("central_observation"):
             observations = self.env.state().flatten()
         else:

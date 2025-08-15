@@ -14,7 +14,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
     parser.add_argument("-project", type=str, default="GPI-MW-sum", help="Project name.")
-    parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
+    parser.add_argument("-reward", type=str, default="sum", help="Reward type, sum or average.")
     args = parser.parse_args()
     seed = args.seed
     reward_type = args.reward
@@ -29,14 +29,14 @@ if __name__ == "__main__":
 
     agent = GPILSContinuousAction(
         env,
-        learning_rate=3e-4,
+        learning_rate=1e-3,
         gamma=0.99,
         batch_size=256,
         net_arch=[256, 256],
-        buffer_size=int(1e3),
-        learning_starts=100,
+        buffer_size=int(1e6),
+        learning_starts=500,
         use_gpi=True,
-        gradient_updates=5,
+        gradient_updates=2,
         log=True,
         project_name=project_name,
         experiment_name="GPI",

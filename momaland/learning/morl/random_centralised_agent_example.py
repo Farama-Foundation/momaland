@@ -5,7 +5,6 @@ from momaland.utils.all_modules import (
     mobeach_v0,
     moitem_gathering_v0,
     momultiwalker_stability_v0,
-    mopistonball_v0,
 )
 from momaland.utils.parallel_wrappers import CentraliseAgent
 
@@ -13,7 +12,7 @@ from momaland.utils.parallel_wrappers import CentraliseAgent
 def train_sa_random(moma_env, action_mapping=True, reward_type="average"):
     """Demonstrate interaction with a random centralised agent and the environment."""
     sa_env = CentraliseAgent(moma_env, action_mapping=action_mapping, reward_type=reward_type)
-    moma_env.reset()
+    sa_env.reset()
     done = False
     while not done:
         actions = sa_env.action_space.sample()
@@ -65,9 +64,7 @@ if __name__ == "__main__":
         reward_mode="individual",
     )
 
-    mopiston_env = mopistonball_v0.parallel_env()
-
-    momw_env = momultiwalker_stability_v0.parallel_env()
+    momw_env = momultiwalker_stability_v0.parallel_env(remove_on_fall=False)
 
     # train_random(ig_env)
     # train_random(mobpd_env)
@@ -76,4 +73,4 @@ if __name__ == "__main__":
 
     # train_sa_random(ig_env)
     # train_sa_random(mobpd_env, action_mapping=True, reward_type="average")
-    train_sa_random(momw_env, action_mapping=False, reward_type="average")
+    # train_sa_random(momw_env, action_mapping=False, reward_type="sum")
