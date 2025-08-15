@@ -102,10 +102,12 @@ class MOMultiwalkerStability(MOAECEnv, pz_multiwalker):
         self.env = _env(*args, **kwargs)  # override engine
         # spaces
         self.reward_spaces = dict(zip(self.agents, self.env.reward_space))
+
         self.central_observation_space = Box(
             low=np.float32(-np.inf),
             high=np.float32(np.inf),
-            shape=(75,),  # 75 is the size of the central observation space in MW
+            # 24 is the observation space of each walker, 3 is the package observation space
+            shape=((24 + 3) + (24 * (len(self.agents) - 1)),),
             dtype=np.float32,
         )
 

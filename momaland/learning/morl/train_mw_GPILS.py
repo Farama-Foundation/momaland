@@ -15,12 +15,19 @@ if __name__ == "__main__":
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
     parser.add_argument("-project", type=str, default="GPI-MW-sum", help="Project name.")
     parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
+    parser.add_argument("-walkers", type=int, default=3, help="Number of walkers in the environment.")
+
     args = parser.parse_args()
     seed = args.seed
     reward_type = args.reward
+    n_walkers = args.walkers
 
-    env = make_single_agent_mw_env(reward_type=reward_type)
-    eval_env = make_single_agent_mw_env(reward_type=reward_type)
+    env = make_single_agent_mw_env(reward_type=reward_type, n_walkers=n_walkers)
+    eval_env = make_single_agent_mw_env(reward_type=reward_type, n_walkers=n_walkers)
+
+    env.reset()
+    eval_env.reset()
+
     project_name = args.project
     obj = 2  # Multiwalker has 2 objectives: stability and speed
 
@@ -29,15 +36,13 @@ if __name__ == "__main__":
 
     agent = GPILSContinuousAction(
         env,
-        learning_rate=1e-3,
+        learning_rate=3e-4,
         gamma=0.99,
-        batch_size=256,
         net_arch=[256, 256],
-        buffer_size=int(1e6),
-        learning_starts=500,
         use_gpi=True,
         gradient_updates=2,
         log=True,
+        policy_noise=0.025,
         project_name=project_name,
         experiment_name="GPI",
         seed=seed,

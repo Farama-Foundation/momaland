@@ -13,14 +13,16 @@ if __name__ == "__main__":
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
     parser.add_argument("-project", type=str, default="PCN-MW-sum", help="Project name.")
     parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
+    parser.add_argument("-walkers", type=int, default=3, help="Number of walkers in the environment.")
+
     args = parser.parse_args()
     seed = args.seed
     reward_type = args.reward
+    n_walkers = args.walkers
 
-    env = make_single_agent_mw_env(reward_type=reward_type)
-    eval_env = make_single_agent_mw_env(reward_type=reward_type)
-    # env = make_single_agent_mw_env_small(reward_type=reward_type)
-    # eval_env = make_single_agent_mw_env_small(reward_type=reward_type)
+    env = make_single_agent_mw_env(reward_type=reward_type, n_walkers=n_walkers)
+    eval_env = make_single_agent_mw_env(reward_type=reward_type, n_walkers=n_walkers)
+
     env.reset()
     eval_env.reset()
     project_name = args.project
