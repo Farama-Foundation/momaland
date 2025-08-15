@@ -11,9 +11,9 @@ from momaland.learning.morl.sa_env_factory import make_single_agent_mw_env
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
-    parser.add_argument("-project", type=str, default="PCN-MW-sum", help="Project name.")
-    parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
-    parser.add_argument("-walkers", type=int, default=3, help="Number of walkers in the environment.")
+    parser.add_argument("-project", type=str, default="PCN-MW-small", help="Project name.")
+    parser.add_argument("-reward", type=str, default="sum", help="Reward type, sum or average.")
+    parser.add_argument("-walkers", type=int, default=1, help="Number of walkers in the environment.")
 
     args = parser.parse_args()
     seed = args.seed
@@ -42,7 +42,7 @@ if __name__ == "__main__":
         learning_rate=1e-3,
         hidden_dim=256,
         batch_size=256,
-        noise=0.025,
+        noise=0.05,
         project_name=project_name,
         experiment_name="PCN",
         log=True,
@@ -50,11 +50,11 @@ if __name__ == "__main__":
     # timesteps_per_iter = 10 #int(1e4)
     agent.train(
         eval_env=eval_env,
-        total_timesteps=int(1e7),
+        total_timesteps=int(1e8),
         ref_point=ref_point,
         max_return=max_return,
-        max_buffer_size=int(1e5),
-        num_er_episodes=50,
+        max_buffer_size=500,
+        num_er_episodes=20,
         num_step_episodes=10,
         num_model_updates=100,
     )

@@ -13,9 +13,9 @@ from momaland.learning.morl.sa_env_factory import make_single_agent_mw_env
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
-    parser.add_argument("-project", type=str, default="GPI-MW-sum", help="Project name.")
-    parser.add_argument("-reward", type=str, default="average", help="Reward type, sum or average.")
-    parser.add_argument("-walkers", type=int, default=3, help="Number of walkers in the environment.")
+    parser.add_argument("-project", type=str, default="GPI-MW-small", help="Project name.")
+    parser.add_argument("-reward", type=str, default="sum", help="Reward type, sum or average.")
+    parser.add_argument("-walkers", type=int, default=1, help="Number of walkers in the environment.")
 
     args = parser.parse_args()
     seed = args.seed
@@ -40,21 +40,22 @@ if __name__ == "__main__":
         gamma=0.99,
         net_arch=[256, 256],
         use_gpi=True,
-        gradient_updates=2,
+        gradient_updates=3,
         log=True,
-        policy_noise=0.025,
+        policy_noise=0.05,
         project_name=project_name,
         experiment_name="GPI",
         seed=seed,
     )
 
-    timesteps_per_iter = int(1e3)
+    timesteps_per_iter = int(1e4)
     algo = "gpi-ls"
 
     agent.train(
-        total_timesteps=int(1e7 * timesteps_per_iter),
+        total_timesteps=int(1e6 * timesteps_per_iter),
         eval_env=eval_env,
         ref_point=ref_point,
         weight_selection_algo=algo,
         timesteps_per_iter=timesteps_per_iter,
+        checkpoints=False,
     )
