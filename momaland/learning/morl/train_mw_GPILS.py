@@ -57,5 +57,5 @@ if __name__ == "__main__":
         ref_point=ref_point,
         weight_selection_algo=algo,
         timesteps_per_iter=timesteps_per_iter,
-        checkpoints=False,
+        checkpoints=True,
     )

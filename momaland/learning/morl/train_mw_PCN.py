@@ -1,6 +1,7 @@
 """MO Gymnasium on centralised agents versions of MOMAland."""
 
 import argparse
+from datetime import datetime
 
 import numpy as np
 from morl_baselines.multi_policy.pcn.pcn import PCN
@@ -50,7 +51,7 @@ if __name__ == "__main__":
     # timesteps_per_iter = 10 #int(1e4)
     agent.train(
         eval_env=eval_env,
-        total_timesteps=int(1e8),
+        total_timesteps=int(1e3),
         ref_point=ref_point,
         max_return=max_return,
         max_buffer_size=500,
@@ -58,3 +59,8 @@ if __name__ == "__main__":
         num_step_episodes=10,
         num_model_updates=100,
     )
+    # Save the agent model and add a timestamp to the filename
+    dt = datetime.now()  # for date and time
+    ts = datetime.timestamp(dt)  # for timestamp
+    print(f"Saving agent model with name: pcn_mw_agent_{ts}")
+    agent.save(filename=f"pcn_mw_agent_{ts}")
