@@ -14,7 +14,7 @@ if __name__ == "__main__":
     parser.add_argument("-seed", type=int, default=42, help="Seed for the agent.")
     parser.add_argument("-project", type=str, default="PCN-MW-small", help="Project name.")
     parser.add_argument("-reward", type=str, default="sum", help="Reward type, sum or average.")
-    parser.add_argument("-walkers", type=int, default=1, help="Number of walkers in the environment.")
+    parser.add_argument("-walkers", type=int, default=3, help="Number of walkers in the environment.")
 
     args = parser.parse_args()
     seed = args.seed
@@ -48,7 +48,6 @@ if __name__ == "__main__":
         experiment_name="PCN",
         log=True,
     )
-    # timesteps_per_iter = 10 #int(1e4)
     agent.train(
         eval_env=eval_env,
         total_timesteps=int(1e8),
