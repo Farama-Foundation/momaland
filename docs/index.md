@@ -40,9 +40,9 @@ tutorials/learning_algorithms
 :caption: Development
 
 Discord <https://discord.gg/bnJ6kubTg6>
-Github <https://github.com/rradules/momaland>
+Github <https://github.com/Farama-Foundation/momaland>
 release_notes
-Contribute to the Docs <https://github.com/rradules/momaland/tree/master/docs/>
+Contribute to the Docs <https://github.com/Farama-Foundation/momaland/tree/master/docs/>
 ```
 
 ```{project-logo} _static/img/momaland-text.png
