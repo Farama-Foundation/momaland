@@ -1,6 +1,6 @@
 cython
 gymnasium
-git+https://github.com/rradules/momaland
+git+https://github.com/Farama-Foundation/MOMAland
 tqdm
 sphinx
 sphinx-autobuild

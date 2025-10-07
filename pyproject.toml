@@ -60,10 +60,10 @@ all = [
 testing = ["pytest ==7.1.3"]
 
 [project.urls]
-Homepage = "https://github.com/rradules/momaland/tree/main"
-Repository = "https://github.com/rradules/momaland/tree/main"
-Documentation = "https://github.com/rradules/momaland/tree/main"
-"Bug Report" = "https://github.com/rradules/momaland/tree/main/issues"
+Homepage = "https://momaland.farama.org/"
+Repository = "https://github.com/Farama-Foundation/momaland"
+Documentation = "https://momaland.farama.org/"
+"Bug Report" = "https://github.com/Farama-Foundation/momaland/tree/main/issues"
 
 [tool.setuptools]
 include-package-data = true
