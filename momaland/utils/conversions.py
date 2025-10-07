@@ -61,6 +61,15 @@ class mo_aec_to_parallel_wrapper(aec_to_parallel_wrapper, MOParallelEnv):
     def reward_space(self, agent):
         return self.aec_env.reward_spaces[agent]
 
+    def get_central_observation_space(self):
+        """Delegate returning the central observation for the environment."""
+        if self.aec_env.metadata.get("central_observation"):
+            return self.aec_env.get_central_observation_space()
+        else:
+            raise NotImplementedError(
+                "This environment does not support centralised observations. Please use the AEC environment directly."
+            )
+
     @override
     def step(self, actions):
         rewards = defaultdict(lambda: np.zeros(self.reward_space(self.aec_env.agents[0]).shape))
