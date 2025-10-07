@@ -1,8 +1,11 @@
 """Single agent environment factory."""
 
-from momaland.envs.beach import mobeach_v0
-from momaland.envs.item_gathering import moitem_gathering_v0
 from momaland.envs.item_gathering.map_utils import DEFAULT_MAP, generate_map
+from momaland.utils.all_modules import (
+    mobeach_v0,
+    moitem_gathering_v0,
+    momultiwalker_stability_v0,
+)
 from momaland.utils.parallel_wrappers import CentraliseAgent
 
 
@@ -51,3 +54,9 @@ def make_single_agent_bpd_env(size="small"):
             position_distribution=(0.0, 0.5, 0.0, 0.5, 0.0),
         )
     return CentraliseAgent(bpd_env, action_mapping=True, reward_type="average")
+
+
+def make_single_agent_mw_env(reward_type="average", n_walkers=3):
+    """Create a centralised agent environment for the Multiwalker domain."""
+    mw_env = momultiwalker_stability_v0.parallel_env(n_walkers=n_walkers, remove_on_fall=False)
+    return CentraliseAgent(mw_env, action_mapping=False, reward_type=reward_type)

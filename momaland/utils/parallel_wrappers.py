@@ -4,7 +4,7 @@ from collections import namedtuple
 from typing import Optional
 
 import numpy as np
-from gymnasium.spaces import Box, Dict, Discrete
+from gymnasium.spaces import Box, Discrete
 from gymnasium.wrappers.utils import RunningMeanStd
 from pettingzoo.utils.wrappers.base_parallel import BaseParallelWrapper
 
@@ -161,36 +161,66 @@ class CentraliseAgent(BaseParallelWrapper):
 
         Args:
             env: The parallel environment to apply the wrapper
-            action_mapping: Whether to use an action mapping to Discrete spaces of not
+            action_mapping: Whether to use an action mapping to one value (num_actions ** num_agents) or not
             reward_type: The type of reward grouping to use, either 'sum' or 'mean'
         """
         super().__init__(env)
         self.action_mapping = action_mapping
         self.unwrapped.spec = namedtuple("Spec", ["id"])
         self.unwrapped.spec.id = self.env.metadata.get("name")
+        self.spec = namedtuple("Spec", ["id"])
+        self.spec.id = self.env.metadata.get("name")
         self._reward_type = reward_type
+        self.continuous_action_space = False
+        # Auxiliary variable agent 0 for observation and action space concatenation
+        ag0 = self.env.possible_agents[0]
+        # Centralised observation space
+        # If the environment has a central observation, we use that as the observation space
         if self.env.metadata.get("central_observation"):
-            self.observation_space = env.get_central_observation_space()
-            self.unwrapped.observation_space = env.get_central_observation_space()
+            self.observation_space = self.env.get_central_observation_space()
+            self.unwrapped.observation_space = self.env.get_central_observation_space()
+        # If the environment does not have a central observation, we use the individual agent observation spaces
         else:
-            self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
-        # self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+            obs_size = np.prod(self.env.observation_space(ag0).shape)
+            self.observation_space = Box(
+                low=env.observation_space(ag0).low[0],
+                high=env.observation_space(ag0).high[0],
+                shape=(obs_size * len(self.possible_agents),),
+                dtype=self.env.observation_space(ag0).dtype,
+            )
+            # self.observation_space = Dict({agentID: env.observation_space(agentID) for agentID in self.possible_agents})
+            self.unwrapped.observation_space = self.observation_space
+
+        # Centralise action space
         # For compatibility with MORL baselines
-        # Make the action space a Box space with the same bounds as the first agent's action space
-        ag0_action_space = env.action_space(self.possible_agents[0])
-        self.num_actions = ag0_action_space.n
-        if self.action_mapping:
-            self.action_space = Discrete(self.num_actions ** len(self.possible_agents))
-            self.unwrapped.action_space = self.action_space
-        elif self.env.metadata.get("central_observation"):
+        # make the action space a Box space with the same bounds as the first agent's action space
+        ag0_action_space = self.env.action_space(ag0)
+        # If the action space is continuous
+        if isinstance(ag0_action_space, Box):
+            self.continuous_action_space = True
+            # If the action space is a vector, we flatten it to a single dimension
+            self.num_actions = np.prod(ag0_action_space.shape)
             self.action_space = Box(
-                low=ag0_action_space.start,
-                high=(ag0_action_space.n - 1),
-                shape=(len(self.possible_agents),),
+                low=ag0_action_space.low[0],
+                high=ag0_action_space.high[0],
+                shape=(self.num_actions * len(self.possible_agents),),
                 dtype=ag0_action_space.dtype,
             )
-        else:
-            self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+        # If action space is discrete
+        elif isinstance(ag0_action_space, Discrete):
+            self.num_actions = ag0_action_space.n
+            if self.action_mapping:
+                self.action_space = Discrete(self.num_actions ** len(self.possible_agents))
+            else:
+                self.action_space = Box(
+                    low=ag0_action_space.start,
+                    # assume action space is discrete and starts at 0
+                    high=(ag0_action_space.n - 1),
+                    shape=(len(self.possible_agents),),
+                    dtype=ag0_action_space.dtype,
+                )
+            # self.action_space = Dict({agentID: env.action_space(agentID) for agentID in self.possible_agents})
+        self.unwrapped.action_space = self.action_space
         self.reward_space = self.env.reward_space(self.possible_agents[0])
         self.unwrapped.reward_space = self.reward_space
 
@@ -200,16 +230,25 @@ class CentraliseAgent(BaseParallelWrapper):
         if self.action_mapping:
             remapped_actions = remap_actions(actions, len(self.agents), self.num_actions)
             actions = {agent: remapped_actions[i] for i, agent in enumerate(self.agents)}
-        elif self.env.metadata.get("central_observation"):
+        elif not self.continuous_action_space:
             actions = {agent: actions[num] for num, agent in enumerate(self.possible_agents)}
-
+        else:
+            # Convert the actions to a dictionary with the agent as the key
+            # and the action as the value, reshaping the actions to match the agent's action space
+            actions = np.array(actions).reshape((len(self.possible_agents), self.num_actions))
+            actions = {agent: actions[num] for num, agent in enumerate(self.possible_agents)}
         observations, rewards, terminations, truncations, infos = self.env.step(actions)
         if self.env.metadata.get("central_observation"):
             observations = self.env.state().flatten()
+        else:
+            # Concatenate the observations of all agents into a single observation
+            observations = np.concatenate([observations[agent].flatten() for agent in self.possible_agents], axis=0)
         if self._reward_type == "sum":
             joint_reward = np.sum(list(rewards.values()), axis=0)
-        else:
+        elif self._reward_type == "average":
             joint_reward = np.mean(list(rewards.values()), axis=0)
+        else:
+            raise ValueError(f"Unknown reward aggregation: {self._reward_type}. Use 'sum' or 'average'.")
         return (
             observations,
             joint_reward,
@@ -218,9 +257,11 @@ class CentraliseAgent(BaseParallelWrapper):
             infos,
         )
 
-    def reset(self, seed=None):
+    def reset(self, seed=None, options=None):
         """Resets the environment, joining the returned values for the central agent."""
-        observations, infos = self.env.reset(seed)
+        observations, infos = super().reset(seed, options)
         if self.env.metadata.get("central_observation"):
             observations = self.env.state().flatten()
+        else:
+            observations = np.concatenate([observations[agent].flatten() for agent in self.possible_agents], axis=0)
         return observations, list(infos.values())

@@ -43,7 +43,7 @@ if __name__ == "__main__":
         gradient_updates=10,
         target_net_update_freq=200,
         tau=1,
-        log=True,
+        log=False,
         project_name=project_name,
         seed=seed,
     )

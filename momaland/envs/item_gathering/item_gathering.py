@@ -104,6 +104,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
     - 'initial_map': map of the environment. Default: 8x8 grid, 2 agents, 3 objectives (Källström and Heintz, 2019)
     - 'randomise': whether to randomise the map, at each episode. Default: False
     - 'reward_mode': reward mode for the environment ('individual' or 'team'). Default: 'individual'
+    - 'pickup_probabilities': the probabilities of picking up each item type, by default set to None which means all items are picked up with probability 1.0.
     - 'render_mode': render mode for the environment. Default: None
     """
 
@@ -121,6 +122,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         initial_map=DEFAULT_MAP,
         randomise=False,
         reward_mode="individual",
+        pickup_probabilities=None,
         render_mode=None,
     ):
         """Initializes the item gathering domain.
@@ -130,6 +132,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
             initial_map: map of the environment
             randomise: whether to randomise the map, at each episode
             reward_mode: reward mode for the environment, 'individual' or 'team'. Default: 'individual'
+            pickup_probabilities: the probabilities of picking up each item type, by default set to None which means all items are picked up with probability 1.0.
             render_mode: render mode for the environment
         """
         EzPickle.__init__(
@@ -138,6 +141,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
             initial_map,
             randomise,
             reward_mode,
+            pickup_probabilities,
             render_mode,
         )
         self.num_timesteps = num_timesteps
@@ -173,6 +177,10 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         indices_of_items = np.argwhere(all_map_entries[0] > 0).flatten()
         item_counts = np.take(all_map_entries[1], indices_of_items)
         self.num_objectives = len(item_counts)
+
+        # initialize stochastic behavior if selected
+        self.rng = np.random.default_rng()
+        self.pickup_probs = pickup_probabilities if pickup_probabilities is not None else np.ones(self.num_objectives)
 
         assert len(item_counts) > 0, "There are no resources in the map."
 
@@ -299,11 +307,11 @@ class MOItemGathering(MOParallelEnv, EzPickle):
                     self.window.blit(self.agent_imgs[ind], tuple(np.array([j, i]) * self.cell_size[0]))
 
                 # items
-                elif int(self.env_map[i, j]) > 2:
-                    ind = (
-                        int(self.env_map[i, j]) - list(self.item_dict.keys())[0]
-                    )  # item n will have will have 0th (n-n) index
-                    self.window.blit(self.item_imgs[ind], tuple(np.array([j + 0.22, i + 0.25]) * self.cell_size[0]))
+                elif int(self.env_map[i, j]) > 0:
+                    item_value = int(self.env_map[i, j])
+                    if item_value in self.item_dict:
+                        ind = self.item_dict[item_value]
+                        self.window.blit(self.item_imgs[ind], tuple(np.array([j + 0.22, i + 0.25]) * self.cell_size[0]))
 
         if self.render_mode == "human":
             pygame.event.pump()
@@ -372,7 +380,9 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         new_positions = deepcopy(self.agent_positions)
         # Apply actions and update system state
         for i, agent in enumerate(self.agents):
-            act = actions[agent]
+            act = actions.get(agent)  # use .get() for safety
+            if act is None:
+                continue
             new_position = self.agent_positions[i] + ACTIONS[act]
             if self._is_valid_position(new_position):
                 # update the position, if it is a valid step
@@ -383,7 +393,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         # initial collision check, verify all agent pairs
         new_positions, collisions = self._verify_collisions(collisions, new_positions)
 
-        max_collisions = self.num_agents * 50
+        max_collisions = len(self.possible_agents) * 50
         while len(collisions) > 0 and max_collisions > 0:
             new_positions, collisions = self._verify_collisions(collisions, new_positions)
             max_collisions -= 1
@@ -393,17 +403,31 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         self.agent_positions = deepcopy(new_positions)
 
         # initialise rewards and observations
-        rewards = {agent: np.array(np.zeros(self.num_objectives)) for agent in self.agents}
+        rewards = {agent: np.zeros(self.num_objectives) for agent in self.agents}
 
-        # update all reward vectors with collected items (if any), delete items from the map
+        # --- Stochastic Item Pickup ---
         for i in range(len(self.agent_positions)):
-            value_in_cell = self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]]
+            agent_id = self.agents[i]
+            agent_pos = self.agent_positions[i]
+            value_in_cell = self.env_map[agent_pos[0], agent_pos[1]]
+
             if value_in_cell > 0:
-                rewards[self.agents[i]][self.item_dict[value_in_cell]] += 1
-                self.env_map[self.agent_positions[i][0], self.agent_positions[i][1]] = 0
+                item_idx = self.item_dict[value_in_cell]
+                prob = self.pickup_probs[item_idx]
+
+                # Attempt to pick up the item based on its probability
+                if random.random() < prob:
+                    # Success: grant reward and remove item
+                    rewards[agent_id][item_idx] += 1
+                    self.env_map[agent_pos[0], agent_pos[1]] = 0
+                # else: Failure: do nothing. The agent stays on the square,
+                # the item remains, no reward is given.
+
         # if reward mode is teams, sum the rewards for all agents
         if self.reward_mode == "team":
-            rewards = {agent: np.sum(list(rewards.values()), axis=0) for agent in self.agents}
+            # Ensure all agents get the same summed reward vector
+            total_rewards = np.sum(list(rewards.values()), axis=0)
+            rewards = {agent: total_rewards for agent in self.agents}
 
         map_obs = self.state()
         observations = {agent: (-(i + 1), map_obs) for i, agent in enumerate(self.agents)}
@@ -415,7 +439,7 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         # termination occurs when all items or gathered
         # truncation occurs if all timesteps are exhausted
         self.time_num += 1
-        env_termination = bool(np.sum(self.env_map) == 0)
+        env_termination = bool(np.sum(self.env_map[self.env_map > 0]) == 0)  # Check only items
         env_truncation = bool(self.time_num >= self.num_timesteps)
         self.terminations = {agent: env_termination for agent in self.agents}
         self.truncations = {agent: env_truncation for agent in self.agents}
@@ -479,6 +503,9 @@ class MOItemGathering(MOParallelEnv, EzPickle):
         """Initialise the map and agent positions."""
         agent_positions = np.argwhere(env_map == 1)  # store agent positions in separate list
         env_map[env_map == 1] = 0  # remove agent starting positions from map
-        # shift the item indices to start from 1
-        env_map[env_map > 0] -= min(env_map[env_map > 0]) - 1
+
+        # This can fail if there are no items, guard it
+        if np.any(env_map > 0):
+            # shift the item indices to start from 1
+            env_map[env_map > 0] -= min(env_map[env_map > 0]) - 1
         return agent_positions, env_map
